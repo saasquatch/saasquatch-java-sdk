@@ -2,7 +2,7 @@ package saasquatch.sdk;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import java.io.IOException;
-import java.io.StringWriter;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -54,7 +54,7 @@ public final class SaaSquatchClient {
       @Nonnull String query, @Nullable String operationName,
       @Nullable Map<String, Object> variables, @Nullable SaaSquatchRequestOptions requestOptions) {
     final Map<String, Object> body = new HashMap<>();
-    body.put("query", Objects.requireNonNull(query));
+    body.put("query", Objects.requireNonNull(query, "query"));
     if (operationName != null) {
       body.put("operationName", operationName);
     }
@@ -66,16 +66,14 @@ public final class SaaSquatchClient {
     if (requestOptions != null) {
       requestOptions.mutateRequest(requestBuilder, urlBuilder);
     }
-    requestBuilder.url(urlBuilder.build())
-        .post(jsonRequestBody(gson.toJson(body)));
-    return executeRequest(requestBuilder.build())
-        .thenApply(SaaSquatchGraphQLResponse::new);
+    requestBuilder.url(urlBuilder.build()).post(jsonRequestBody(body));
+    return executeRequest(requestBuilder.build()).thenApply(SaaSquatchGraphQLResponse::new);
   }
 
-  public CompletionStage<SaaSquatchObjectResponse> getUser(@Nonnull String tenantAlias,
+  public CompletionStage<SaaSquatchMapResponse> getUser(@Nonnull String tenantAlias,
       @Nonnull String accountId, @Nonnull String userId, SaaSquatchRequestOptions requestOptions) {
     return _getUser(tenantAlias, accountId, userId, requestOptions, false)
-        .thenApply(SaaSquatchObjectResponse::new);
+        .thenApply(SaaSquatchMapResponse::new);
   }
 
   public CompletionStage<SaaSquatchTextResponse> renderWidget(@Nonnull String tenantAlias,
@@ -86,8 +84,8 @@ public final class SaaSquatchClient {
 
   private CompletionStage<Response> _getUser(@Nonnull String tenantAlias, @Nonnull String accountId,
       @Nonnull String userId, SaaSquatchRequestOptions requestOptions, boolean widgetRequest) {
-    Objects.requireNonNull(accountId);
-    Objects.requireNonNull(userId);
+    Objects.requireNonNull(accountId, "accountId");
+    Objects.requireNonNull(userId, "userId");
     final HttpUrl.Builder urlBuilder = baseApiUrl(tenantAlias)
         .addPathSegment(widgetRequest ? "widget" : "open")
         .addPathSegment("account")
@@ -105,17 +103,17 @@ public final class SaaSquatchClient {
     return executeRequest(requestBuilder.build());
   }
 
-  public CompletionStage<SaaSquatchObjectResponse> userUpsert(@Nonnull String tenantAlias,
+  public CompletionStage<SaaSquatchMapResponse> userUpsert(@Nonnull String tenantAlias,
       @Nonnull Map<String, Object> userInput, @Nullable SaaSquatchRequestOptions requestOptions) {
     return _userUpsert(tenantAlias, userInput, requestOptions, false);
   }
 
-  public CompletionStage<SaaSquatchObjectResponse> widgetUpsert(@Nonnull String tenantAlias,
+  public CompletionStage<SaaSquatchMapResponse> widgetUpsert(@Nonnull String tenantAlias,
       @Nonnull Map<String, Object> userInput, @Nullable SaaSquatchRequestOptions requestOptions) {
     return _userUpsert(tenantAlias, userInput, requestOptions, true);
   }
 
-  private CompletionStage<SaaSquatchObjectResponse> _userUpsert(@Nonnull String tenantAlias,
+  private CompletionStage<SaaSquatchMapResponse> _userUpsert(@Nonnull String tenantAlias,
       @Nonnull Map<String, Object> userInput, @Nullable SaaSquatchRequestOptions requestOptions,
       boolean widgetRequest) {
     final Map<String, Object> body = userInput;
@@ -135,13 +133,11 @@ public final class SaaSquatchClient {
     if (requestOptions != null) {
       requestOptions.mutateRequest(requestBuilder, urlBuilder);
     }
-    requestBuilder.url(urlBuilder.build())
-        .put(jsonRequestBody(gson.toJson(body)));
-    return executeRequest(requestBuilder.build())
-        .thenApply(SaaSquatchObjectResponse::new);
+    requestBuilder.url(urlBuilder.build()).put(jsonRequestBody(body));
+    return executeRequest(requestBuilder.build()).thenApply(SaaSquatchMapResponse::new);
   }
 
-  public CompletionStage<SaaSquatchObjectResponse> logUserEvent(@Nonnull String tenantAlias,
+  public CompletionStage<SaaSquatchMapResponse> logUserEvent(@Nonnull String tenantAlias,
       @Nonnull Map<String, Object> userEventInput,
       @Nullable SaaSquatchRequestOptions requestOptions) {
     final Map<String, Object> body = userEventInput;
@@ -159,10 +155,30 @@ public final class SaaSquatchClient {
     if (requestOptions != null) {
       requestOptions.mutateRequest(requestBuilder, urlBuilder);
     }
-    requestBuilder.url(urlBuilder.build())
-        .post(jsonRequestBody(gson.toJson(body)));
-    return executeRequest(requestBuilder.build())
-        .thenApply(SaaSquatchObjectResponse::new);
+    requestBuilder.url(urlBuilder.build()).post(jsonRequestBody(body));
+    return executeRequest(requestBuilder.build()).thenApply(SaaSquatchMapResponse::new);
+  }
+
+  public CompletionStage<SaaSquatchMapResponse> applyReferralCode(@Nonnull String tenantAlias,
+      @Nonnull String accountId, @Nonnull String userId, @Nonnull String referralCode,
+      @Nullable SaaSquatchRequestOptions requestOptions) {
+    Objects.requireNonNull(accountId, "accountId");
+    Objects.requireNonNull(userId, "userId");
+    Objects.requireNonNull(referralCode, "referralCode");
+    final HttpUrl.Builder urlBuilder = baseApiUrl(tenantAlias)
+        .addPathSegment("open")
+        .addPathSegment("code")
+        .addPathSegment(referralCode)
+        .addPathSegment("account")
+        .addPathSegment(accountId)
+        .addPathSegment("user")
+        .addPathSegment(userId);
+    final Request.Builder requestBuilder = new Request.Builder();
+    if (requestOptions != null) {
+      requestOptions.mutateRequest(requestBuilder, urlBuilder);
+    }
+    requestBuilder.url(urlBuilder.build()).post(jsonRequestBody(Collections.emptyMap()));
+    return executeRequest(requestBuilder.build()).thenApply(SaaSquatchMapResponse::new);
   }
 
   private HttpUrl.Builder baseApiUrl(@Nonnull String tenantAlias) {
@@ -189,15 +205,8 @@ public final class SaaSquatchClient {
     return respPromise;
   }
 
-  public static void main(String[] args) throws IOException {
-    HashMap<Object, Object> m = new HashMap<>();
-    m.put("1", 2);
-    try (StringWriter stringWriter = new StringWriter()) {
-    }
-  }
-
-  private static RequestBody jsonRequestBody(String jsonString) {
-    return RequestBody.create(jsonString.getBytes(UTF_8), JSON_MEDIA_TYPE);
+  private static RequestBody jsonRequestBody(Object bodyObj) {
+    return RequestBody.create(gson.toJson(bodyObj).getBytes(UTF_8), JSON_MEDIA_TYPE);
   }
 
 }

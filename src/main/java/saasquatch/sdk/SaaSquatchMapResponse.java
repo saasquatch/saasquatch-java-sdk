@@ -6,9 +6,9 @@ import java.util.Map;
 import com.google.gson.reflect.TypeToken;
 import okhttp3.Response;
 
-public class SaaSquatchObjectResponse extends SaaSquatchApiResponse<Map<String, Object>> {
+public class SaaSquatchMapResponse extends SaaSquatchApiResponse<Map<String, Object>> {
 
-  SaaSquatchObjectResponse(Response response) {
+  SaaSquatchMapResponse(Response response) {
     super(response);
   }
 

@@ -7,9 +7,9 @@ import java.util.List;
 import com.google.gson.reflect.TypeToken;
 import okhttp3.Response;
 
-public class SaaSquatchArrayResponse extends SaaSquatchApiResponse<List<Object>> {
+public class SaaSquatchListResponse extends SaaSquatchApiResponse<List<Object>> {
 
-  SaaSquatchArrayResponse(Response response) {
+  SaaSquatchListResponse(Response response) {
     super(response);
   }
 
