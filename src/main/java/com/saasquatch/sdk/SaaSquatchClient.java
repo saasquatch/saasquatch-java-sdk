@@ -21,6 +21,12 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+/**
+ * Main entry point for SaaSquatch APIs
+ *
+ * @author sli
+ * @see #SaaSquatchClient(String)
+ */
 public final class SaaSquatchClient {
 
   private static final MediaType JSON_MEDIA_TYPE = MediaType.get("application/json; charset=utf-8");
@@ -30,6 +36,14 @@ public final class SaaSquatchClient {
   private final OkHttpClient okHttpClient;
   private final String tenantAlias;
 
+  /**
+   * Initialize a {@link SaaSquatchClient} with an optional tenantAlias.
+   *
+   * @param tenantAlias Your tenantAlias. This will be the default tenantAlias for all your
+   *        requests. If you are in a multi-tenant environment, you can initialize a
+   *        {@link SaaSquatchClient} with a null tenantAlias, and then pass in your tenantAlias in
+   *        every request via {@link SaaSquatchRequestOptions#setTenantAlias(String)}
+   */
   public SaaSquatchClient(@Nullable String tenantAlias) {
     this.tenantAlias = tenantAlias;
     this.appDomain = System.getProperty("com.saasquatch.sdk.appDomain", "app.referralsaasquatch.com");

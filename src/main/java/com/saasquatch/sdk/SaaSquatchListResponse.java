@@ -7,6 +7,12 @@ import java.util.List;
 import com.google.gson.reflect.TypeToken;
 import okhttp3.Response;
 
+/**
+ * {@link SaaSquatchApiResponse} that has a JSON array. The JSON array will be represented as a
+ * {@link List} since we want to be JSON library agnostic.
+ *
+ * @author sli
+ */
 public class SaaSquatchListResponse extends SaaSquatchApiResponse<List<Object>> {
 
   SaaSquatchListResponse(Response response) {

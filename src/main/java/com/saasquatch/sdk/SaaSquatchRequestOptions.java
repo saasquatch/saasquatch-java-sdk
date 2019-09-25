@@ -16,6 +16,11 @@ import okhttp3.Credentials;
 import okhttp3.HttpUrl;
 import okhttp3.Request;
 
+/**
+ * Request options override, e.g. HTTP headers and query parameters.
+ *
+ * @author sli
+ */
 public class SaaSquatchRequestOptions {
 
   private static final Set<String> BLOCKED_HEADERS;
@@ -34,27 +39,40 @@ public class SaaSquatchRequestOptions {
 
   public SaaSquatchRequestOptions() {}
 
+  // Not public
   String getTenantAlias() {
     return tenantAlias;
   }
 
+  /**
+   * Override the default tenantAlias for a request
+   */
   public SaaSquatchRequestOptions setTenantAlias(@Nonnull String tenantAlias) {
     this.tenantAlias = Objects.requireNonNull(tenantAlias);
     return this;
   }
 
+  /**
+   * Set your tenant API key and use it to authenticate your request
+   */
   public SaaSquatchRequestOptions setApiKey(@Nonnull String apiKey) {
     Objects.requireNonNull(apiKey);
     singleHeaders.put("Authorization", Credentials.basic("", apiKey, UTF_8));
     return this;
   }
 
+  /**
+   * Set your JWT and use it to authenticate your request
+   */
   public SaaSquatchRequestOptions setJwt(@Nonnull String jwt) {
     Objects.requireNonNull(jwt);
     singleHeaders.put("Authorization", "Bearer " + jwt);
     return this;
   }
 
+  /**
+   * Add an HTTP header
+   */
   public SaaSquatchRequestOptions addHeader(@Nonnull String key, @Nonnull String value) {
     Objects.requireNonNull(key);
     Objects.requireNonNull(value);
@@ -65,10 +83,41 @@ public class SaaSquatchRequestOptions {
     return this;
   }
 
+  /**
+   * Convenience method for {@link #addHeader(String, String)} where you can pass in multiple
+   * headers
+   */
+  public SaaSquatchRequestOptions addHeaders(@Nonnull String... keysAndValues) {
+    if ((keysAndValues.length & 1) != 0) {
+      throw new IllegalArgumentException("odd number of keys and values");
+    }
+    for (int i = 0; i < keysAndValues.length;) {
+      addHeader(keysAndValues[i++], keysAndValues[i++]);
+    }
+    return this;
+  }
+
+  /**
+   * Add a URL query parameter
+   */
   public SaaSquatchRequestOptions addQueryParam(@Nonnull String key, @Nonnull String value) {
     Objects.requireNonNull(key);
     Objects.requireNonNull(value);
     queryParams.add(new SimpleImmutableEntry<>(key, value));
+    return this;
+  }
+
+  /**
+   * Convenience method for {@link #addQueryParam(String, String)(String, String)} where you can
+   * pass in multiple query parameters
+   */
+  public SaaSquatchRequestOptions addQueryParams(@Nonnull String... keysAndValues) {
+    if ((keysAndValues.length & 1) != 0) {
+      throw new IllegalArgumentException("odd number of keys and values");
+    }
+    for (int i = 0; i < keysAndValues.length;) {
+      addQueryParam(keysAndValues[i++], keysAndValues[i++]);
+    }
     return this;
   }
 

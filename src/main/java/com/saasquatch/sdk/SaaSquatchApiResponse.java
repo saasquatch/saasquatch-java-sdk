@@ -3,6 +3,14 @@ package com.saasquatch.sdk;
 import javax.annotation.Nullable;
 import okhttp3.Response;
 
+/**
+ * Represents an API response from SaaSquatch. If the request has {@link #succeeded()}, then you
+ * should <em>typically</em> be able to get the API result from {@link #getData()}. If the request
+ * had {@link #failed()}, then you should <em>typically</em> be able to get a
+ * {@link SaaSquatchApiError} from {@link #getApiError()}.
+ *
+ * @author sli
+ */
 public abstract class SaaSquatchApiResponse<T> {
 
   // Lazy init
@@ -25,6 +33,11 @@ public abstract class SaaSquatchApiResponse<T> {
 
   public boolean failed() {
     return !succeeded();
+  }
+
+  @Nullable
+  public String getHeader(String headerName) {
+    return response.header(headerName);
   }
 
   @Nullable
