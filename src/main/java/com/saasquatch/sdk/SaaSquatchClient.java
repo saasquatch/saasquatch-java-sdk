@@ -1,4 +1,4 @@
-package saasquatch.sdk;
+package com.saasquatch.sdk;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import java.io.IOException;

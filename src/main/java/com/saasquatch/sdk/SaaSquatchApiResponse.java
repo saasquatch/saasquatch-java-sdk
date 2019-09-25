@@ -1,4 +1,4 @@
-package saasquatch.sdk;
+package com.saasquatch.sdk;
 
 import javax.annotation.Nullable;
 import okhttp3.Response;

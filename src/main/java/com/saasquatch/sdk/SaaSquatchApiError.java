@@ -1,6 +1,6 @@
-package saasquatch.sdk;
+package com.saasquatch.sdk;
 
-import static saasquatch.sdk.SaaSquatchClient.gson;
+import static com.saasquatch.sdk.SaaSquatchClient.gson;
 import java.io.IOException;
 import okhttp3.Response;
 

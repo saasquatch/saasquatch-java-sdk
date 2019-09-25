@@ -1,4 +1,4 @@
-package saasquatch.sdk;
+package com.saasquatch.sdk;
 
 import okhttp3.Response;
 
