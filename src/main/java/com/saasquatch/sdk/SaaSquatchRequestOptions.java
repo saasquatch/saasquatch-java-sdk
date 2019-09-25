@@ -20,11 +20,11 @@ public class SaaSquatchRequestOptions {
 
   private static final Set<String> BLOCKED_HEADERS;
   static {
-    final Set<String> s = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
-    s.addAll(Arrays.asList("Authorization", "Accept-Encoding", "Content-Encoding", "Content-Length",
-        "Content-Type", "Accept", "Accept-Charset", "Cookie", "Set-Cookie", "Set-Cookie2",
-        "Cache-Control", "Host", "X-SaaSquatch-User-Token"));
-    BLOCKED_HEADERS = Collections.unmodifiableSet(s);
+    final Set<String> blockedHeaders = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
+    blockedHeaders.addAll(Arrays.asList("Authorization", "Accept-Encoding", "Content-Encoding",
+        "Content-Length", "Content-Type", "Accept", "Accept-Charset", "Cookie", "Set-Cookie",
+        "Set-Cookie2", "Cache-Control", "Host", "X-SaaSquatch-User-Token"));
+    BLOCKED_HEADERS = Collections.unmodifiableSet(blockedHeaders);
   }
 
   private final Map<String, String> singleHeaders = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);

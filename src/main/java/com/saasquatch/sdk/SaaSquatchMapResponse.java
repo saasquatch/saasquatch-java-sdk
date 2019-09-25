@@ -1,5 +1,6 @@
 package com.saasquatch.sdk;
 
+import static com.saasquatch.sdk.internal._GsonHolder.gson;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.util.Map;
@@ -15,7 +16,7 @@ public class SaaSquatchMapResponse extends SaaSquatchApiResponse<Map<String, Obj
   @Override
   protected Map<String, Object> buildData() {
     try {
-      return SaaSquatchClient.gson.fromJson(response.body().string(),
+      return gson.fromJson(response.body().string(),
           new TypeToken<Map<String, Object>>() {}.getType());
     } catch (IOException e) {
       throw new UncheckedIOException(e);

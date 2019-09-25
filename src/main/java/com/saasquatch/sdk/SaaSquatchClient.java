@@ -1,5 +1,6 @@
 package com.saasquatch.sdk;
 
+import static com.saasquatch.sdk.internal._GsonHolder.gson;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import java.io.IOException;
 import java.util.Collections;
@@ -11,7 +12,6 @@ import java.util.concurrent.CompletionStage;
 import java.util.concurrent.TimeUnit;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import com.google.gson.Gson;
 import okhttp3.Call;
 import okhttp3.HttpUrl;
 import okhttp3.MediaType;
@@ -21,8 +21,6 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public final class SaaSquatchClient {
-
-  static final Gson gson = new Gson();
 
   private static final MediaType JSON_MEDIA_TYPE = MediaType.get("application/json; charset=utf-8");
 
