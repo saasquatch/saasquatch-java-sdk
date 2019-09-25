@@ -25,7 +25,7 @@ import okhttp3.Response;
  * Main entry point for SaaSquatch APIs
  *
  * @author sli
- * @see #SaaSquatchClient(String)
+ * @see SaaSquatchClient#create(String)
  */
 public final class SaaSquatchClient {
 
@@ -36,6 +36,18 @@ public final class SaaSquatchClient {
   private final OkHttpClient okHttpClient;
   private final String tenantAlias;
 
+  private SaaSquatchClient(@Nullable String tenantAlias) {
+    this.tenantAlias = tenantAlias;
+    this.appDomain =
+        System.getProperty("com.saasquatch.sdk.appDomain", "app.referralsaasquatch.com");
+    this.scheme = appDomain.startsWith("localhost:") ? "http" : "https";
+    this.okHttpClient = new OkHttpClient.Builder()
+        .callTimeout(15, TimeUnit.SECONDS)
+        .connectTimeout(5, TimeUnit.SECONDS)
+        .build();
+    this.onStart();
+  }
+
   /**
    * Initialize a {@link SaaSquatchClient} with an optional tenantAlias.
    *
@@ -44,15 +56,8 @@ public final class SaaSquatchClient {
    *        {@link SaaSquatchClient} with a null tenantAlias, and then pass in your tenantAlias in
    *        every request via {@link SaaSquatchRequestOptions#setTenantAlias(String)}
    */
-  public SaaSquatchClient(@Nullable String tenantAlias) {
-    this.tenantAlias = tenantAlias;
-    this.appDomain = System.getProperty("com.saasquatch.sdk.appDomain", "app.referralsaasquatch.com");
-    this.scheme = appDomain.startsWith("localhost:") ? "http" : "https";
-    this.okHttpClient = new OkHttpClient.Builder()
-        .callTimeout(15, TimeUnit.SECONDS)
-        .connectTimeout(5, TimeUnit.SECONDS)
-        .build();
-    this.onStart();
+  public static SaaSquatchClient create(@Nullable String tenantAlias) {
+    return new SaaSquatchClient(tenantAlias);
   }
 
   private void onStart() {
