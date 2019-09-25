@@ -1,6 +1,6 @@
 package com.saasquatch.sdk;
 
-import static com.saasquatch.sdk.internal._GsonHolder.gson;
+import static com.saasquatch.sdk.InternalGsonHolder.gson;
 import java.io.IOException;
 import okhttp3.Response;
 

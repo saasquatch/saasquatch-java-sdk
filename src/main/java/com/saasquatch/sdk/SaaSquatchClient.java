@@ -1,7 +1,8 @@
 package com.saasquatch.sdk;
 
-import static com.saasquatch.sdk.internal._GsonHolder.gson;
+import static com.saasquatch.sdk.InternalGsonHolder.gson;
 import static java.nio.charset.StandardCharsets.UTF_8;
+import java.io.Closeable;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
@@ -10,6 +11,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -27,12 +30,13 @@ import okhttp3.Response;
  * @author sli
  * @see SaaSquatchClient#create(String)
  */
-public final class SaaSquatchClient {
+public final class SaaSquatchClient implements Closeable {
 
   private static final MediaType JSON_MEDIA_TYPE = MediaType.get("application/json; charset=utf-8");
 
   private final String appDomain;
   private final String scheme;
+  private final ExecutorService dispatcherExecutor;
   private final OkHttpClient okHttpClient;
   private final String tenantAlias;
 
@@ -41,7 +45,9 @@ public final class SaaSquatchClient {
     this.appDomain =
         System.getProperty("com.saasquatch.sdk.appDomain", "app.referralsaasquatch.com");
     this.scheme = appDomain.startsWith("localhost:") ? "http" : "https";
+    this.dispatcherExecutor = newDispatcherExecutor();
     this.okHttpClient = new OkHttpClient.Builder()
+        .dispatcher(new okhttp3.Dispatcher(this.dispatcherExecutor))
         .callTimeout(15, TimeUnit.SECONDS)
         .connectTimeout(5, TimeUnit.SECONDS)
         .build();
@@ -68,6 +74,11 @@ public final class SaaSquatchClient {
     if (appDomain.startsWith("/") || appDomain.endsWith("/")) {
       throw new RuntimeException("appDomain should not start or end with a slash");
     }
+  }
+
+  @Override
+  public void close() {
+    this.dispatcherExecutor.shutdown();
   }
 
   public CompletionStage<SaaSquatchGraphQLResponse> graphQL(@Nonnull String query,
@@ -228,6 +239,10 @@ public final class SaaSquatchClient {
 
   private static RequestBody jsonRequestBody(Object bodyObj) {
     return RequestBody.create(gson.toJson(bodyObj).getBytes(UTF_8), JSON_MEDIA_TYPE);
+  }
+
+  private static ExecutorService newDispatcherExecutor() {
+    return Executors.newCachedThreadPool(InternalThreadFactory.INSTANCE);
   }
 
 }

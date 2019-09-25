@@ -1,4 +1,4 @@
-package com.saasquatch.sdk.internal;
+package com.saasquatch.sdk;
 
 import java.lang.reflect.Type;
 import java.util.Date;
@@ -12,12 +12,7 @@ import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
-/**
- * Internal class. Do not use externally.
- *
- * @author sli
- */
-public class _GsonHolder {
+class InternalGsonHolder {
 
   public static final Gson gson = new GsonBuilder()
       .registerTypeAdapter(Date.class, DateToMillisSerializer.INSTANCE)
