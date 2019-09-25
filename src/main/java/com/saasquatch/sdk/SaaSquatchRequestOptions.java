@@ -27,11 +27,21 @@ public class SaaSquatchRequestOptions {
     BLOCKED_HEADERS = Collections.unmodifiableSet(blockedHeaders);
   }
 
+  private String tenantAlias;
   private final Map<String, String> singleHeaders = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
   private final List<Map.Entry<String, String>> multiHeaders = new ArrayList<>();
   private final List<Map.Entry<String, String>> queryParams = new ArrayList<>();
 
   public SaaSquatchRequestOptions() {}
+
+  String getTenantAlias() {
+    return tenantAlias;
+  }
+
+  public SaaSquatchRequestOptions setTenantAlias(@Nonnull String tenantAlias) {
+    this.tenantAlias = Objects.requireNonNull(tenantAlias);
+    return this;
+  }
 
   public SaaSquatchRequestOptions setApiKey(@Nonnull String apiKey) {
     Objects.requireNonNull(apiKey);

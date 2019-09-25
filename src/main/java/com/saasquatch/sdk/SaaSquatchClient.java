@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.TimeUnit;
@@ -27,8 +28,10 @@ public final class SaaSquatchClient {
   private final String appDomain;
   private final String scheme;
   private final OkHttpClient okHttpClient;
+  private final String tenantAlias;
 
-  public SaaSquatchClient() {
+  public SaaSquatchClient(@Nullable String tenantAlias) {
+    this.tenantAlias = tenantAlias;
     this.appDomain = System.getProperty("com.saasquatch.sdk.appDomain", "app.referralsaasquatch.com");
     this.scheme = appDomain.startsWith("localhost:") ? "http" : "https";
     this.okHttpClient = new OkHttpClient.Builder()
@@ -48,9 +51,9 @@ public final class SaaSquatchClient {
     }
   }
 
-  public CompletionStage<SaaSquatchGraphQLResponse> graphQL(@Nonnull String tenantAlias,
-      @Nonnull String query, @Nullable String operationName,
-      @Nullable Map<String, Object> variables, @Nullable SaaSquatchRequestOptions requestOptions) {
+  public CompletionStage<SaaSquatchGraphQLResponse> graphQL(@Nonnull String query,
+      @Nullable String operationName, @Nullable Map<String, Object> variables,
+      @Nullable SaaSquatchRequestOptions requestOptions) {
     final Map<String, Object> body = new HashMap<>();
     body.put("query", Objects.requireNonNull(query, "query"));
     if (operationName != null) {
@@ -59,7 +62,8 @@ public final class SaaSquatchClient {
     if (variables != null) {
       body.put("variables", variables);
     }
-    final HttpUrl.Builder urlBuilder = baseApiUrl(tenantAlias).addPathSegment("graphql");
+    final HttpUrl.Builder urlBuilder =
+        baseApiUrl(tenantAlias, requestOptions).addPathSegment("graphql");
     final Request.Builder requestBuilder = new Request.Builder();
     if (requestOptions != null) {
       requestOptions.mutateRequest(requestBuilder, urlBuilder);
@@ -68,23 +72,23 @@ public final class SaaSquatchClient {
     return executeRequest(requestBuilder.build()).thenApply(SaaSquatchGraphQLResponse::new);
   }
 
-  public CompletionStage<SaaSquatchMapResponse> getUser(@Nonnull String tenantAlias,
-      @Nonnull String accountId, @Nonnull String userId, SaaSquatchRequestOptions requestOptions) {
-    return _getUser(tenantAlias, accountId, userId, requestOptions, false)
+  public CompletionStage<SaaSquatchMapResponse> getUser(@Nonnull String accountId,
+      @Nonnull String userId, SaaSquatchRequestOptions requestOptions) {
+    return _getUser(accountId, userId, requestOptions, false)
         .thenApply(SaaSquatchMapResponse::new);
   }
 
-  public CompletionStage<SaaSquatchTextResponse> renderWidget(@Nonnull String tenantAlias,
-      @Nonnull String accountId, @Nonnull String userId, SaaSquatchRequestOptions requestOptions) {
-    return _getUser(tenantAlias, accountId, userId, requestOptions, true)
+  public CompletionStage<SaaSquatchTextResponse> renderWidget(@Nonnull String accountId,
+      @Nonnull String userId, SaaSquatchRequestOptions requestOptions) {
+    return _getUser(accountId, userId, requestOptions, true)
         .thenApply(SaaSquatchTextResponse::new);
   }
 
-  private CompletionStage<Response> _getUser(@Nonnull String tenantAlias, @Nonnull String accountId,
-      @Nonnull String userId, SaaSquatchRequestOptions requestOptions, boolean widgetRequest) {
+  private CompletionStage<Response> _getUser(@Nonnull String accountId, @Nonnull String userId,
+      SaaSquatchRequestOptions requestOptions, boolean widgetRequest) {
     Objects.requireNonNull(accountId, "accountId");
     Objects.requireNonNull(userId, "userId");
-    final HttpUrl.Builder urlBuilder = baseApiUrl(tenantAlias)
+    final HttpUrl.Builder urlBuilder = baseApiUrl(tenantAlias, requestOptions)
         .addPathSegment(widgetRequest ? "widget" : "open")
         .addPathSegment("account")
         .addPathSegment(accountId)
@@ -101,24 +105,24 @@ public final class SaaSquatchClient {
     return executeRequest(requestBuilder.build());
   }
 
-  public CompletionStage<SaaSquatchMapResponse> userUpsert(@Nonnull String tenantAlias,
-      @Nonnull Map<String, Object> userInput, @Nullable SaaSquatchRequestOptions requestOptions) {
-    return _userUpsert(tenantAlias, userInput, requestOptions, false);
+  public CompletionStage<SaaSquatchMapResponse> userUpsert(@Nonnull Map<String, Object> userInput,
+      @Nullable SaaSquatchRequestOptions requestOptions) {
+    return _userUpsert(userInput, requestOptions, false);
   }
 
-  public CompletionStage<SaaSquatchMapResponse> widgetUpsert(@Nonnull String tenantAlias,
-      @Nonnull Map<String, Object> userInput, @Nullable SaaSquatchRequestOptions requestOptions) {
-    return _userUpsert(tenantAlias, userInput, requestOptions, true);
+  public CompletionStage<SaaSquatchMapResponse> widgetUpsert(@Nonnull Map<String, Object> userInput,
+      @Nullable SaaSquatchRequestOptions requestOptions) {
+    return _userUpsert(userInput, requestOptions, true);
   }
 
-  private CompletionStage<SaaSquatchMapResponse> _userUpsert(@Nonnull String tenantAlias,
+  private CompletionStage<SaaSquatchMapResponse> _userUpsert(
       @Nonnull Map<String, Object> userInput, @Nullable SaaSquatchRequestOptions requestOptions,
       boolean widgetRequest) {
     final Map<String, Object> body = userInput;
     final String accountId =
         Objects.requireNonNull((String) body.get("accountId"), "accountId missing");
     final String userId = Objects.requireNonNull((String) body.get("id"), "id missing");
-    final HttpUrl.Builder urlBuilder = baseApiUrl(tenantAlias)
+    final HttpUrl.Builder urlBuilder = baseApiUrl(tenantAlias, requestOptions)
         .addPathSegment(widgetRequest ? "widget" : "open")
         .addPathSegment("account")
         .addPathSegment(accountId)
@@ -135,14 +139,14 @@ public final class SaaSquatchClient {
     return executeRequest(requestBuilder.build()).thenApply(SaaSquatchMapResponse::new);
   }
 
-  public CompletionStage<SaaSquatchMapResponse> logUserEvent(@Nonnull String tenantAlias,
+  public CompletionStage<SaaSquatchMapResponse> logUserEvent(
       @Nonnull Map<String, Object> userEventInput,
       @Nullable SaaSquatchRequestOptions requestOptions) {
     final Map<String, Object> body = userEventInput;
     final String accountId =
         Objects.requireNonNull((String) body.get("accountId"), "accountId missing");
     final String userId = Objects.requireNonNull((String) body.get("userId"), "userId missing");
-    final HttpUrl.Builder urlBuilder = baseApiUrl(tenantAlias)
+    final HttpUrl.Builder urlBuilder = baseApiUrl(tenantAlias, requestOptions)
         .addPathSegment("open")
         .addPathSegment("account")
         .addPathSegment(accountId)
@@ -157,13 +161,13 @@ public final class SaaSquatchClient {
     return executeRequest(requestBuilder.build()).thenApply(SaaSquatchMapResponse::new);
   }
 
-  public CompletionStage<SaaSquatchMapResponse> applyReferralCode(@Nonnull String tenantAlias,
-      @Nonnull String accountId, @Nonnull String userId, @Nonnull String referralCode,
+  public CompletionStage<SaaSquatchMapResponse> applyReferralCode(@Nonnull String accountId,
+      @Nonnull String userId, @Nonnull String referralCode,
       @Nullable SaaSquatchRequestOptions requestOptions) {
     Objects.requireNonNull(accountId, "accountId");
     Objects.requireNonNull(userId, "userId");
     Objects.requireNonNull(referralCode, "referralCode");
-    final HttpUrl.Builder urlBuilder = baseApiUrl(tenantAlias)
+    final HttpUrl.Builder urlBuilder = baseApiUrl(tenantAlias, requestOptions)
         .addPathSegment("open")
         .addPathSegment("code")
         .addPathSegment(referralCode)
@@ -179,12 +183,15 @@ public final class SaaSquatchClient {
     return executeRequest(requestBuilder.build()).thenApply(SaaSquatchMapResponse::new);
   }
 
-  private HttpUrl.Builder baseApiUrl(@Nonnull String tenantAlias) {
-    Objects.requireNonNull(tenantAlias);
+  private HttpUrl.Builder baseApiUrl(@Nullable String tenantAlias,
+      @Nullable SaaSquatchRequestOptions requestOptions) {
+    final String tenantAliasToUse = Optional.ofNullable(requestOptions)
+        .map(SaaSquatchRequestOptions::getTenantAlias).orElse(tenantAlias);
+    Objects.requireNonNull(tenantAliasToUse, "tenantAlias missing");
     return new HttpUrl.Builder().scheme(scheme).host(appDomain)
         .addPathSegment("api")
         .addPathSegment("v1")
-        .addPathSegment(tenantAlias);
+        .addPathSegment(tenantAliasToUse);
   }
 
   private CompletionStage<Response> executeRequest(Request request) {
