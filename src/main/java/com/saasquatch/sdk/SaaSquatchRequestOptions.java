@@ -122,8 +122,8 @@ public class SaaSquatchRequestOptions {
   }
 
   void mutateRequest(Request.Builder requestBuilder, HttpUrl.Builder urlBuilder) {
-    singleHeaders.forEach(requestBuilder::header);
     multiHeaders.forEach(e -> requestBuilder.addHeader(e.getKey(), e.getValue()));
+    singleHeaders.forEach(requestBuilder::header);
     queryParams.forEach(e -> urlBuilder.addQueryParameter(e.getKey(), e.getValue()));
   }
 

@@ -92,14 +92,12 @@ public final class SaaSquatchClient {
 
   public CompletionStage<SaaSquatchMapResponse> getUser(@Nonnull String accountId,
       @Nonnull String userId, SaaSquatchRequestOptions requestOptions) {
-    return _getUser(accountId, userId, requestOptions, false)
-        .thenApply(SaaSquatchMapResponse::new);
+    return _getUser(accountId, userId, requestOptions, false).thenApply(SaaSquatchMapResponse::new);
   }
 
   public CompletionStage<SaaSquatchTextResponse> renderWidget(@Nonnull String accountId,
       @Nonnull String userId, SaaSquatchRequestOptions requestOptions) {
-    return _getUser(accountId, userId, requestOptions, true)
-        .thenApply(SaaSquatchTextResponse::new);
+    return _getUser(accountId, userId, requestOptions, true).thenApply(SaaSquatchTextResponse::new);
   }
 
   private CompletionStage<Response> _getUser(@Nonnull String accountId, @Nonnull String userId,
@@ -125,15 +123,15 @@ public final class SaaSquatchClient {
 
   public CompletionStage<SaaSquatchMapResponse> userUpsert(@Nonnull Map<String, Object> userInput,
       @Nullable SaaSquatchRequestOptions requestOptions) {
-    return _userUpsert(userInput, requestOptions, false);
+    return _userUpsert(userInput, requestOptions, false).thenApply(SaaSquatchMapResponse::new);
   }
 
   public CompletionStage<SaaSquatchMapResponse> widgetUpsert(@Nonnull Map<String, Object> userInput,
       @Nullable SaaSquatchRequestOptions requestOptions) {
-    return _userUpsert(userInput, requestOptions, true);
+    return _userUpsert(userInput, requestOptions, true).thenApply(SaaSquatchMapResponse::new);
   }
 
-  private CompletionStage<SaaSquatchMapResponse> _userUpsert(
+  private CompletionStage<Response> _userUpsert(
       @Nonnull Map<String, Object> userInput, @Nullable SaaSquatchRequestOptions requestOptions,
       boolean widgetRequest) {
     final Map<String, Object> body = userInput;
@@ -154,7 +152,7 @@ public final class SaaSquatchClient {
       requestOptions.mutateRequest(requestBuilder, urlBuilder);
     }
     requestBuilder.url(urlBuilder.build()).put(jsonRequestBody(body));
-    return executeRequest(requestBuilder.build()).thenApply(SaaSquatchMapResponse::new);
+    return executeRequest(requestBuilder.build());
   }
 
   public CompletionStage<SaaSquatchMapResponse> logUserEvent(
