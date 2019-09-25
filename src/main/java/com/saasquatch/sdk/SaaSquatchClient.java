@@ -8,14 +8,14 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import org.reactivestreams.Publisher;
+import io.reactivex.Flowable;
+import io.reactivex.processors.AsyncProcessor;
 import okhttp3.Call;
 import okhttp3.HttpUrl;
 import okhttp3.MediaType;
@@ -81,7 +81,7 @@ public final class SaaSquatchClient implements Closeable {
     this.dispatcherExecutor.shutdown();
   }
 
-  public CompletionStage<SaaSquatchGraphQLResponse> graphQL(@Nonnull String query,
+  public Publisher<SaaSquatchGraphQLResponse> graphQL(@Nonnull String query,
       @Nullable String operationName, @Nullable Map<String, Object> variables,
       @Nullable SaaSquatchRequestOptions requestOptions) {
     final Map<String, Object> body = new HashMap<>();
@@ -98,21 +98,21 @@ public final class SaaSquatchClient implements Closeable {
       requestOptions.mutateRequest(requestBuilder, urlBuilder);
     }
     requestBuilder.url(urlBuilder.build()).post(jsonRequestBody(body));
-    return executeRequest(requestBuilder.build()).thenApply(SaaSquatchGraphQLResponse::new);
+    return executeRequest(requestBuilder.build()).map(SaaSquatchGraphQLResponse::new);
   }
 
-  public CompletionStage<SaaSquatchMapResponse> getUser(@Nonnull String accountId,
-      @Nonnull String userId, SaaSquatchRequestOptions requestOptions) {
-    return _getUser(accountId, userId, requestOptions, false).thenApply(SaaSquatchMapResponse::new);
+  public Publisher<SaaSquatchMapResponse> getUser(@Nonnull String accountId, @Nonnull String userId,
+      @Nullable SaaSquatchRequestOptions requestOptions) {
+    return _getUser(accountId, userId, requestOptions, false).map(SaaSquatchMapResponse::new);
   }
 
-  public CompletionStage<SaaSquatchTextResponse> renderWidget(@Nonnull String accountId,
-      @Nonnull String userId, SaaSquatchRequestOptions requestOptions) {
-    return _getUser(accountId, userId, requestOptions, true).thenApply(SaaSquatchTextResponse::new);
+  public Publisher<SaaSquatchTextResponse> renderWidget(@Nonnull String accountId,
+      @Nonnull String userId, @Nullable SaaSquatchRequestOptions requestOptions) {
+    return _getUser(accountId, userId, requestOptions, true).map(SaaSquatchTextResponse::new);
   }
 
-  private CompletionStage<Response> _getUser(@Nonnull String accountId, @Nonnull String userId,
-      SaaSquatchRequestOptions requestOptions, boolean widgetRequest) {
+  private Flowable<Response> _getUser(@Nonnull String accountId, @Nonnull String userId,
+      @Nullable SaaSquatchRequestOptions requestOptions, boolean widgetRequest) {
     Objects.requireNonNull(accountId, "accountId");
     Objects.requireNonNull(userId, "userId");
     final HttpUrl.Builder urlBuilder = baseApiUrl(requestOptions)
@@ -132,19 +132,18 @@ public final class SaaSquatchClient implements Closeable {
     return executeRequest(requestBuilder.build());
   }
 
-  public CompletionStage<SaaSquatchMapResponse> userUpsert(@Nonnull Map<String, Object> userInput,
+  public Publisher<SaaSquatchMapResponse> userUpsert(@Nonnull Map<String, Object> userInput,
       @Nullable SaaSquatchRequestOptions requestOptions) {
-    return _userUpsert(userInput, requestOptions, false).thenApply(SaaSquatchMapResponse::new);
+    return _userUpsert(userInput, requestOptions, false).map(SaaSquatchMapResponse::new);
   }
 
-  public CompletionStage<SaaSquatchMapResponse> widgetUpsert(@Nonnull Map<String, Object> userInput,
+  public Publisher<SaaSquatchMapResponse> widgetUpsert(@Nonnull Map<String, Object> userInput,
       @Nullable SaaSquatchRequestOptions requestOptions) {
-    return _userUpsert(userInput, requestOptions, true).thenApply(SaaSquatchMapResponse::new);
+    return _userUpsert(userInput, requestOptions, true).map(SaaSquatchMapResponse::new);
   }
 
-  private CompletionStage<Response> _userUpsert(
-      @Nonnull Map<String, Object> userInput, @Nullable SaaSquatchRequestOptions requestOptions,
-      boolean widgetRequest) {
+  private Flowable<Response> _userUpsert(@Nonnull Map<String, Object> userInput,
+      @Nullable SaaSquatchRequestOptions requestOptions, boolean widgetRequest) {
     final Map<String, Object> body = userInput;
     final String accountId =
         Objects.requireNonNull((String) body.get("accountId"), "accountId missing");
@@ -166,8 +165,7 @@ public final class SaaSquatchClient implements Closeable {
     return executeRequest(requestBuilder.build());
   }
 
-  public CompletionStage<SaaSquatchMapResponse> logUserEvent(
-      @Nonnull Map<String, Object> userEventInput,
+  public Publisher<SaaSquatchMapResponse> logUserEvent(@Nonnull Map<String, Object> userEventInput,
       @Nullable SaaSquatchRequestOptions requestOptions) {
     final Map<String, Object> body = userEventInput;
     final String accountId =
@@ -185,10 +183,10 @@ public final class SaaSquatchClient implements Closeable {
       requestOptions.mutateRequest(requestBuilder, urlBuilder);
     }
     requestBuilder.url(urlBuilder.build()).post(jsonRequestBody(body));
-    return executeRequest(requestBuilder.build()).thenApply(SaaSquatchMapResponse::new);
+    return executeRequest(requestBuilder.build()).map(SaaSquatchMapResponse::new);
   }
 
-  public CompletionStage<SaaSquatchMapResponse> applyReferralCode(@Nonnull String accountId,
+  public Publisher<SaaSquatchMapResponse> applyReferralCode(@Nonnull String accountId,
       @Nonnull String userId, @Nonnull String referralCode,
       @Nullable SaaSquatchRequestOptions requestOptions) {
     Objects.requireNonNull(accountId, "accountId");
@@ -207,13 +205,23 @@ public final class SaaSquatchClient implements Closeable {
       requestOptions.mutateRequest(requestBuilder, urlBuilder);
     }
     requestBuilder.url(urlBuilder.build()).post(jsonRequestBody(Collections.emptyMap()));
-    return executeRequest(requestBuilder.build()).thenApply(SaaSquatchMapResponse::new);
+    return executeRequest(requestBuilder.build()).map(SaaSquatchMapResponse::new);
+  }
+
+  @Nullable
+  private String getTenantAlias(@Nullable SaaSquatchRequestOptions requestOptions) {
+    String tenantAliasToUse = null;
+    if (requestOptions != null) {
+      tenantAliasToUse = requestOptions.getTenantAlias();
+    }
+    if (tenantAliasToUse == null) {
+      tenantAliasToUse = this.tenantAlias;
+    }
+    return tenantAliasToUse;
   }
 
   private HttpUrl.Builder baseApiUrl(@Nullable SaaSquatchRequestOptions requestOptions) {
-    final String tenantAliasToUse = Optional.ofNullable(requestOptions)
-        .map(SaaSquatchRequestOptions::getTenantAlias)
-        .orElse(tenantAlias);
+    final String tenantAliasToUse = getTenantAlias(requestOptions);
     Objects.requireNonNull(tenantAliasToUse, "tenantAlias missing");
     return new HttpUrl.Builder().scheme(scheme).host(appDomain)
         .addPathSegment("api")
@@ -221,20 +229,21 @@ public final class SaaSquatchClient implements Closeable {
         .addPathSegment(tenantAliasToUse);
   }
 
-  private CompletionStage<Response> executeRequest(Request request) {
-    final CompletableFuture<Response> responsePromise = new CompletableFuture<>();
+  private Flowable<Response> executeRequest(Request request) {
+    final AsyncProcessor<Response> asyncProcessor = AsyncProcessor.create();
     okHttpClient.newCall(request).enqueue(new okhttp3.Callback() {
       @Override
       public void onResponse(Call call, Response resp) throws IOException {
-        responsePromise.complete(resp);
+        asyncProcessor.onNext(resp);
+        asyncProcessor.onComplete();
       }
 
       @Override
       public void onFailure(Call call, IOException e) {
-        responsePromise.completeExceptionally(e);
+        asyncProcessor.onError(e);
       }
     });
-    return responsePromise;
+    return asyncProcessor;
   }
 
   private static RequestBody jsonRequestBody(Object bodyObj) {
