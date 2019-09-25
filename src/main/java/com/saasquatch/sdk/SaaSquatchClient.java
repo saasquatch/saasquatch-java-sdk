@@ -29,7 +29,7 @@ public final class SaaSquatchClient {
   private final OkHttpClient okHttpClient;
 
   public SaaSquatchClient() {
-    this.appDomain = System.getProperty("saasquatch.sdk.appDomain", "app.referralsaasquatch.com");
+    this.appDomain = System.getProperty("com.saasquatch.sdk.appDomain", "app.referralsaasquatch.com");
     this.scheme = appDomain.startsWith("localhost:") ? "http" : "https";
     this.okHttpClient = new OkHttpClient.Builder()
         .callTimeout(15, TimeUnit.SECONDS)
