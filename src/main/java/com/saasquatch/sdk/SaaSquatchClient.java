@@ -62,8 +62,7 @@ public final class SaaSquatchClient {
     if (variables != null) {
       body.put("variables", variables);
     }
-    final HttpUrl.Builder urlBuilder =
-        baseApiUrl(tenantAlias, requestOptions).addPathSegment("graphql");
+    final HttpUrl.Builder urlBuilder = baseApiUrl(requestOptions).addPathSegment("graphql");
     final Request.Builder requestBuilder = new Request.Builder();
     if (requestOptions != null) {
       requestOptions.mutateRequest(requestBuilder, urlBuilder);
@@ -88,7 +87,7 @@ public final class SaaSquatchClient {
       SaaSquatchRequestOptions requestOptions, boolean widgetRequest) {
     Objects.requireNonNull(accountId, "accountId");
     Objects.requireNonNull(userId, "userId");
-    final HttpUrl.Builder urlBuilder = baseApiUrl(tenantAlias, requestOptions)
+    final HttpUrl.Builder urlBuilder = baseApiUrl(requestOptions)
         .addPathSegment(widgetRequest ? "widget" : "open")
         .addPathSegment("account")
         .addPathSegment(accountId)
@@ -122,7 +121,7 @@ public final class SaaSquatchClient {
     final String accountId =
         Objects.requireNonNull((String) body.get("accountId"), "accountId missing");
     final String userId = Objects.requireNonNull((String) body.get("id"), "id missing");
-    final HttpUrl.Builder urlBuilder = baseApiUrl(tenantAlias, requestOptions)
+    final HttpUrl.Builder urlBuilder = baseApiUrl(requestOptions)
         .addPathSegment(widgetRequest ? "widget" : "open")
         .addPathSegment("account")
         .addPathSegment(accountId)
@@ -146,7 +145,7 @@ public final class SaaSquatchClient {
     final String accountId =
         Objects.requireNonNull((String) body.get("accountId"), "accountId missing");
     final String userId = Objects.requireNonNull((String) body.get("userId"), "userId missing");
-    final HttpUrl.Builder urlBuilder = baseApiUrl(tenantAlias, requestOptions)
+    final HttpUrl.Builder urlBuilder = baseApiUrl(requestOptions)
         .addPathSegment("open")
         .addPathSegment("account")
         .addPathSegment(accountId)
@@ -167,7 +166,7 @@ public final class SaaSquatchClient {
     Objects.requireNonNull(accountId, "accountId");
     Objects.requireNonNull(userId, "userId");
     Objects.requireNonNull(referralCode, "referralCode");
-    final HttpUrl.Builder urlBuilder = baseApiUrl(tenantAlias, requestOptions)
+    final HttpUrl.Builder urlBuilder = baseApiUrl(requestOptions)
         .addPathSegment("open")
         .addPathSegment("code")
         .addPathSegment(referralCode)
@@ -183,10 +182,10 @@ public final class SaaSquatchClient {
     return executeRequest(requestBuilder.build()).thenApply(SaaSquatchMapResponse::new);
   }
 
-  private HttpUrl.Builder baseApiUrl(@Nullable String tenantAlias,
-      @Nullable SaaSquatchRequestOptions requestOptions) {
+  private HttpUrl.Builder baseApiUrl(@Nullable SaaSquatchRequestOptions requestOptions) {
     final String tenantAliasToUse = Optional.ofNullable(requestOptions)
-        .map(SaaSquatchRequestOptions::getTenantAlias).orElse(tenantAlias);
+        .map(SaaSquatchRequestOptions::getTenantAlias)
+        .orElse(tenantAlias);
     Objects.requireNonNull(tenantAliasToUse, "tenantAlias missing");
     return new HttpUrl.Builder().scheme(scheme).host(appDomain)
         .addPathSegment("api")
@@ -195,19 +194,19 @@ public final class SaaSquatchClient {
   }
 
   private CompletionStage<Response> executeRequest(Request request) {
-    final CompletableFuture<Response> respPromise = new CompletableFuture<>();
+    final CompletableFuture<Response> responsePromise = new CompletableFuture<>();
     okHttpClient.newCall(request).enqueue(new okhttp3.Callback() {
       @Override
       public void onResponse(Call call, Response resp) throws IOException {
-        respPromise.complete(resp);
+        responsePromise.complete(resp);
       }
 
       @Override
       public void onFailure(Call call, IOException e) {
-        respPromise.completeExceptionally(e);
+        responsePromise.completeExceptionally(e);
       }
     });
-    return respPromise;
+    return responsePromise;
   }
 
   private static RequestBody jsonRequestBody(Object bodyObj) {
