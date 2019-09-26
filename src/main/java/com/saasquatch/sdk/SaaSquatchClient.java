@@ -34,48 +34,43 @@ public final class SaaSquatchClient implements Closeable {
 
   private static final MediaType JSON_MEDIA_TYPE = MediaType.get("application/json; charset=utf-8");
 
-  private final String tenantAlias;
-  private final String appDomain;
+  private final SaaSquatchClientOptions clientOptions;
   private final String scheme;
   private final ExecutorService dispatcherExecutor;
   private final OkHttpClient okHttpClient;
   private final String userAgent;
 
-  private SaaSquatchClient(@Nullable String tenantAlias) {
-    this.tenantAlias = tenantAlias;
-    this.appDomain =
-        System.getProperty("com.saasquatch.sdk.appDomain", "app.referralsaasquatch.com");
-    this.scheme = appDomain.startsWith("localhost:") ? "http" : "https";
+  private SaaSquatchClient(@Nonnull SaaSquatchClientOptions clientOptions) {
+    this.clientOptions = clientOptions;
+    this.scheme = clientOptions.getAppDomain().startsWith("localhost:") ? "http" : "https";
     this.dispatcherExecutor = newDispatcherExecutor();
     this.okHttpClient = new OkHttpClient.Builder()
         .dispatcher(new okhttp3.Dispatcher(this.dispatcherExecutor))
-        .callTimeout(15, TimeUnit.SECONDS)
-        .connectTimeout(5, TimeUnit.SECONDS)
+        .callTimeout(clientOptions.getRequestTimeoutMillis(), TimeUnit.MILLISECONDS)
+        .connectTimeout(clientOptions.getConnectTimeoutMillis(), TimeUnit.MILLISECONDS)
         .build();
     this.userAgent = buildUserAgent();
-    this.onStart();
   }
 
   /**
-   * Initialize a {@link SaaSquatchClient} with an optional tenantAlias.
+   * Initialize a {@link SaaSquatchClient} with a tenantAlias and default options.
    *
    * @param tenantAlias Your tenantAlias. This will be the default tenantAlias for all your
-   *        requests. If you are in a multi-tenant environment, you can initialize a
-   *        {@link SaaSquatchClient} with a null tenantAlias, and then pass in your tenantAlias in
-   *        every request via {@link SaaSquatchRequestOptions#setTenantAlias(String)}
+   *        requests. If you are in a multi-tenant environment, you should be using
+   *        {@link SaaSquatchClient#create(SaaSquatchClientOptions)} without a tenantAlias, and then
+   *        pass the tenantAlias you want to use in every request via
+   *        {@link SaaSquatchRequestOptions#setTenantAlias(String)}
    */
-  public static SaaSquatchClient create(@Nullable String tenantAlias) {
-    return new SaaSquatchClient(tenantAlias);
+  public static SaaSquatchClient createForTenant(@Nonnull String tenantAlias) {
+    return new SaaSquatchClient(
+        SaaSquatchClientOptions.newBuilder().setTenantAlias(tenantAlias).build());
   }
 
-  private void onStart() {
-    // Validate appDomain
-    if (appDomain.contains("://")) {
-      throw new RuntimeException("appDomain should not have a protocol");
-    }
-    if (appDomain.startsWith("/") || appDomain.endsWith("/")) {
-      throw new RuntimeException("appDomain should not start or end with a slash");
-    }
+  /**
+   * Initialize a {@link SaaSquatchClient} with a custom {@link SaaSquatchClientOptions}.
+   */
+  public static SaaSquatchClient create(@Nonnull SaaSquatchClientOptions clientOptions) {
+    return new SaaSquatchClient(Objects.requireNonNull(clientOptions, "clientOptions"));
   }
 
   @Override
@@ -217,7 +212,7 @@ public final class SaaSquatchClient implements Closeable {
       tenantAliasToUse = requestOptions.getTenantAlias();
     }
     if (tenantAliasToUse == null) {
-      tenantAliasToUse = this.tenantAlias;
+      tenantAliasToUse = this.clientOptions.getTenantAlias();
     }
     return tenantAliasToUse;
   }
@@ -225,7 +220,7 @@ public final class SaaSquatchClient implements Closeable {
   private HttpUrl.Builder baseApiUrl(@Nullable SaaSquatchRequestOptions requestOptions) {
     final String tenantAliasToUse = getTenantAlias(requestOptions);
     Objects.requireNonNull(tenantAliasToUse, "tenantAlias missing");
-    return new HttpUrl.Builder().scheme(scheme).host(appDomain)
+    return new HttpUrl.Builder().scheme(scheme).host(clientOptions.getAppDomain())
         .addPathSegment("api")
         .addPathSegment("v1")
         .addPathSegment(tenantAliasToUse);
