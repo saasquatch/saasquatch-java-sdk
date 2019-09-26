@@ -230,20 +230,22 @@ public final class SaaSquatchClient implements Closeable {
   }
 
   private Flowable<Response> executeRequest(Request request) {
-    final AsyncProcessor<Response> asyncProcessor = AsyncProcessor.create();
-    okHttpClient.newCall(request).enqueue(new okhttp3.Callback() {
-      @Override
-      public void onResponse(Call call, Response resp) throws IOException {
-        asyncProcessor.onNext(resp);
-        asyncProcessor.onComplete();
-      }
+    return Flowable.defer(() -> {
+      final AsyncProcessor<Response> asyncProcessor = AsyncProcessor.create();
+      okHttpClient.newCall(request).enqueue(new okhttp3.Callback() {
+        @Override
+        public void onResponse(Call call, Response resp) throws IOException {
+          asyncProcessor.onNext(resp);
+          asyncProcessor.onComplete();
+        }
 
-      @Override
-      public void onFailure(Call call, IOException e) {
-        asyncProcessor.onError(e);
-      }
+        @Override
+        public void onFailure(Call call, IOException e) {
+          asyncProcessor.onError(e);
+        }
+      });
+      return asyncProcessor;
     });
-    return asyncProcessor;
   }
 
   private static RequestBody jsonRequestBody(Object bodyObj) {
