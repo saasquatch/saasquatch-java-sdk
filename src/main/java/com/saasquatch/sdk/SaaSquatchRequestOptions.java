@@ -8,7 +8,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
@@ -38,8 +37,8 @@ public final class SaaSquatchRequestOptions {
 
   private final String tenantAlias;
   private final Map<String, String> singleHeaders;
-  private final List<Entry<String, String>> multiHeaders;
-  private final List<Entry<String, String>> queryParams;
+  private final List<Map.Entry<String, String>> multiHeaders;
+  private final List<Map.Entry<String, String>> queryParams;
 
   private SaaSquatchRequestOptions(String tenantAlias, Map<String, String> singleHeaders,
       List<Map.Entry<String, String>> multiHeaders, List<Map.Entry<String, String>> queryParams) {
