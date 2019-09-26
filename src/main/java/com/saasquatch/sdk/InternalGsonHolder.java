@@ -15,11 +15,10 @@ import com.google.gson.JsonSerializer;
 class InternalGsonHolder {
 
   public static final Gson gson = new GsonBuilder()
-      .registerTypeAdapter(Date.class, DateToMillisSerializer.INSTANCE)
-      .registerTypeAdapter(Date.class, MillisToDateDeserializer.INSTANCE)
+      .registerTypeAdapter(Date.class, DateMillisAdapter.INSTANCE)
       .create();
 
-  private static enum DateToMillisSerializer implements JsonSerializer<Date> {
+  private static enum DateMillisAdapter implements JsonSerializer<Date>, JsonDeserializer<Date> {
 
     INSTANCE;
 
@@ -27,12 +26,6 @@ class InternalGsonHolder {
     public JsonElement serialize(Date src, Type typeOfSrc, JsonSerializationContext context) {
       return new JsonPrimitive(src.getTime());
     }
-
-  }
-
-  private static enum MillisToDateDeserializer implements JsonDeserializer<Date> {
-
-    INSTANCE;
 
     @Override
     public Date deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
