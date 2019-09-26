@@ -252,8 +252,12 @@ public final class SaaSquatchClient implements Closeable {
 
   private static String buildUserAgent() {
     final String javaVersion = System.getProperty("java.version");
-    return "SaaSquatch SDK; "
-        + (javaVersion == null ? "Unknown Java version" : "Java " + javaVersion);
+    final String osName = System.getProperty("os.name", "");
+    final String osVersion = System.getProperty("os.version", "");
+    final String osStr = (osName + ' ' + osVersion).trim();
+    return String.format("SaaSquatch SDK; %s; %s",
+        javaVersion == null ? "Unknown Java version" : "Java " + javaVersion,
+        osStr.isEmpty() ? "Unknown OS" : osStr);
   }
 
 }
