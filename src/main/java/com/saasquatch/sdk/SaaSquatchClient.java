@@ -205,25 +205,24 @@ public final class SaaSquatchClient implements Closeable {
     return executeRequest(requestBuilder).map(SaaSquatchMapResponse::new);
   }
 
-  @Nullable
+  @Nonnull
   private String getTenantAlias(@Nullable SaaSquatchRequestOptions requestOptions) {
-    String tenantAliasToUse = null;
+    String tenantAlias = null;
     if (requestOptions != null) {
-      tenantAliasToUse = requestOptions.getTenantAlias();
+      tenantAlias = requestOptions.getTenantAlias();
     }
-    if (tenantAliasToUse == null) {
-      tenantAliasToUse = this.clientOptions.getTenantAlias();
+    if (tenantAlias == null) {
+      tenantAlias = this.clientOptions.getTenantAlias();
     }
-    return tenantAliasToUse;
+    return Objects.requireNonNull(tenantAlias, "tenantAlias missing");
   }
 
   private HttpUrl.Builder baseApiUrl(@Nullable SaaSquatchRequestOptions requestOptions) {
-    final String tenantAliasToUse = getTenantAlias(requestOptions);
-    Objects.requireNonNull(tenantAliasToUse, "tenantAlias missing");
+    final String tenantAlias = getTenantAlias(requestOptions);
     return new HttpUrl.Builder().scheme(scheme).host(clientOptions.getAppDomain())
         .addPathSegment("api")
         .addPathSegment("v1")
-        .addPathSegment(tenantAliasToUse);
+        .addPathSegment(tenantAlias);
   }
 
   private Flowable<Response> executeRequest(Request.Builder requestBuilder) {
