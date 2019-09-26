@@ -127,7 +127,7 @@ public final class SaaSquatchRequestOptions {
     }
 
     /**
-     * Add a URL query parameter
+     * Add a URL query parameter. Note that the key and value are expected to be <em>unencoded</em>.
      */
     public Builder addQueryParam(@Nonnull String key, @Nonnull String value) {
       Objects.requireNonNull(key);
