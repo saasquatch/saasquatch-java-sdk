@@ -15,7 +15,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.reactivestreams.Publisher;
 import io.reactivex.Flowable;
-import io.reactivex.processors.AsyncProcessor;
+import io.reactivex.Single;
 import okhttp3.Call;
 import okhttp3.HttpUrl;
 import okhttp3.MediaType;
@@ -233,22 +233,19 @@ public final class SaaSquatchClient implements Closeable {
 
   private Flowable<Response> executeRequest(Request.Builder requestBuilder) {
     final Request request = requestBuilder.header("User-Agent", userAgent).build();
-    return Flowable.defer(() -> {
-      final AsyncProcessor<Response> asyncProcessor = AsyncProcessor.create();
+    return Single.<Response>create(emitter -> {
       okHttpClient.newCall(request).enqueue(new okhttp3.Callback() {
         @Override
         public void onResponse(Call call, Response resp) throws IOException {
-          asyncProcessor.onNext(resp);
-          asyncProcessor.onComplete();
+          emitter.onSuccess(resp);
         }
 
         @Override
         public void onFailure(Call call, IOException e) {
-          asyncProcessor.onError(e);
+          emitter.onError(e);
         }
       });
-      return asyncProcessor;
-    });
+    }).toFlowable();
   }
 
   private static RequestBody jsonRequestBody(Object bodyObj) {
