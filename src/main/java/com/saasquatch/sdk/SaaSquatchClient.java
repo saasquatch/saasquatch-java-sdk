@@ -34,11 +34,12 @@ public final class SaaSquatchClient implements Closeable {
 
   private static final MediaType JSON_MEDIA_TYPE = MediaType.get("application/json; charset=utf-8");
 
+  private final String tenantAlias;
   private final String appDomain;
   private final String scheme;
   private final ExecutorService dispatcherExecutor;
   private final OkHttpClient okHttpClient;
-  private final String tenantAlias;
+  private final String userAgent;
 
   private SaaSquatchClient(@Nullable String tenantAlias) {
     this.tenantAlias = tenantAlias;
@@ -51,6 +52,7 @@ public final class SaaSquatchClient implements Closeable {
         .callTimeout(15, TimeUnit.SECONDS)
         .connectTimeout(5, TimeUnit.SECONDS)
         .build();
+    this.userAgent = buildUserAgent();
     this.onStart();
   }
 
@@ -98,7 +100,7 @@ public final class SaaSquatchClient implements Closeable {
       requestOptions.mutateRequest(requestBuilder, urlBuilder);
     }
     requestBuilder.url(urlBuilder.build()).post(jsonRequestBody(body));
-    return executeRequest(requestBuilder.build()).map(SaaSquatchGraphQLResponse::new);
+    return executeRequest(requestBuilder).map(SaaSquatchGraphQLResponse::new);
   }
 
   public Publisher<SaaSquatchMapResponse> getUser(@Nonnull String accountId, @Nonnull String userId,
@@ -129,7 +131,7 @@ public final class SaaSquatchClient implements Closeable {
       requestOptions.mutateRequest(requestBuilder, urlBuilder);
     }
     requestBuilder.url(urlBuilder.build()).get();
-    return executeRequest(requestBuilder.build());
+    return executeRequest(requestBuilder);
   }
 
   public Publisher<SaaSquatchMapResponse> userUpsert(@Nonnull Map<String, Object> userInput,
@@ -162,7 +164,7 @@ public final class SaaSquatchClient implements Closeable {
       requestOptions.mutateRequest(requestBuilder, urlBuilder);
     }
     requestBuilder.url(urlBuilder.build()).put(jsonRequestBody(body));
-    return executeRequest(requestBuilder.build());
+    return executeRequest(requestBuilder);
   }
 
   public Publisher<SaaSquatchMapResponse> logUserEvent(@Nonnull Map<String, Object> userEventInput,
@@ -183,7 +185,7 @@ public final class SaaSquatchClient implements Closeable {
       requestOptions.mutateRequest(requestBuilder, urlBuilder);
     }
     requestBuilder.url(urlBuilder.build()).post(jsonRequestBody(body));
-    return executeRequest(requestBuilder.build()).map(SaaSquatchMapResponse::new);
+    return executeRequest(requestBuilder).map(SaaSquatchMapResponse::new);
   }
 
   public Publisher<SaaSquatchMapResponse> applyReferralCode(@Nonnull String accountId,
@@ -205,7 +207,7 @@ public final class SaaSquatchClient implements Closeable {
       requestOptions.mutateRequest(requestBuilder, urlBuilder);
     }
     requestBuilder.url(urlBuilder.build()).post(jsonRequestBody(Collections.emptyMap()));
-    return executeRequest(requestBuilder.build()).map(SaaSquatchMapResponse::new);
+    return executeRequest(requestBuilder).map(SaaSquatchMapResponse::new);
   }
 
   @Nullable
@@ -229,7 +231,8 @@ public final class SaaSquatchClient implements Closeable {
         .addPathSegment(tenantAliasToUse);
   }
 
-  private Flowable<Response> executeRequest(Request request) {
+  private Flowable<Response> executeRequest(Request.Builder requestBuilder) {
+    final Request request = requestBuilder.header("User-Agent", userAgent).build();
     return Flowable.defer(() -> {
       final AsyncProcessor<Response> asyncProcessor = AsyncProcessor.create();
       okHttpClient.newCall(request).enqueue(new okhttp3.Callback() {
@@ -254,6 +257,12 @@ public final class SaaSquatchClient implements Closeable {
 
   private static ExecutorService newDispatcherExecutor() {
     return Executors.newCachedThreadPool(InternalThreadFactory.INSTANCE);
+  }
+
+  private static String buildUserAgent() {
+    final String javaVersion = System.getProperty("java.version");
+    return "SaaSquatch SDK; "
+        + (javaVersion == null ? "Unknown Java version" : "Java " + javaVersion);
   }
 
 }
