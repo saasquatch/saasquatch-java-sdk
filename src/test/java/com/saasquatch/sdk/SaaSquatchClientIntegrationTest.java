@@ -49,6 +49,27 @@ public class SaaSquatchClientIntegrationTest {
     assertEquals("Bar", user.getLastName());
     assertNotNull(user.getReferable());
     assertNotNull(user.getReferralCodes());
+    assertNotNull(user.getSegments());
+  }
+
+  @Test
+  public void testWidgetUpsert() {
+    final Map<String, Object> userInput = new HashMap<>();
+    userInput.put("id", "asdf");
+    userInput.put("accountId", "asdf");
+    userInput.put("firstName", "Foo");
+    userInput.put("lastName", "Bar");
+    final SaaSquatchMapResponse response = Flowable.fromPublisher(
+        squatchClient.widgetUpsert(userInput,
+            SaaSquatchRequestOptions.newBuilder()
+                .addQueryParam("widgetType", "invalid widget type")
+                .setApiKey(getApiKey())
+                .build()))
+        .blockingSingle();
+    assertEquals(400, response.getStatusCode());
+    final SaaSquatchApiError apiError = response.getApiError();
+    assertNotNull(apiError);
+    assertEquals("RS036", apiError.getRsCode());
   }
 
 }
