@@ -11,6 +11,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.reactivestreams.Publisher;
 import com.saasquatch.sdk.models.User;
+import com.saasquatch.sdk.models.UserEventResult;
 import com.saasquatch.sdk.models.WidgetUpsertResult;
 import io.reactivex.Flowable;
 import okhttp3.HttpUrl;
@@ -178,6 +179,11 @@ public final class SaaSquatchClient implements Closeable {
     return executeRequest(requestBuilder);
   }
 
+  /**
+   * Log a user event.<br>
+   * By default, the result of the response can be unmarshalled to {@link UserEventResult}.<br>
+   * <a href="https://docs.referralsaasquatch.com/api/methods/#trackEvent">Link to official docs</a>
+   */
   public Publisher<SaaSquatchMapResponse> logUserEvent(@Nonnull Map<String, Object> userEventInput,
       @Nullable SaaSquatchRequestOptions requestOptions) {
     final Map<String, Object> body = userEventInput;
