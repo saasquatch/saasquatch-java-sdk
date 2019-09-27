@@ -51,6 +51,26 @@ This library aims to abstract away the I/O layer and [Reactive Streams](https://
 
 ## Using the SDK
 
+The entry point of the SDK is `SaaSquatchClient`. To create a `SaaSquatchClient` with default options, use:
+
+```java
+SaaSquatchClient.createForTenant("yourTenantAlias");
+```
+
+If you want more advanced options or you are in a multi-tenant environment, you can use:
+
+```java
+SaaSquatchClient.create(SaaSquatchClientOptions.newBuilder()
+    .setTenantAlias("yourTenantAlias") // This is optional
+    .setRequestTimeout(5, TimeUnit.SECONDS)
+    // etc.
+    .build());
+```
+
+If you create a `SaaSquatchClient` without a `tenantAlias`, then you'll need to pass in a `tenantAlias` via `SaaSquatchRequestOptions` for every request you make. The `tenantAlias` in `SaaSquatchRequestOptions` takes precedence over the one in `SaaSquatchClientOptions`.
+
+It is recommended to have a singleton `SaaSquatchClient` for all your requests. Do not create a new `SaaSquatchClient` for every request. `SaaSquatchClient` implements `Closeable`, and it's a good idea to call `close()` to release resources when you are done with it.
+
 TODO
 
 ## Development
