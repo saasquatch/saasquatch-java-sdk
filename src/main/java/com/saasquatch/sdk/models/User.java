@@ -3,6 +3,7 @@ package com.saasquatch.sdk.models;
 import java.util.Date;
 import java.util.Map;
 import java.util.Set;
+import com.saasquatch.sdk.annotations.ClassicOnly;
 
 public class User implements SaaSquatchModel {
 
@@ -92,10 +93,12 @@ public class User implements SaaSquatchModel {
     return cookieId;
   }
 
+  @ClassicOnly
   public String getPaymentProviderId() {
     return paymentProviderId;
   }
 
+  @ClassicOnly
   public String getReferralCode() {
     return referralCode;
   }
@@ -132,6 +135,7 @@ public class User implements SaaSquatchModel {
     return referredByCodes;
   }
 
+  @ClassicOnly
   public Map<String, Object> getShareLinks() {
     return shareLinks;
   }
