@@ -10,6 +10,8 @@ import java.util.concurrent.TimeUnit;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.reactivestreams.Publisher;
+import com.saasquatch.sdk.models.User;
+import com.saasquatch.sdk.models.WidgetUpsertResult;
 import io.reactivex.Flowable;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
@@ -82,7 +84,8 @@ public final class SaaSquatchClient implements Closeable {
     if (variables != null) {
       body.put("variables", variables);
     }
-    final HttpUrl.Builder urlBuilder = baseApiUrl(requestOptions).addPathSegment("graphql");
+    final HttpUrl.Builder urlBuilder = baseApiUrl(requestOptions)
+        .addPathSegment("graphql");
     final Request.Builder requestBuilder = new Request.Builder();
     if (requestOptions != null) {
       requestOptions.mutateRequest(requestBuilder, urlBuilder);
@@ -91,11 +94,21 @@ public final class SaaSquatchClient implements Closeable {
     return executeRequest(requestBuilder).map(SaaSquatchGraphQLResponse::new);
   }
 
+  /**
+   * Get a user.<br>
+   * By default, the result of the response can be unmarshalled to {@link User}.<br>
+   * <a href="https://docs.referralsaasquatch.com/api/methods/#open_get_user">Link to official
+   * docs</a>
+   */
   public Publisher<SaaSquatchMapResponse> getUser(@Nonnull String accountId, @Nonnull String userId,
       @Nullable SaaSquatchRequestOptions requestOptions) {
     return _getUser(accountId, userId, requestOptions, false).map(SaaSquatchMapResponse::new);
   }
 
+  /**
+   * Render a widget for a user.<br>
+   * The response is the widget HTML.
+   */
   public Publisher<SaaSquatchTextResponse> renderWidget(@Nonnull String accountId,
       @Nonnull String userId, @Nullable SaaSquatchRequestOptions requestOptions) {
     return _getUser(accountId, userId, requestOptions, true).map(SaaSquatchTextResponse::new);
@@ -122,11 +135,21 @@ public final class SaaSquatchClient implements Closeable {
     return executeRequest(requestBuilder);
   }
 
+  /**
+   * Create or update a user.<br>
+   * By default, the result of the response can be unmarshalled to {@link User}.<br>
+   * <a href="https://docs.referralsaasquatch.com/api/methods/#open_user_upsert">Link to official
+   * docs</a>
+   */
   public Publisher<SaaSquatchMapResponse> userUpsert(@Nonnull Map<String, Object> userInput,
       @Nullable SaaSquatchRequestOptions requestOptions) {
     return _userUpsert(userInput, requestOptions, false).map(SaaSquatchMapResponse::new);
   }
 
+  /**
+   * Create or update a user and render the widget.<br>
+   * By default, the result of the response can be unmarshalled to {@link WidgetUpsertResult}.
+   */
   public Publisher<SaaSquatchMapResponse> widgetUpsert(@Nonnull Map<String, Object> userInput,
       @Nullable SaaSquatchRequestOptions requestOptions) {
     return _userUpsert(userInput, requestOptions, true).map(SaaSquatchMapResponse::new);
