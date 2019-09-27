@@ -205,6 +205,11 @@ public final class SaaSquatchClient implements Closeable {
     return executeRequest(requestBuilder).map(SaaSquatchMapResponse::new);
   }
 
+  /**
+   * Apply a referral code.<br>
+   * <a href="https://docs.referralsaasquatch.com/api/methods/#open_apply_code">Link to official
+   * docs</a>
+   */
   public Publisher<SaaSquatchMapResponse> applyReferralCode(@Nonnull String accountId,
       @Nonnull String userId, @Nonnull String referralCode,
       @Nullable SaaSquatchRequestOptions requestOptions) {
