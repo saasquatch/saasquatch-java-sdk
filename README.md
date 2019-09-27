@@ -71,6 +71,37 @@ If you create a `SaaSquatchClient` without a `tenantAlias`, then you'll need to 
 
 It is recommended to have a singleton `SaaSquatchClient` for all your requests. Do not create a new `SaaSquatchClient` for every request. `SaaSquatchClient` implements `Closeable`, and it's a good idea to call `close()` to release resources when you are done with it.
 
+`SaaSquatchClient` returns [Reactive Streams](https://www.reactive-streams.org/) interfaces. Assuming you are using RxJava, then a typical API call made with this SDK would look something like this:
+
+```java
+final Map<String, Object> userInput = ...;
+final String jwt = ...;
+final Publisher<SaaSquatchMapResponse> responsePublisher =
+    saasquatchClient.userUpsert(userInput,
+        SaaSquatchRequestOptions.newBuilder().setJwt(jwt).build());
+Flowable.fromPublisher(responsePublisher)
+    .doOnNext(response -> {
+      System.out.printf("Status[%d] received\n", response.getStatusCode());
+      if (response.failed()) {
+        // Non 2XX received, in which case we should typically get a standard api error
+        final SaaSquatchApiError apiError = response.getApiError();
+        System.out.println(apiError.getMessage());
+      } else {
+        // Getting the raw JSON data as a Map and do whatever you want with it
+        final Map<String, Object> data = response.getData();
+        // Or unmarshal the JSON result to one of the provided model classes
+        final User user = response.toModel(User.class);
+        System.out.printf("User with accountId[%s] and id[%s] created\n",
+            user.getAccountId(), user.getId());
+      }
+    })
+    .doOnError(ex -> {
+      System.out.println("Catastrophic failure!!!");
+      ex.printStackTrace();
+    })
+    .subscribe();
+```
+
 TODO
 
 ## Development
