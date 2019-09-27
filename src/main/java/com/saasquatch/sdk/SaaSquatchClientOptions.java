@@ -77,7 +77,7 @@ public class SaaSquatchClientOptions {
      *        or end with '/'.
      */
     public Builder setAppDomain(@Nonnull String appDomain) {
-      this.appDomain = Objects.requireNonNull(appDomain, "appDomain");
+      Objects.requireNonNull(appDomain, "appDomain");
       // Validate appDomain
       if (appDomain.contains("://")) {
         throw new IllegalArgumentException("appDomain should not have a protocol");
@@ -85,6 +85,7 @@ public class SaaSquatchClientOptions {
       if (appDomain.startsWith("/") || appDomain.endsWith("/")) {
         throw new IllegalArgumentException("appDomain should not start or end with a slash");
       }
+      this.appDomain = appDomain;
       return this;
     }
 
