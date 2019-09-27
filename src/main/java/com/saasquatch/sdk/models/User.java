@@ -24,7 +24,7 @@ public class User implements SaaSquatchModel {
   private final Date dateCreated;
   private final Date dateBlocked;
   private final Set<String> referredByCodes;
-  private final Map<String, Map<String, String>> shareLinks;
+  private final Map<String, Object> shareLinks;
   private final Map<String, Map<String, Map<String, String>>> programShareLinks;
   private final Map<String, Object> customFields;
   private final Set<String> segments;
@@ -33,7 +33,7 @@ public class User implements SaaSquatchModel {
       String email, String emailHash, String cookieId, String paymentProviderId,
       String referralCode, Map<String, String> referralCodes, String locale, Boolean referable,
       String firstSeenIP, String lastSeenIP, Date dateCreated, Date dateBlocked,
-      Set<String> referredByCodes, Map<String, Map<String, String>> shareLinks,
+      Set<String> referredByCodes, Map<String, Object> shareLinks,
       Map<String, Map<String, Map<String, String>>> programShareLinks,
       Map<String, Object> customFields, Set<String> segments) {
     this.id = id;
@@ -132,7 +132,7 @@ public class User implements SaaSquatchModel {
     return referredByCodes;
   }
 
-  public Map<String, Map<String, String>> getShareLinks() {
+  public Map<String, Object> getShareLinks() {
     return shareLinks;
   }
 
