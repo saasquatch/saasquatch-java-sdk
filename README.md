@@ -34,7 +34,7 @@ For more information and other built tools, [please refer to the JitPack page](h
 
 SaaSquatch Java SDK works on Java 8+ and Android API level 21+. To use this library on Android, you'll need to configure your project to use Java 8 by adding the following to `build.gradle` (see [Android official docs](https://developer.android.com/studio/write/java8-support) for more information):
 
-```
+```gradle
 android {
   compileOptions {
     sourceCompatibility JavaVersion.VERSION_1_8
