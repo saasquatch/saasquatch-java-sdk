@@ -1,4 +1,4 @@
-# saasquatch-java-sdk (UNDER CONSTRUCTION!!!)
+# SaaSquatch Java SDK (UNDER CONSTRUCTION!!!)
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![](https://jitpack.io/v/saasquatch/saasquatch-java-sdk.svg)](https://jitpack.io/#saasquatch/saasquatch-java-sdk)
@@ -31,6 +31,21 @@ Add the dependency:
 ```
 
 For more information and other built tools, [please refer to the JitPack page](https://jitpack.io/#saasquatch/saasquatch-java-sdk).
+
+SaaSquatch Java SDK works on Java 8+ and Android API level 21+. To use this library on Android, you'll need to configure your project to use Java 8 by adding the following to `build.gradle` (see [Android official docs](https://developer.android.com/studio/write/java8-support) for more information):
+
+```
+android {
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_8
+    targetCompatibility JavaVersion.VERSION_1_8
+  }
+  // For Kotlin projects
+  kotlinOptions {
+    jvmTarget = "1.8"
+  }
+}
+```
 
 This library aims to abstract away the I/O layer and [Reactive Streams](https://www.reactive-streams.org/) implementations to be implementation agnostic. As of right now, this library depends on [RxJava 2](https://github.com/ReactiveX/RxJava), [Gson](https://github.com/google/gson), and [OkHttp](https://square.github.io/okhttp/), but never exposes library-specific interfaces other than Reactive Streams interfaces. It is recommended that you explicitly import the transient dependencies if you intend to use them, since we may switch to other I/O or Reactive Streams libraries in the future.
 
