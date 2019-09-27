@@ -1,6 +1,8 @@
 package com.saasquatch.sdk;
 
 import java.io.IOException;
+import java.util.AbstractMap.SimpleImmutableEntry;
+import java.util.Map;
 import io.reactivex.Flowable;
 import io.reactivex.Single;
 import okhttp3.Call;
@@ -33,6 +35,10 @@ class InternalUtils {
         }
       });
     }).toFlowable();
+  }
+
+  public static <K, V> Map.Entry<K, V> entryOf(K k, V v) {
+    return new SimpleImmutableEntry<>(k, v);
   }
 
 }

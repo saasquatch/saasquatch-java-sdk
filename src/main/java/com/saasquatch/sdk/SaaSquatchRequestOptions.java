@@ -1,7 +1,7 @@
 package com.saasquatch.sdk;
 
+import static com.saasquatch.sdk.InternalUtils.entryOf;
 import static java.nio.charset.StandardCharsets.UTF_8;
-import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -108,7 +108,7 @@ public final class SaaSquatchRequestOptions {
       if (BLOCKED_HEADERS.contains(key)) {
         throw new IllegalArgumentException(key + " is not allowed");
       }
-      multiHeaders.add(new SimpleImmutableEntry<>(key, value));
+      multiHeaders.add(entryOf(key, value));
       return this;
     }
 
@@ -132,7 +132,7 @@ public final class SaaSquatchRequestOptions {
     public Builder addQueryParam(@Nonnull String key, @Nonnull String value) {
       Objects.requireNonNull(key);
       Objects.requireNonNull(value);
-      queryParams.add(new SimpleImmutableEntry<>(key, value));
+      queryParams.add(entryOf(key, value));
       return this;
     }
 
