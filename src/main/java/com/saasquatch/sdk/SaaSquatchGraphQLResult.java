@@ -8,6 +8,11 @@ import java.util.Map;
 import javax.annotation.Nullable;
 import okhttp3.Response;
 
+/**
+ * The result of a standard GraphQL request
+ *
+ * @author sli
+ */
 public class SaaSquatchGraphQLResult {
 
   private final Map<String, Object> data;
