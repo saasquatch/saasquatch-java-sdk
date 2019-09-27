@@ -26,16 +26,16 @@ public final class SaaSquatchClient implements Closeable {
 
   private final SaaSquatchClientOptions clientOptions;
   private final String scheme;
-  private final ExecutorService dispatcherExecutor;
+  private final ExecutorService executor;
   private final OkHttpClient okHttpClient;
   private final String userAgent;
 
   private SaaSquatchClient(@Nonnull SaaSquatchClientOptions clientOptions) {
     this.clientOptions = clientOptions;
     this.scheme = clientOptions.getAppDomain().startsWith("localhost:") ? "http" : "https";
-    this.dispatcherExecutor = Executors.newCachedThreadPool(InternalThreadFactory.INSTANCE);
+    this.executor = Executors.newCachedThreadPool(InternalThreadFactory.INSTANCE);
     this.okHttpClient = new OkHttpClient.Builder()
-        .dispatcher(new okhttp3.Dispatcher(this.dispatcherExecutor))
+        .dispatcher(new okhttp3.Dispatcher(this.executor))
         .callTimeout(clientOptions.getRequestTimeoutMillis(), TimeUnit.MILLISECONDS)
         .connectTimeout(clientOptions.getConnectTimeoutMillis(), TimeUnit.MILLISECONDS)
         .build();
@@ -68,7 +68,7 @@ public final class SaaSquatchClient implements Closeable {
 
   @Override
   public void close() {
-    this.dispatcherExecutor.shutdown();
+    this.executor.shutdown();
   }
 
   public Publisher<SaaSquatchGraphQLResponse> graphQL(@Nonnull String query,
