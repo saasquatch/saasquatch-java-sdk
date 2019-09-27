@@ -220,7 +220,7 @@ public final class SaaSquatchClient implements Closeable {
 
   private Flowable<Response> executeRequest(Request.Builder requestBuilder) {
     final Request request = requestBuilder.header("User-Agent", userAgent).build();
-    return InternalUtils.executeRequest(okHttpClient, request);
+    return Flowable.fromPublisher(InternalUtils.executeRequest(okHttpClient, request));
   }
 
 }

@@ -3,7 +3,8 @@ package com.saasquatch.sdk;
 import java.io.IOException;
 import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.Map;
-import io.reactivex.Flowable;
+import javax.annotation.Nonnull;
+import org.reactivestreams.Publisher;
 import io.reactivex.Single;
 import okhttp3.Call;
 import okhttp3.OkHttpClient;
@@ -21,7 +22,13 @@ class InternalUtils {
         osStr.isEmpty() ? "Unknown OS" : osStr);
   }
 
-  public static Flowable<Response> executeRequest(OkHttpClient okHttpClient, Request request) {
+  /**
+   * Executes a non-blocking request
+   *
+   * @returns a {@link Publisher} that emits one element
+   */
+  public static Publisher<Response> executeRequest(@Nonnull OkHttpClient okHttpClient,
+      @Nonnull Request request) {
     return Single.<Response>create(emitter -> {
       okHttpClient.newCall(request).enqueue(new okhttp3.Callback() {
         @Override
