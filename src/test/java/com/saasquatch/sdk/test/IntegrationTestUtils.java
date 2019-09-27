@@ -1,7 +1,10 @@
 package com.saasquatch.sdk.test;
 
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 import java.util.Objects;
 import java.util.stream.Stream;
+import com.saasquatch.sdk.SaaSquatchClient;
+import com.saasquatch.sdk.SaaSquatchClientOptions;
 
 public class IntegrationTestUtils {
 
@@ -14,6 +17,10 @@ public class IntegrationTestUtils {
     return Stream.of(getAppDomain(), getTenantAlias(), getApiKey()).allMatch(Objects::nonNull);
   }
 
+  public static void assumeCanRun() {
+    assumeTrue(canRun());
+  }
+
   public static String getAppDomain() {
     return System.getProperty(APP_DOMAIN_PROP);
   }
@@ -24,6 +31,13 @@ public class IntegrationTestUtils {
 
   public static String getApiKey() {
     return System.getProperty(API_KEY_PROP);
+  }
+
+  public static SaaSquatchClient newTestClient() {
+    return SaaSquatchClient.create(SaaSquatchClientOptions.newBuilder()
+        .setTenantAlias(getTenantAlias())
+        .setAppDomain(getAppDomain())
+        .build());
   }
 
 }
