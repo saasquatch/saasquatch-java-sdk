@@ -8,8 +8,7 @@ enum InternalThreadFactory implements ThreadFactory {
 
   INSTANCE;
 
-  private static final ThreadFactory defaultThreadFactory = Executors.defaultThreadFactory();
-
+  private final ThreadFactory defaultThreadFactory = Executors.defaultThreadFactory();
   private final AtomicLong idx = new AtomicLong();
 
   @Override

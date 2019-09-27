@@ -1,10 +1,6 @@
 package com.saasquatch.sdk;
 
-import static com.saasquatch.sdk.InternalGsonHolder.gson;
-import static java.nio.charset.StandardCharsets.UTF_8;
 import java.io.Closeable;
-import java.io.IOException;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -15,24 +11,18 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.reactivestreams.Publisher;
 import io.reactivex.Flowable;
-import io.reactivex.Single;
-import okhttp3.Call;
 import okhttp3.HttpUrl;
-import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.RequestBody;
 import okhttp3.Response;
 
 /**
  * Main entry point for SaaSquatch APIs
  *
  * @author sli
- * @see SaaSquatchClient#create(String)
+ * @see SaaSquatchClient#createForTenant(String)
  */
 public final class SaaSquatchClient implements Closeable {
-
-  private static final MediaType JSON_MEDIA_TYPE = MediaType.get("application/json; charset=utf-8");
 
   private final SaaSquatchClientOptions clientOptions;
   private final String scheme;
@@ -43,13 +33,13 @@ public final class SaaSquatchClient implements Closeable {
   private SaaSquatchClient(@Nonnull SaaSquatchClientOptions clientOptions) {
     this.clientOptions = clientOptions;
     this.scheme = clientOptions.getAppDomain().startsWith("localhost:") ? "http" : "https";
-    this.dispatcherExecutor = newDispatcherExecutor();
+    this.dispatcherExecutor = Executors.newCachedThreadPool(InternalThreadFactory.INSTANCE);
     this.okHttpClient = new OkHttpClient.Builder()
         .dispatcher(new okhttp3.Dispatcher(this.dispatcherExecutor))
         .callTimeout(clientOptions.getRequestTimeoutMillis(), TimeUnit.MILLISECONDS)
         .connectTimeout(clientOptions.getConnectTimeoutMillis(), TimeUnit.MILLISECONDS)
         .build();
-    this.userAgent = buildUserAgent();
+    this.userAgent = InternalUtils.buildUserAgent();
   }
 
   /**
@@ -60,6 +50,7 @@ public final class SaaSquatchClient implements Closeable {
    *        {@link SaaSquatchClient#create(SaaSquatchClientOptions)} without a tenantAlias, and then
    *        pass the tenantAlias you want to use in every request via
    *        {@link SaaSquatchRequestOptions#setTenantAlias(String)}
+   * @see #create(SaaSquatchClientOptions)
    */
   public static SaaSquatchClient createForTenant(@Nonnull String tenantAlias) {
     return new SaaSquatchClient(
@@ -68,6 +59,8 @@ public final class SaaSquatchClient implements Closeable {
 
   /**
    * Initialize a {@link SaaSquatchClient} with a custom {@link SaaSquatchClientOptions}.
+   *
+   * @see SaaSquatchClientOptions#newBuilder()
    */
   public static SaaSquatchClient create(@Nonnull SaaSquatchClientOptions clientOptions) {
     return new SaaSquatchClient(Objects.requireNonNull(clientOptions, "clientOptions"));
@@ -94,7 +87,7 @@ public final class SaaSquatchClient implements Closeable {
     if (requestOptions != null) {
       requestOptions.mutateRequest(requestBuilder, urlBuilder);
     }
-    requestBuilder.url(urlBuilder.build()).post(jsonRequestBody(body));
+    requestBuilder.url(urlBuilder.build()).post(InternalRequestBodies.jsonPojo(body));
     return executeRequest(requestBuilder).map(SaaSquatchGraphQLResponse::new);
   }
 
@@ -158,7 +151,7 @@ public final class SaaSquatchClient implements Closeable {
     if (requestOptions != null) {
       requestOptions.mutateRequest(requestBuilder, urlBuilder);
     }
-    requestBuilder.url(urlBuilder.build()).put(jsonRequestBody(body));
+    requestBuilder.url(urlBuilder.build()).put(InternalRequestBodies.jsonPojo(body));
     return executeRequest(requestBuilder);
   }
 
@@ -179,7 +172,7 @@ public final class SaaSquatchClient implements Closeable {
     if (requestOptions != null) {
       requestOptions.mutateRequest(requestBuilder, urlBuilder);
     }
-    requestBuilder.url(urlBuilder.build()).post(jsonRequestBody(body));
+    requestBuilder.url(urlBuilder.build()).post(InternalRequestBodies.jsonPojo(body));
     return executeRequest(requestBuilder).map(SaaSquatchMapResponse::new);
   }
 
@@ -201,7 +194,7 @@ public final class SaaSquatchClient implements Closeable {
     if (requestOptions != null) {
       requestOptions.mutateRequest(requestBuilder, urlBuilder);
     }
-    requestBuilder.url(urlBuilder.build()).post(jsonRequestBody(Collections.emptyMap()));
+    requestBuilder.url(urlBuilder.build()).post(InternalRequestBodies.jsonString("{}"));
     return executeRequest(requestBuilder).map(SaaSquatchMapResponse::new);
   }
 
@@ -227,36 +220,7 @@ public final class SaaSquatchClient implements Closeable {
 
   private Flowable<Response> executeRequest(Request.Builder requestBuilder) {
     final Request request = requestBuilder.header("User-Agent", userAgent).build();
-    return Single.<Response>create(emitter -> {
-      okHttpClient.newCall(request).enqueue(new okhttp3.Callback() {
-        @Override
-        public void onResponse(Call call, Response resp) throws IOException {
-          emitter.onSuccess(resp);
-        }
-
-        @Override
-        public void onFailure(Call call, IOException e) {
-          emitter.onError(e);
-        }
-      });
-    }).toFlowable();
-  }
-
-  private static RequestBody jsonRequestBody(Object bodyObj) {
-    return RequestBody.create(gson.toJson(bodyObj).getBytes(UTF_8), JSON_MEDIA_TYPE);
-  }
-
-  private static ExecutorService newDispatcherExecutor() {
-    return Executors.newCachedThreadPool(InternalThreadFactory.INSTANCE);
-  }
-
-  private static String buildUserAgent() {
-    final String javaVersion = System.getProperty("java.version", "Unknown");
-    final String osName = System.getProperty("os.name", "");
-    final String osVersion = System.getProperty("os.version", "");
-    final String osStr = (osName + ' ' + osVersion).trim();
-    return String.format("SaaSquatch SDK; %s; %s", "Java " + javaVersion,
-        osStr.isEmpty() ? "Unknown OS" : osStr);
+    return InternalUtils.executeRequest(okHttpClient, request);
   }
 
 }

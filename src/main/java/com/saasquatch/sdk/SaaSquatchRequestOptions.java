@@ -22,6 +22,7 @@ import okhttp3.Request;
  * Request options override, e.g. HTTP headers and query parameters.
  *
  * @author sli
+ * @see #newBuilder()
  */
 @Immutable
 public final class SaaSquatchRequestOptions {
@@ -76,7 +77,7 @@ public final class SaaSquatchRequestOptions {
      * Override the default tenantAlias for a request
      */
     public Builder setTenantAlias(@Nonnull String tenantAlias) {
-      this.tenantAlias = Objects.requireNonNull(tenantAlias);
+      this.tenantAlias = Objects.requireNonNull(tenantAlias, "tenantAlias");
       return this;
     }
 
@@ -84,7 +85,7 @@ public final class SaaSquatchRequestOptions {
      * Set your tenant API key and use it to authenticate your request
      */
     public Builder setApiKey(@Nonnull String apiKey) {
-      Objects.requireNonNull(apiKey);
+      Objects.requireNonNull(apiKey, "apiKey");
       singleHeaders.put("Authorization", Credentials.basic("", apiKey, UTF_8));
       return this;
     }
@@ -93,7 +94,7 @@ public final class SaaSquatchRequestOptions {
      * Set your JWT and use it to authenticate your request
      */
     public Builder setJwt(@Nonnull String jwt) {
-      Objects.requireNonNull(jwt);
+      Objects.requireNonNull(jwt, "jwt");
       singleHeaders.put("Authorization", "Bearer " + jwt);
       return this;
     }

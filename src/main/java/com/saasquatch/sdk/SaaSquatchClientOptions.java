@@ -10,6 +10,7 @@ import javax.annotation.concurrent.Immutable;
  * Options for a {@link SaaSquatchClient}
  *
  * @author sli
+ * @see #newBuilder()
  */
 @Immutable
 public class SaaSquatchClientOptions {
@@ -19,8 +20,8 @@ public class SaaSquatchClientOptions {
   private final long requestTimeoutMillis;
   private final long connectTimeoutMillis;
 
-  private SaaSquatchClientOptions(String tenantAlias, String appDomain, long requestTimeoutMillis,
-      long connectTimeoutMillis) {
+  private SaaSquatchClientOptions(@Nullable String tenantAlias, @Nonnull String appDomain,
+      long requestTimeoutMillis, long connectTimeoutMillis) {
     this.tenantAlias = tenantAlias;
     this.appDomain = appDomain;
     this.requestTimeoutMillis = requestTimeoutMillis;
@@ -51,10 +52,13 @@ public class SaaSquatchClientOptions {
 
   public static class Builder {
 
+    private static final long DEFAULT_REQUEST_TIMEOUT_MILLIS = TimeUnit.SECONDS.toMillis(15);
+    private static final long DEFAULT_CONNECT_TIMOEUT_MILLIS = TimeUnit.SECONDS.toMillis(5);
+
     private String tenantAlias;
     private String appDomain = "app.referralsaasquatch.com";
-    private long requestTimeoutMillis = TimeUnit.SECONDS.toMillis(15);
-    private long connectTimeoutMillis = TimeUnit.SECONDS.toMillis(5);
+    private long requestTimeoutMillis = DEFAULT_REQUEST_TIMEOUT_MILLIS;
+    private long connectTimeoutMillis = DEFAULT_CONNECT_TIMOEUT_MILLIS;
 
     private Builder() {}
 
@@ -62,7 +66,7 @@ public class SaaSquatchClientOptions {
      * Set the default tenantAlias that should be used for all requests
      */
     public Builder setTenantAlias(@Nonnull String tenantAlias) {
-      this.tenantAlias = Objects.requireNonNull(tenantAlias);
+      this.tenantAlias = Objects.requireNonNull(tenantAlias, "tenantAlias");
       return this;
     }
 
@@ -73,7 +77,7 @@ public class SaaSquatchClientOptions {
      *        or end with '/'.
      */
     public Builder setAppDomain(@Nonnull String appDomain) {
-      this.appDomain = Objects.requireNonNull(appDomain);
+      this.appDomain = Objects.requireNonNull(appDomain, "appDomain");
       // Validate appDomain
       if (appDomain.contains("://")) {
         throw new IllegalArgumentException("appDomain should not have a protocol");
@@ -84,18 +88,20 @@ public class SaaSquatchClientOptions {
       return this;
     }
 
-    public Builder setRequestTimeout(long timeout, @Nonnull TimeUnit timeUnit) {
-      this.requestTimeoutMillis = timeUnit.toMillis(timeout);
+    public Builder setRequestTimeout(long duration, @Nonnull TimeUnit timeUnit) {
+      this.requestTimeoutMillis = timeUnit.toMillis(duration);
       if (this.requestTimeoutMillis <= 0) {
-        throw new IllegalArgumentException("timeout must be positive");
+        this.requestTimeoutMillis = DEFAULT_REQUEST_TIMEOUT_MILLIS;
+        throw new IllegalArgumentException("Invalid timeout");
       }
       return this;
     }
 
-    public Builder setConnectTimeout(long timeout, @Nonnull TimeUnit timeUnit) {
-      this.connectTimeoutMillis = timeUnit.toMillis(timeout);
+    public Builder setConnectTimeout(long duration, @Nonnull TimeUnit timeUnit) {
+      this.connectTimeoutMillis = timeUnit.toMillis(duration);
       if (this.connectTimeoutMillis <= 0) {
-        throw new IllegalArgumentException("timeout must be positive");
+        this.connectTimeoutMillis = DEFAULT_CONNECT_TIMOEUT_MILLIS;
+        throw new IllegalArgumentException("Invalid timeout");
       }
       return this;
     }
