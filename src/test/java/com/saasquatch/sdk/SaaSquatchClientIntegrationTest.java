@@ -3,6 +3,7 @@ package com.saasquatch.sdk;
 import static com.saasquatch.sdk.test.IntegrationTestUtils.getApiKey;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.util.HashMap;
 import java.util.Map;
 import org.junit.jupiter.api.AfterAll;
@@ -30,6 +31,7 @@ public class SaaSquatchClientIntegrationTest {
   @Test
   public void testUserUpsert() {
     final Map<String, Object> userInput = new HashMap<>();
+    assertThrows(NullPointerException.class, () -> squatchClient.userUpsert(userInput, null));
     userInput.put("id", "asdf");
     userInput.put("accountId", "asdf");
     userInput.put("firstName", "Foo");
