@@ -69,8 +69,13 @@ class InternalUtils {
    */
   @Nonnull
   public static <T> List<T> unmodifiableList(@Nonnull List<T> list) {
-    if (list.isEmpty()) {
-      return Collections.emptyList();
+    switch (list.size()) {
+      case 0:
+        return Collections.emptyList();
+      case 1:
+        return Collections.singletonList(list.get(0));
+      default:
+        break;
     }
     final Object[] arr = list.toArray();
     @SuppressWarnings("unchecked")
