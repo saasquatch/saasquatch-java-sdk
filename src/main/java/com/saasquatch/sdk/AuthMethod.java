@@ -3,6 +3,7 @@ package com.saasquatch.sdk;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import java.util.Objects;
 import javax.annotation.Nonnull;
+import javax.annotation.concurrent.Immutable;
 import okhttp3.Request;
 
 /**
@@ -12,6 +13,7 @@ import okhttp3.Request;
  * @see #ofApiKey(String)
  * @see #ofJwt(String)
  */
+@Immutable
 public abstract class AuthMethod {
 
   private final boolean canBeClientDefault;
