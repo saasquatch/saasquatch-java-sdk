@@ -2,7 +2,6 @@ package com.saasquatch.sdk;
 
 import static com.saasquatch.sdk.InternalGsonHolder.gson;
 import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Nullable;
@@ -45,7 +44,9 @@ public class GraphQLResult {
     try {
       return gson.fromJson(response.body().string(), GraphQLResult.class);
     } catch (IOException e) {
-      throw new UncheckedIOException(e);
+      throw new RuntimeException(e);
+      // TODO switch to UncheckedIOException when Android fully supports Java 8
+      // throw new UncheckedIOException(e);
     }
   }
 

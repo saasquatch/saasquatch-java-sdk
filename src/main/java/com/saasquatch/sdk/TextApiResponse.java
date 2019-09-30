@@ -1,7 +1,6 @@
 package com.saasquatch.sdk;
 
 import java.io.IOException;
-import java.io.UncheckedIOException;
 import okhttp3.Response;
 
 /**
@@ -20,7 +19,9 @@ public class TextApiResponse extends ApiResponse<String> {
     try {
       return response.body().string();
     } catch (IOException e) {
-      throw new UncheckedIOException(e);
+      throw new RuntimeException(e);
+      // TODO switch to UncheckedIOException when Android fully supports Java 8
+      // throw new UncheckedIOException(e);
     }
   }
 

@@ -3,7 +3,6 @@ package com.saasquatch.sdk;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.UndeclaredThrowableException;
 import java.net.URLEncoder;
 import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.Map;
@@ -64,7 +63,7 @@ class InternalUtils {
       return URLEncoder.encode(s, UTF_8.name())
           .replace("+", "%20").replace("*", "%2A").replace("%7E", "~");
     } catch (UnsupportedEncodingException e) {
-      throw new UndeclaredThrowableException(e); // Should not happen
+      throw new RuntimeException(e); // Should not happen
     }
   }
 

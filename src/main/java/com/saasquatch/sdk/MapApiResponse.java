@@ -2,7 +2,6 @@ package com.saasquatch.sdk;
 
 import static com.saasquatch.sdk.InternalGsonHolder.gson;
 import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.util.Map;
 import java.util.Objects;
 import javax.annotation.Nonnull;
@@ -28,7 +27,9 @@ public class MapApiResponse extends ApiResponse<Map<String, Object>> {
       return gson.fromJson(response.body().string(),
           new TypeToken<Map<String, Object>>() {}.getType());
     } catch (IOException e) {
-      throw new UncheckedIOException(e);
+      throw new RuntimeException(e);
+      // TODO switch to UncheckedIOException when Android fully supports Java 8
+      // throw new UncheckedIOException(e);
     }
   }
 
