@@ -56,7 +56,6 @@ class InternalUtils {
           emitter.onSuccess(resp);
         }
       });
-      emitter.setCancellable(call::cancel);
     }).toFlowable();
   }
 

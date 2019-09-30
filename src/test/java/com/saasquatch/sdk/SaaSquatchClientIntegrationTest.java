@@ -75,6 +75,14 @@ public class SaaSquatchClientIntegrationTest {
       final ApiError apiError = response.getApiError();
       assertEquals(404, apiError.getStatusCode());
     }
+    // Attempt to render a widget
+    {
+      final TextApiResponse response = Flowable.fromPublisher(
+          saasquatchClient.renderWidget("asdf", "asdf", null))
+          .blockingSingle();
+      assertEquals(200, response.getStatusCode());
+      assertTrue(response.getData().contains("<!doctype html>"));
+    }
   }
 
   @Test
