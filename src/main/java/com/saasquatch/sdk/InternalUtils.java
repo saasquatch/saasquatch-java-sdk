@@ -21,6 +21,7 @@ import okhttp3.Response;
 
 class InternalUtils {
 
+  @Nonnull
   public static String buildUserAgent() {
     @Nullable
     final String javaVersion = System.getProperty("java.version");
@@ -66,6 +67,7 @@ class InternalUtils {
   /**
    * Same as {@link Collections#unmodifiableList(List)}, but makes a defensive copy
    */
+  @Nonnull
   public static <T> List<T> unmodifiableList(@Nonnull List<T> list) {
     if (list.isEmpty()) {
       return Collections.emptyList();
@@ -83,6 +85,7 @@ class InternalUtils {
    * worth bringing in squatch-common as a dependency. If/when we do, we should replace this with
    * RSUrlCodec.
    */
+  @Nonnull
   public static String urlEncode(@Nonnull String s) {
     try {
       return URLEncoder.encode(s, UTF_8.name())
@@ -92,6 +95,7 @@ class InternalUtils {
     }
   }
 
+  @Nonnull
   public static String requireNotBlank(@Nullable String s, @Nonnull String msg) {
     if (Objects.requireNonNull(s, msg).trim().isEmpty()) {
       throw new IllegalArgumentException(msg);
