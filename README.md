@@ -47,7 +47,7 @@ android {
 }
 ```
 
-This library aims to abstract away the I/O layer and [Reactive Streams](https://www.reactive-streams.org/) implementations to be implementation agnostic. As of right now, this library depends on [RxJava 2](https://github.com/ReactiveX/RxJava), [Gson](https://github.com/google/gson), and [OkHttp](https://square.github.io/okhttp/), but never exposes library-specific interfaces other than Reactive Streams interfaces. __It is recommended that you explicitly import the transient dependencies if you intend to use them__, since we may switch to other I/O or Reactive Streams libraries in the future.
+This library aims to abstract away the I/O layer and [Reactive Streams](https://www.reactive-streams.org/) implementations to be implementation agnostic. As of right now, this library depends on [RxJava 2](https://github.com/ReactiveX/RxJava), [Gson](https://github.com/google/gson), and [OkHttp](https://square.github.io/okhttp/), but never exposes library-specific interfaces other than Reactive Streams interfaces. __It is recommended that you explicitly import the transitive dependencies if you intend to use them__, since we may switch to other I/O or Reactive Streams libraries in the future.
 
 ## Using the SDK
 
