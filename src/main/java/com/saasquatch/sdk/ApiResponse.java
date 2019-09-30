@@ -7,19 +7,19 @@ import okhttp3.Response;
  * Represents an API response from SaaSquatch. If the request has {@link #succeeded()}, then you
  * should <em>typically</em> be able to get the API result from {@link #getData()}. If the request
  * had {@link #failed()}, then you should <em>typically</em> be able to get a
- * {@link SaaSquatchApiError} from {@link #getApiError()}.
+ * {@link ApiError} from {@link #getApiError()}.
  *
  * @author sli
  */
-public abstract class SaaSquatchApiResponse<T> {
+public abstract class ApiResponse<T> {
 
   // Lazy init
   private T data;
   // Lazy init
-  private SaaSquatchApiError apiError;
+  private ApiError apiError;
   protected final Response response;
 
-  SaaSquatchApiResponse(Response response) {
+  ApiResponse(Response response) {
     this.response = response;
   }
 
@@ -53,13 +53,13 @@ public abstract class SaaSquatchApiResponse<T> {
   }
 
   @Nullable
-  public SaaSquatchApiError getApiError() {
+  public ApiError getApiError() {
     if (succeeded()) {
       return null;
     }
-    SaaSquatchApiError _apiError = apiError;
+    ApiError _apiError = apiError;
     if (_apiError == null) {
-      apiError = _apiError = SaaSquatchApiError.fromResponse(response);
+      apiError = _apiError = ApiError.fromResponse(response);
     }
     return _apiError;
   }

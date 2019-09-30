@@ -13,14 +13,14 @@ import javax.annotation.concurrent.Immutable;
  * @see #newBuilder()
  */
 @Immutable
-public class SaaSquatchClientOptions {
+public class ClientOptions {
 
   private final String tenantAlias;
   private final String appDomain;
   private final long requestTimeoutMillis;
   private final long connectTimeoutMillis;
 
-  private SaaSquatchClientOptions(@Nullable String tenantAlias, @Nonnull String appDomain,
+  private ClientOptions(@Nullable String tenantAlias, @Nonnull String appDomain,
       long requestTimeoutMillis, long connectTimeoutMillis) {
     this.tenantAlias = tenantAlias;
     this.appDomain = appDomain;
@@ -116,10 +116,10 @@ public class SaaSquatchClientOptions {
     }
 
     /**
-     * Build an immutable {@link SaaSquatchClientOptions}
+     * Build an immutable {@link ClientOptions}
      */
-    public SaaSquatchClientOptions build() {
-      return new SaaSquatchClientOptions(tenantAlias, appDomain, requestTimeoutMillis,
+    public ClientOptions build() {
+      return new ClientOptions(tenantAlias, appDomain, requestTimeoutMillis,
           connectTimeoutMillis);
     }
 

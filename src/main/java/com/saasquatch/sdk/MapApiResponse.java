@@ -11,14 +11,14 @@ import com.saasquatch.sdk.models.SaaSquatchModel;
 import okhttp3.Response;
 
 /**
- * {@link SaaSquatchApiResponse} that has a JSON object. The JSON object will be represented as a
+ * {@link ApiResponse} that has a JSON object. The JSON object will be represented as a
  * {@link Map} since we want to be JSON library agnostic.
  *
  * @author sli
  */
-public class SaaSquatchMapResponse extends SaaSquatchApiResponse<Map<String, Object>> {
+public class MapApiResponse extends ApiResponse<Map<String, Object>> {
 
-  SaaSquatchMapResponse(Response response) {
+  MapApiResponse(Response response) {
     super(response);
   }
 

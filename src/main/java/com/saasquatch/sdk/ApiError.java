@@ -11,14 +11,14 @@ import okhttp3.Response;
  *
  * @author sli
  */
-public class SaaSquatchApiError {
+public class ApiError {
 
   private final String message;
   private final String apiErrorCode;
   private final int statusCode;
   private final String rsCode;
 
-  SaaSquatchApiError(String message, String apiErrorCode, int statusCode, String rsCode) {
+  ApiError(String message, String apiErrorCode, int statusCode, String rsCode) {
     this.message = message;
     this.apiErrorCode = apiErrorCode;
     this.statusCode = statusCode;
@@ -45,9 +45,9 @@ public class SaaSquatchApiError {
     return rsCode;
   }
 
-  static SaaSquatchApiError fromResponse(Response response) {
+  static ApiError fromResponse(Response response) {
     try {
-      return gson.fromJson(response.body().string(), SaaSquatchApiError.class);
+      return gson.fromJson(response.body().string(), ApiError.class);
     } catch (IOException e) {
       // Ignore on purpose
     }

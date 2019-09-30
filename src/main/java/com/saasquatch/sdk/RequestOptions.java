@@ -25,7 +25,7 @@ import okhttp3.Request;
  * @see #newBuilder()
  */
 @Immutable
-public final class SaaSquatchRequestOptions {
+public final class RequestOptions {
 
   private static final Set<String> BLOCKED_HEADERS;
   static {
@@ -41,7 +41,7 @@ public final class SaaSquatchRequestOptions {
   private final List<Map.Entry<String, String>> multiHeaders;
   private final List<Map.Entry<String, String>> queryParams;
 
-  private SaaSquatchRequestOptions(String tenantAlias, Map<String, String> singleHeaders,
+  private RequestOptions(String tenantAlias, Map<String, String> singleHeaders,
       List<Map.Entry<String, String>> multiHeaders, List<Map.Entry<String, String>> queryParams) {
     this.tenantAlias = tenantAlias;
     this.singleHeaders = singleHeaders;
@@ -151,10 +151,10 @@ public final class SaaSquatchRequestOptions {
     }
 
     /**
-     * Build an immutable {@link SaaSquatchRequestOptions}
+     * Build an immutable {@link RequestOptions}
      */
-    public SaaSquatchRequestOptions build() {
-      return new SaaSquatchRequestOptions(tenantAlias,
+    public RequestOptions build() {
+      return new RequestOptions(tenantAlias,
           singleHeaders.isEmpty() ? Collections.emptyMap()
               : Collections.unmodifiableMap(new HashMap<>(singleHeaders)),
           multiHeaders.isEmpty() ? Collections.emptyList()

@@ -5,7 +5,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
- * This annotation is used to mark things that are only applicable to the classic program.
+ * Marker for things that are only applicable to the classic program.
  *
  * @author sli
  */

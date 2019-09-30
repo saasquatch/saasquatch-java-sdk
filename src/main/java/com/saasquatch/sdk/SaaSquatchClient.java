@@ -27,13 +27,13 @@ import okhttp3.Response;
  */
 public final class SaaSquatchClient implements Closeable {
 
-  private final SaaSquatchClientOptions clientOptions;
+  private final ClientOptions clientOptions;
   private final String scheme;
   private final ExecutorService executor;
   private final OkHttpClient okHttpClient;
   private final String userAgent;
 
-  private SaaSquatchClient(@Nonnull SaaSquatchClientOptions clientOptions) {
+  private SaaSquatchClient(@Nonnull ClientOptions clientOptions) {
     this.clientOptions = clientOptions;
     this.scheme = clientOptions.getAppDomain().startsWith("localhost:") ? "http" : "https";
     this.executor = Executors.newCachedThreadPool(InternalThreadFactory.INSTANCE);
@@ -50,22 +50,22 @@ public final class SaaSquatchClient implements Closeable {
    *
    * @param tenantAlias Your tenantAlias. This will be the default tenantAlias for all your
    *        requests. If you are in a multi-tenant environment, you should be using
-   *        {@link SaaSquatchClient#create(SaaSquatchClientOptions)} without a tenantAlias, and then
+   *        {@link SaaSquatchClient#create(ClientOptions)} without a tenantAlias, and then
    *        pass the tenantAlias you want to use in every request via
-   *        {@link SaaSquatchRequestOptions#setTenantAlias(String)}
-   * @see #create(SaaSquatchClientOptions)
+   *        {@link RequestOptions#setTenantAlias(String)}
+   * @see #create(ClientOptions)
    */
   public static SaaSquatchClient createForTenant(@Nonnull String tenantAlias) {
     return new SaaSquatchClient(
-        SaaSquatchClientOptions.newBuilder().setTenantAlias(tenantAlias).build());
+        ClientOptions.newBuilder().setTenantAlias(tenantAlias).build());
   }
 
   /**
-   * Initialize a {@link SaaSquatchClient} with a custom {@link SaaSquatchClientOptions}.
+   * Initialize a {@link SaaSquatchClient} with a custom {@link ClientOptions}.
    *
-   * @see SaaSquatchClientOptions#newBuilder()
+   * @see ClientOptions#newBuilder()
    */
-  public static SaaSquatchClient create(@Nonnull SaaSquatchClientOptions clientOptions) {
+  public static SaaSquatchClient create(@Nonnull ClientOptions clientOptions) {
     return new SaaSquatchClient(Objects.requireNonNull(clientOptions, "clientOptions"));
   }
 
@@ -74,9 +74,9 @@ public final class SaaSquatchClient implements Closeable {
     this.executor.shutdown();
   }
 
-  public Publisher<SaaSquatchGraphQLResponse> graphQL(@Nonnull String query,
+  public Publisher<GraphQLApiResponse> graphQL(@Nonnull String query,
       @Nullable String operationName, @Nullable Map<String, Object> variables,
-      @Nullable SaaSquatchRequestOptions requestOptions) {
+      @Nullable RequestOptions requestOptions) {
     final Map<String, Object> body = new HashMap<>();
     body.put("query", Objects.requireNonNull(query, "query"));
     if (operationName != null) {
@@ -92,7 +92,7 @@ public final class SaaSquatchClient implements Closeable {
       requestOptions.mutateRequest(requestBuilder, urlBuilder);
     }
     requestBuilder.url(urlBuilder.build()).post(InternalRequestBodies.jsonPojo(body));
-    return executeRequest(requestBuilder).map(SaaSquatchGraphQLResponse::new);
+    return executeRequest(requestBuilder).map(GraphQLApiResponse::new);
   }
 
   /**
@@ -101,22 +101,22 @@ public final class SaaSquatchClient implements Closeable {
    * <a href="https://docs.referralsaasquatch.com/api/methods/#open_get_user">Link to official
    * docs</a>
    */
-  public Publisher<SaaSquatchMapResponse> getUser(@Nonnull String accountId, @Nonnull String userId,
-      @Nullable SaaSquatchRequestOptions requestOptions) {
-    return _getUser(accountId, userId, requestOptions, false).map(SaaSquatchMapResponse::new);
+  public Publisher<MapApiResponse> getUser(@Nonnull String accountId, @Nonnull String userId,
+      @Nullable RequestOptions requestOptions) {
+    return _getUser(accountId, userId, requestOptions, false).map(MapApiResponse::new);
   }
 
   /**
    * Render a widget for a user.<br>
    * The response is the widget HTML.
    */
-  public Publisher<SaaSquatchTextResponse> renderWidget(@Nonnull String accountId,
-      @Nonnull String userId, @Nullable SaaSquatchRequestOptions requestOptions) {
-    return _getUser(accountId, userId, requestOptions, true).map(SaaSquatchTextResponse::new);
+  public Publisher<TextApiResponse> renderWidget(@Nonnull String accountId,
+      @Nonnull String userId, @Nullable RequestOptions requestOptions) {
+    return _getUser(accountId, userId, requestOptions, true).map(TextApiResponse::new);
   }
 
   private Flowable<Response> _getUser(@Nonnull String accountId, @Nonnull String userId,
-      @Nullable SaaSquatchRequestOptions requestOptions, boolean widgetRequest) {
+      @Nullable RequestOptions requestOptions, boolean widgetRequest) {
     Objects.requireNonNull(accountId, "accountId");
     Objects.requireNonNull(userId, "userId");
     final HttpUrl.Builder urlBuilder = baseApiUrl(requestOptions)
@@ -142,22 +142,22 @@ public final class SaaSquatchClient implements Closeable {
    * <a href="https://docs.referralsaasquatch.com/api/methods/#open_user_upsert">Link to official
    * docs</a>
    */
-  public Publisher<SaaSquatchMapResponse> userUpsert(@Nonnull Map<String, Object> userInput,
-      @Nullable SaaSquatchRequestOptions requestOptions) {
-    return _userUpsert(userInput, requestOptions, false).map(SaaSquatchMapResponse::new);
+  public Publisher<MapApiResponse> userUpsert(@Nonnull Map<String, Object> userInput,
+      @Nullable RequestOptions requestOptions) {
+    return _userUpsert(userInput, requestOptions, false).map(MapApiResponse::new);
   }
 
   /**
    * Create or update a user and render the widget.<br>
    * By default, the result of the response can be unmarshalled to {@link WidgetUpsertResult}.
    */
-  public Publisher<SaaSquatchMapResponse> widgetUpsert(@Nonnull Map<String, Object> userInput,
-      @Nullable SaaSquatchRequestOptions requestOptions) {
-    return _userUpsert(userInput, requestOptions, true).map(SaaSquatchMapResponse::new);
+  public Publisher<MapApiResponse> widgetUpsert(@Nonnull Map<String, Object> userInput,
+      @Nullable RequestOptions requestOptions) {
+    return _userUpsert(userInput, requestOptions, true).map(MapApiResponse::new);
   }
 
   private Flowable<Response> _userUpsert(@Nonnull Map<String, Object> userInput,
-      @Nullable SaaSquatchRequestOptions requestOptions, boolean widgetRequest) {
+      @Nullable RequestOptions requestOptions, boolean widgetRequest) {
     final Map<String, Object> body = userInput;
     final String accountId =
         Objects.requireNonNull((String) body.get("accountId"), "accountId missing");
@@ -184,8 +184,8 @@ public final class SaaSquatchClient implements Closeable {
    * By default, the result of the response can be unmarshalled to {@link UserEventResult}.<br>
    * <a href="https://docs.referralsaasquatch.com/api/methods/#trackEvent">Link to official docs</a>
    */
-  public Publisher<SaaSquatchMapResponse> logUserEvent(@Nonnull Map<String, Object> userEventInput,
-      @Nullable SaaSquatchRequestOptions requestOptions) {
+  public Publisher<MapApiResponse> logUserEvent(@Nonnull Map<String, Object> userEventInput,
+      @Nullable RequestOptions requestOptions) {
     final Map<String, Object> body = userEventInput;
     final String accountId =
         Objects.requireNonNull((String) body.get("accountId"), "accountId missing");
@@ -202,7 +202,7 @@ public final class SaaSquatchClient implements Closeable {
       requestOptions.mutateRequest(requestBuilder, urlBuilder);
     }
     requestBuilder.url(urlBuilder.build()).post(InternalRequestBodies.jsonPojo(body));
-    return executeRequest(requestBuilder).map(SaaSquatchMapResponse::new);
+    return executeRequest(requestBuilder).map(MapApiResponse::new);
   }
 
   /**
@@ -210,9 +210,9 @@ public final class SaaSquatchClient implements Closeable {
    * <a href="https://docs.referralsaasquatch.com/api/methods/#open_apply_code">Link to official
    * docs</a>
    */
-  public Publisher<SaaSquatchMapResponse> applyReferralCode(@Nonnull String accountId,
+  public Publisher<MapApiResponse> applyReferralCode(@Nonnull String accountId,
       @Nonnull String userId, @Nonnull String referralCode,
-      @Nullable SaaSquatchRequestOptions requestOptions) {
+      @Nullable RequestOptions requestOptions) {
     Objects.requireNonNull(accountId, "accountId");
     Objects.requireNonNull(userId, "userId");
     Objects.requireNonNull(referralCode, "referralCode");
@@ -229,11 +229,11 @@ public final class SaaSquatchClient implements Closeable {
       requestOptions.mutateRequest(requestBuilder, urlBuilder);
     }
     requestBuilder.url(urlBuilder.build()).post(InternalRequestBodies.jsonString("{}"));
-    return executeRequest(requestBuilder).map(SaaSquatchMapResponse::new);
+    return executeRequest(requestBuilder).map(MapApiResponse::new);
   }
 
   @Nonnull
-  private String getTenantAlias(@Nullable SaaSquatchRequestOptions requestOptions) {
+  private String getTenantAlias(@Nullable RequestOptions requestOptions) {
     String tenantAlias = null;
     if (requestOptions != null) {
       tenantAlias = requestOptions.getTenantAlias();
@@ -244,7 +244,7 @@ public final class SaaSquatchClient implements Closeable {
     return Objects.requireNonNull(tenantAlias, "tenantAlias missing");
   }
 
-  private HttpUrl.Builder baseApiUrl(@Nullable SaaSquatchRequestOptions requestOptions) {
+  private HttpUrl.Builder baseApiUrl(@Nullable RequestOptions requestOptions) {
     final String tenantAlias = getTenantAlias(requestOptions);
     return new HttpUrl.Builder().scheme(scheme).host(clientOptions.getAppDomain())
         .addPathSegment("api")

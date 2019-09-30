@@ -36,9 +36,9 @@ public class SaaSquatchClientIntegrationTest {
     userInput.put("accountId", "asdf");
     userInput.put("firstName", "Foo");
     userInput.put("lastName", "Bar");
-    final SaaSquatchMapResponse response = Flowable.fromPublisher(
+    final MapApiResponse response = Flowable.fromPublisher(
         saasquatchClient.userUpsert(userInput,
-            SaaSquatchRequestOptions.newBuilder().setApiKey(getApiKey()).build()))
+            RequestOptions.newBuilder().setApiKey(getApiKey()).build()))
         .blockingSingle();
     assertEquals(200, response.getStatusCode());
     final User user = response.toModel(User.class);
@@ -59,15 +59,15 @@ public class SaaSquatchClientIntegrationTest {
     userInput.put("accountId", "asdf");
     userInput.put("firstName", "Foo");
     userInput.put("lastName", "Bar");
-    final SaaSquatchMapResponse response = Flowable.fromPublisher(
+    final MapApiResponse response = Flowable.fromPublisher(
         saasquatchClient.widgetUpsert(userInput,
-            SaaSquatchRequestOptions.newBuilder()
+            RequestOptions.newBuilder()
                 .addQueryParam("widgetType", "invalid widget type")
                 .setApiKey(getApiKey())
                 .build()))
         .blockingSingle();
     assertEquals(400, response.getStatusCode());
-    final SaaSquatchApiError apiError = response.getApiError();
+    final ApiError apiError = response.getApiError();
     assertNotNull(apiError);
     assertEquals("RS036", apiError.getRsCode());
   }

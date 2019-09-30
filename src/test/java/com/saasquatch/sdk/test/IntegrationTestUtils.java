@@ -6,7 +6,7 @@ import java.util.Set;
 import java.util.stream.Stream;
 import com.google.common.collect.ImmutableSet;
 import com.saasquatch.sdk.SaaSquatchClient;
-import com.saasquatch.sdk.SaaSquatchClientOptions;
+import com.saasquatch.sdk.ClientOptions;
 
 public class IntegrationTestUtils {
 
@@ -44,7 +44,7 @@ public class IntegrationTestUtils {
   }
 
   public static SaaSquatchClient newTestClient() {
-    return SaaSquatchClient.create(SaaSquatchClientOptions.newBuilder()
+    return SaaSquatchClient.create(ClientOptions.newBuilder()
         .setTenantAlias(getTenantAlias())
         .setAppDomain(getAppDomain())
         .build());

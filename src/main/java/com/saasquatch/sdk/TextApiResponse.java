@@ -5,13 +5,13 @@ import java.io.UncheckedIOException;
 import okhttp3.Response;
 
 /**
- * {@link SaaSquatchApiResponse} that returns plain text
+ * {@link ApiResponse} that returns plain text
  *
  * @author sli
  */
-public class SaaSquatchTextResponse extends SaaSquatchApiResponse<String> {
+public class TextApiResponse extends ApiResponse<String> {
 
-  SaaSquatchTextResponse(Response response) {
+  TextApiResponse(Response response) {
     super(response);
   }
 

@@ -13,13 +13,13 @@ import okhttp3.Response;
  *
  * @author sli
  */
-public class SaaSquatchGraphQLResult {
+public class GraphQLResult {
 
   private final Map<String, Object> data;
   private final List<Object> errors;
   private final Map<String, Object> extensions;
 
-  SaaSquatchGraphQLResult(@Nullable Map<String, Object> data, @Nullable List<Object> errors,
+  GraphQLResult(@Nullable Map<String, Object> data, @Nullable List<Object> errors,
       @Nullable Map<String, Object> extensions) {
     this.data = data;
     this.errors = errors;
@@ -41,9 +41,9 @@ public class SaaSquatchGraphQLResult {
     return extensions;
   }
 
-  static SaaSquatchGraphQLResult fromResponse(Response response) {
+  static GraphQLResult fromResponse(Response response) {
     try {
-      return gson.fromJson(response.body().string(), SaaSquatchGraphQLResult.class);
+      return gson.fromJson(response.body().string(), GraphQLResult.class);
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }

@@ -11,14 +11,14 @@ import com.saasquatch.sdk.models.SaaSquatchModel;
 import okhttp3.Response;
 
 /**
- * {@link SaaSquatchApiResponse} that has a JSON array. The JSON array will be represented as a
+ * {@link ApiResponse} that has a JSON array. The JSON array will be represented as a
  * {@link List} since we want to be JSON library agnostic.
  *
  * @author sli
  */
-public class SaaSquatchListResponse extends SaaSquatchApiResponse<List<Object>> {
+public class ListApiResponse extends ApiResponse<List<Object>> {
 
-  SaaSquatchListResponse(Response response) {
+  ListApiResponse(Response response) {
     super(response);
   }
 
