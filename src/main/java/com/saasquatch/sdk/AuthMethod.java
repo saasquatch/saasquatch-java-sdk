@@ -3,9 +3,7 @@ package com.saasquatch.sdk;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import java.util.Objects;
 import javax.annotation.Nonnull;
-import okhttp3.Credentials;
 import okhttp3.Request;
-import okhttp3.Request.Builder;
 
 /**
  * Method to authenticate with SaaSquatch
@@ -56,7 +54,7 @@ public abstract class AuthMethod {
     }
 
     @Override
-    protected void mutateRequest(Builder requestBuilder) {}
+    protected void mutateRequest(Request.Builder requestBuilder) {}
 
   }
 
@@ -71,7 +69,8 @@ public abstract class AuthMethod {
 
     @Override
     protected void mutateRequest(Request.Builder requestBuilder) {
-      requestBuilder.header("Authorization", Credentials.basic("", apiKey, UTF_8));
+      requestBuilder.header("Authorization",
+          "Basic " + OkioBase64.encode((":" + apiKey).getBytes(UTF_8)));
     }
 
   }
