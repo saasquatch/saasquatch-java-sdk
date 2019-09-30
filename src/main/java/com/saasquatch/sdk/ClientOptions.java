@@ -1,5 +1,6 @@
 package com.saasquatch.sdk;
 
+import static com.saasquatch.sdk.InternalUtils.requireNotBlank;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import javax.annotation.Nonnull;
@@ -77,10 +78,7 @@ public class ClientOptions {
      * Set the default tenantAlias that should be used for all requests
      */
     public Builder setTenantAlias(@Nonnull String tenantAlias) {
-      if (Objects.requireNonNull(tenantAlias, "tenantAlias").trim().isEmpty()) {
-        throw new IllegalArgumentException("Blank tenantAlias");
-      }
-      this.tenantAlias = tenantAlias;
+      this.tenantAlias = requireNotBlank(tenantAlias, "tenantAlias");
       return this;
     }
 
@@ -105,11 +103,7 @@ public class ClientOptions {
      *        or end with '/'.
      */
     public Builder setAppDomain(@Nonnull String appDomain) {
-      Objects.requireNonNull(appDomain, "appDomain");
-      // Validate appDomain
-      if (appDomain.trim().isEmpty()) {
-        throw new IllegalArgumentException("Blank appDomain");
-      }
+      requireNotBlank(appDomain, "appDomain");
       if (appDomain.contains("://")) {
         throw new IllegalArgumentException("appDomain should not have a protocol");
       }

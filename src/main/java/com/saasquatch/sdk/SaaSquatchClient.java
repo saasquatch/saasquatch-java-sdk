@@ -1,5 +1,6 @@
 package com.saasquatch.sdk;
 
+import static com.saasquatch.sdk.InternalUtils.requireNotBlank;
 import static com.saasquatch.sdk.InternalUtils.urlEncode;
 import java.io.Closeable;
 import java.util.HashMap;
@@ -79,7 +80,7 @@ public final class SaaSquatchClient implements Closeable {
       @Nullable String operationName, @Nullable Map<String, Object> variables,
       @Nullable RequestOptions requestOptions) {
     final Map<String, Object> body = new HashMap<>();
-    body.put("query", Objects.requireNonNull(query, "query"));
+    body.put("query", requireNotBlank(query, "query"));
     if (operationName != null) {
       body.put("operationName", operationName);
     }
@@ -118,8 +119,8 @@ public final class SaaSquatchClient implements Closeable {
 
   private Flowable<Response> _getUser(@Nonnull String accountId, @Nonnull String userId,
       @Nullable RequestOptions requestOptions, boolean widgetRequest) {
-    Objects.requireNonNull(accountId, "accountId");
-    Objects.requireNonNull(userId, "userId");
+    requireNotBlank(accountId, "accountId");
+    requireNotBlank(userId, "userId");
     final StringBuilder urlStrBuilder = new StringBuilder(baseApiUrl(requestOptions))
         .append(widgetRequest ? "/widget" : "/open")
         .append("/account/").append(urlEncode(accountId))
@@ -159,9 +160,8 @@ public final class SaaSquatchClient implements Closeable {
   private Flowable<Response> _userUpsert(@Nonnull Map<String, Object> userInput,
       @Nullable RequestOptions requestOptions, boolean widgetRequest) {
     final Map<String, Object> body = userInput;
-    final String accountId =
-        Objects.requireNonNull((String) body.get("accountId"), "accountId missing");
-    final String userId = Objects.requireNonNull((String) body.get("id"), "id missing");
+    final String accountId = requireNotBlank((String) body.get("accountId"), "accountId");
+    final String userId = requireNotBlank((String) body.get("id"), "id");
     final StringBuilder urlStrBuilder = new StringBuilder(baseApiUrl(requestOptions))
         .append(widgetRequest ? "/widget" : "/open")
         .append("/account/").append(urlEncode(accountId))
@@ -186,9 +186,8 @@ public final class SaaSquatchClient implements Closeable {
   public Publisher<MapApiResponse> logUserEvent(@Nonnull Map<String, Object> userEventInput,
       @Nullable RequestOptions requestOptions) {
     final Map<String, Object> body = userEventInput;
-    final String accountId =
-        Objects.requireNonNull((String) body.get("accountId"), "accountId missing");
-    final String userId = Objects.requireNonNull((String) body.get("userId"), "userId missing");
+    final String accountId = requireNotBlank((String) body.get("accountId"), "accountId");
+    final String userId = requireNotBlank((String) body.get("userId"), "userId");
     final HttpUrl.Builder urlBuilder = HttpUrl.parse(new StringBuilder(baseApiUrl(requestOptions))
         .append("/open/account/").append(urlEncode(accountId))
         .append("/user/").append(urlEncode(userId)).append("/events").toString())
@@ -209,9 +208,9 @@ public final class SaaSquatchClient implements Closeable {
   public Publisher<MapApiResponse> applyReferralCode(@Nonnull String accountId,
       @Nonnull String userId, @Nonnull String referralCode,
       @Nullable RequestOptions requestOptions) {
-    Objects.requireNonNull(accountId, "accountId");
-    Objects.requireNonNull(userId, "userId");
-    Objects.requireNonNull(referralCode, "referralCode");
+    requireNotBlank(accountId, "accountId");
+    requireNotBlank(userId, "userId");
+    requireNotBlank(referralCode, "referralCode");
     final HttpUrl.Builder urlBuilder = HttpUrl.parse(new StringBuilder(baseApiUrl(requestOptions))
         .append("/open/code/").append(urlEncode(referralCode))
         .append("/account/").append(urlEncode(accountId))
@@ -242,7 +241,7 @@ public final class SaaSquatchClient implements Closeable {
     if (tenantAlias == null) {
       tenantAlias = this.clientOptions.getTenantAlias();
     }
-    return Objects.requireNonNull(tenantAlias, "tenantAlias missing");
+    return requireNotBlank(tenantAlias, "tenantAlias");
   }
 
   @Nonnull

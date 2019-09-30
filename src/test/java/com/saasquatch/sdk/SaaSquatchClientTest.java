@@ -10,6 +10,11 @@ public class SaaSquatchClientTest {
     assertThrows(NullPointerException.class, () -> SaaSquatchClient.createForTenant(null));
     assertThrows(IllegalArgumentException.class, () -> SaaSquatchClient.createForTenant(" "));
     assertThrows(NullPointerException.class, () -> SaaSquatchClient.create(null));
+    try (SaaSquatchClient saasquatchClient = SaaSquatchClient.createForTenant("fake")) {
+      assertThrows(NullPointerException.class, () -> saasquatchClient.getUser(null, null, null));
+      assertThrows(IllegalArgumentException.class, () -> saasquatchClient.getUser(" ", null, null));
+      assertThrows(IllegalArgumentException.class, () -> saasquatchClient.getUser(" ", " ", null));
+    }
   }
 
 }

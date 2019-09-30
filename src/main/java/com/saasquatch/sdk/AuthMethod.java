@@ -1,7 +1,7 @@
 package com.saasquatch.sdk;
 
+import static com.saasquatch.sdk.InternalUtils.requireNotBlank;
 import static java.nio.charset.StandardCharsets.UTF_8;
-import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
 import okhttp3.Request;
@@ -39,14 +39,14 @@ public abstract class AuthMethod {
    * Authenticate with the given apiKey
    */
   public static AuthMethod ofApiKey(@Nonnull String apiKey) {
-    return new ApiKeyAuth(Objects.requireNonNull(apiKey, "apiKey"));
+    return new ApiKeyAuth(requireNotBlank(apiKey, "apiKey"));
   }
 
   /**
    * Authenticate with the given JWT
    */
   public static JwtAuth ofJwt(@Nonnull String jwt) {
-    return new JwtAuth(Objects.requireNonNull(jwt, "jwt"));
+    return new JwtAuth(requireNotBlank(jwt, "jwt"));
   }
 
   private static class NoAuth extends AuthMethod {

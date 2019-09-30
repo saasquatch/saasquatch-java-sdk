@@ -2,6 +2,7 @@ package com.saasquatch.sdk;
 
 import static com.saasquatch.sdk.InternalUtils.entryOf;
 import static com.saasquatch.sdk.InternalUtils.unmodifiableList;
+import static com.saasquatch.sdk.InternalUtils.requireNotBlank;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -84,10 +85,7 @@ public final class RequestOptions {
      * Override the default tenantAlias for a request
      */
     public Builder setTenantAlias(@Nonnull String tenantAlias) {
-      if (Objects.requireNonNull(tenantAlias, "tenantAlias").trim().isEmpty()) {
-        throw new IllegalArgumentException("Blank tenantAlias");
-      }
-      this.tenantAlias = tenantAlias;
+      this.tenantAlias = requireNotBlank(tenantAlias, "tenantAlias");
       return this;
     }
 
@@ -103,12 +101,8 @@ public final class RequestOptions {
      * Add an HTTP header
      */
     public Builder addHeader(@Nonnull String key, @Nonnull String value) {
-      if (Objects.requireNonNull(key, "key").trim().isEmpty()) {
-        throw new IllegalArgumentException("Blank key");
-      }
-      if (Objects.requireNonNull(value, "value").trim().isEmpty()) {
-        throw new IllegalArgumentException("Blank key");
-      }
+      requireNotBlank(key, "key");
+      requireNotBlank(value, "value");
       if (BLOCKED_HEADERS.contains(key)) {
         throw new IllegalArgumentException(key + " is not allowed");
       }
@@ -134,12 +128,8 @@ public final class RequestOptions {
      * Add a URL query parameter. Note that the key and value are expected to be <em>unencoded</em>.
      */
     public Builder addQueryParam(@Nonnull String key, @Nonnull String value) {
-      if (Objects.requireNonNull(key, "key").trim().isEmpty()) {
-        throw new IllegalArgumentException("Blank key");
-      }
-      if (Objects.requireNonNull(value, "value").trim().isEmpty()) {
-        throw new IllegalArgumentException("Blank key");
-      }
+      requireNotBlank(key, "key");
+      requireNotBlank(value, "value");
       queryParams.add(entryOf(key, value));
       return this;
     }

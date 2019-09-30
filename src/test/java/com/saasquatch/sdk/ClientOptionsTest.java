@@ -10,7 +10,7 @@ public class ClientOptionsTest {
   public void testNullAndInvalid() {
     final ClientOptions.Builder builder = ClientOptions.newBuilder();
     assertThrows(NullPointerException.class, () -> builder.setTenantAlias(null));
-    assertThrows(NullPointerException.class, () -> builder.setTenantAlias("\r\n"));
+    assertThrows(IllegalArgumentException.class, () -> builder.setTenantAlias("\r\n"));
     assertThrows(NullPointerException.class, () -> builder.setAppDomain(null));
     assertThrows(IllegalArgumentException.class, () -> builder.setAppDomain("\n"));
     assertThrows(IllegalArgumentException.class,

@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.reactivestreams.Publisher;
@@ -82,6 +83,13 @@ class InternalUtils {
     } catch (UnsupportedEncodingException e) {
       throw new RuntimeException(e); // Should not happen
     }
+  }
+
+  public static String requireNotBlank(@Nullable String s, @Nonnull String msg) {
+    if (Objects.requireNonNull(s, msg).trim().isEmpty()) {
+      throw new IllegalArgumentException(msg);
+    }
+    return s;
   }
 
 }
