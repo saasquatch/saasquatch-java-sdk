@@ -1,13 +1,17 @@
 package com.saasquatch.sdk;
 
+import static com.saasquatch.sdk.InternalGsonHolder.gson;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.HashMap;
 import java.util.Map;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.saasquatch.sdk.models.User;
 import com.saasquatch.sdk.test.IntegrationTestUtils;
 import io.reactivex.Flowable;
@@ -90,6 +94,17 @@ public class SaaSquatchClientIntegrationTest {
     final ApiError apiError = response.getApiError();
     assertNotNull(apiError);
     assertEquals("RS036", apiError.getRsCode());
+  }
+
+  @Test
+  public void testGraphQLWorks() {
+    final String query = "query { users { totalCount } }";
+    final GraphQLApiResponse response =
+        Flowable.fromPublisher(saasquatchClient.graphQL(query, null, null, null)).blockingSingle();
+    assertEquals(200, response.getStatusCode());
+    final JsonObject dataJson = gson.toJsonTree(response.getData().getData()).getAsJsonObject();
+    final JsonElement totalCountElem = dataJson.get("users").getAsJsonObject().get("totalCount");
+    assertTrue(totalCountElem.isJsonPrimitive());
   }
 
 }

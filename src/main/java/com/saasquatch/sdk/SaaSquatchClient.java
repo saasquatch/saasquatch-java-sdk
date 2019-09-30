@@ -90,9 +90,7 @@ public final class SaaSquatchClient implements Closeable {
     final HttpUrl.Builder urlBuilder =
         HttpUrl.parse(baseApiUrl(requestOptions) + "/graphql").newBuilder();
     final Request.Builder requestBuilder = new Request.Builder();
-    if (requestOptions != null) {
-      mutateRequest(requestOptions, requestBuilder, urlBuilder);
-    }
+    mutateRequest(requestOptions, requestBuilder, urlBuilder);
     requestBuilder.url(urlBuilder.build()).post(InternalRequestBodies.jsonPojo(body));
     return executeRequest(requestBuilder).map(GraphQLApiResponse::new);
   }
@@ -130,9 +128,7 @@ public final class SaaSquatchClient implements Closeable {
     }
     final HttpUrl.Builder urlBuilder = HttpUrl.parse(urlStrBuilder.toString()).newBuilder();
     final Request.Builder requestBuilder = new Request.Builder();
-    if (requestOptions != null) {
-      mutateRequest(requestOptions, requestBuilder, urlBuilder);
-    }
+    mutateRequest(requestOptions, requestBuilder, urlBuilder);
     requestBuilder.url(urlBuilder.build()).get();
     return executeRequest(requestBuilder);
   }
@@ -171,9 +167,7 @@ public final class SaaSquatchClient implements Closeable {
     }
     final HttpUrl.Builder urlBuilder = HttpUrl.parse(urlStrBuilder.toString()).newBuilder();
     final Request.Builder requestBuilder = new Request.Builder();
-    if (requestOptions != null) {
-      mutateRequest(requestOptions, requestBuilder, urlBuilder);
-    }
+    mutateRequest(requestOptions, requestBuilder, urlBuilder);
     requestBuilder.url(urlBuilder.build()).put(InternalRequestBodies.jsonPojo(body));
     return executeRequest(requestBuilder);
   }
@@ -193,9 +187,7 @@ public final class SaaSquatchClient implements Closeable {
         .append("/user/").append(urlEncode(userId)).append("/events").toString())
         .newBuilder();
     final Request.Builder requestBuilder = new Request.Builder();
-    if (requestOptions != null) {
-      mutateRequest(requestOptions, requestBuilder, urlBuilder);
-    }
+    mutateRequest(requestOptions, requestBuilder, urlBuilder);
     requestBuilder.url(urlBuilder.build()).post(InternalRequestBodies.jsonPojo(body));
     return executeRequest(requestBuilder).map(MapApiResponse::new);
   }
@@ -217,9 +209,7 @@ public final class SaaSquatchClient implements Closeable {
         .append("/user/").append(urlEncode(userId)).toString())
         .newBuilder();
     final Request.Builder requestBuilder = new Request.Builder();
-    if (requestOptions != null) {
-      mutateRequest(requestOptions, requestBuilder, urlBuilder);
-    }
+    mutateRequest(requestOptions, requestBuilder, urlBuilder);
     requestBuilder.url(urlBuilder.build()).post(InternalRequestBodies.jsonString("{}"));
     return executeRequest(requestBuilder).map(MapApiResponse::new);
   }
