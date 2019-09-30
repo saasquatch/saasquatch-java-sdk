@@ -47,7 +47,7 @@ android {
 }
 ```
 
-This library aims to abstract away the I/O layer and [Reactive Streams](https://www.reactive-streams.org/) implementations to be implementation agnostic. As of right now, this library depends on [RxJava 2](https://github.com/ReactiveX/RxJava), [Gson](https://github.com/google/gson), and [OkHttp](https://square.github.io/okhttp/), but never exposes library-specific interfaces other than Reactive Streams interfaces. __It is recommended that you explicitly import the transitive dependencies if you intend to use them__, since we may switch to other I/O or Reactive Streams libraries in the future.
+This library aims to abstract away the I/O layer and [Reactive Streams](https://www.reactive-streams.org/) implementations to be implementation agnostic. As of right now, this library depends on [RxJava 2](https://github.com/ReactiveX/RxJava) (with plans of upgrading to RxJava 3), [Gson](https://github.com/google/gson), and [OkHttp](https://square.github.io/okhttp/) (with plans of upgrading to Apache HttpClient 5), but never exposes library-specific interfaces other than Reactive Streams interfaces. __It is recommended that you explicitly import the transitive dependencies if you intend to use them__, since we may switch to other I/O or Reactive Streams libraries in the future.
 
 ## Using the SDK
 
@@ -60,14 +60,14 @@ SaaSquatchClient.createForTenant("yourTenantAlias");
 If you want more advanced options or you are in a multi-tenant environment, you can use:
 
 ```java
-SaaSquatchClient.create(SaaSquatchClientOptions.newBuilder()
+SaaSquatchClient.create(ClientOptions.newBuilder()
     .setTenantAlias("yourTenantAlias") // This is optional
     .setRequestTimeout(5, TimeUnit.SECONDS)
     // etc.
     .build());
 ```
 
-If you create a `SaaSquatchClient` without a `tenantAlias`, then you'll need to pass in a `tenantAlias` via `SaaSquatchRequestOptions` for every request you make. The `tenantAlias` in `SaaSquatchRequestOptions` takes precedence over the one in `SaaSquatchClientOptions`.
+If you create a `SaaSquatchClient` without a `tenantAlias`, then you'll need to pass in a `tenantAlias` via `RequestOptions` for every request you make. The `tenantAlias` in `RequestOptions` takes precedence over the one in `SaaSquatchClientOptions`.
 
 It is recommended that you keep a singleton `SaaSquatchClient` for all your requests. Do not create a new `SaaSquatchClient` for every request. `SaaSquatchClient` implements `Closeable`, and it's a good idea to call `close()` to release resources when you are done with it.
 
@@ -78,7 +78,7 @@ final Map<String, Object> userInput = ...;
 final String jwt = ...;
 final Publisher<SaaSquatchMapResponse> responsePublisher =
     saasquatchClient.userUpsert(userInput,
-        SaaSquatchRequestOptions.newBuilder().setJwt(jwt).build());
+        RequestOptions.newBuilder().setJwt(jwt).build());
 Flowable.fromPublisher(responsePublisher)
     .doOnNext(response -> {
       System.out.printf("Status[%d] received\n", response.getStatusCode());
