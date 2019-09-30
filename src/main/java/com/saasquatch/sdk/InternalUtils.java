@@ -5,6 +5,9 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.AbstractMap.SimpleImmutableEntry;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -50,6 +53,19 @@ class InternalUtils {
 
   public static <K, V> Map.Entry<K, V> entryOf(@Nullable K k, @Nullable V v) {
     return new SimpleImmutableEntry<>(k, v);
+  }
+
+  /**
+   * Same as {@link Collections#unmodifiableList(List)}, but makes a defensive copy
+   */
+  public static <T> List<T> unmodifiableList(@Nonnull List<T> list) {
+    if (list.isEmpty()) {
+      return Collections.emptyList();
+    }
+    final Object[] arr = list.toArray();
+    @SuppressWarnings("unchecked")
+    final List<T> listCopy = (List<T>) Arrays.asList(arr);
+    return Collections.unmodifiableList(listCopy);
   }
 
   /**

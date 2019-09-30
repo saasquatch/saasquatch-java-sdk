@@ -1,6 +1,7 @@
 package com.saasquatch.sdk;
 
 import static com.saasquatch.sdk.InternalUtils.entryOf;
+import static com.saasquatch.sdk.InternalUtils.unmodifiableList;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -38,8 +39,9 @@ public final class RequestOptions {
   private final List<Map.Entry<String, String>> headers;
   private final List<Map.Entry<String, String>> queryParams;
 
-  private RequestOptions(String tenantAlias, AuthMethod authMethod,
-      List<Map.Entry<String, String>> multiHeaders, List<Map.Entry<String, String>> queryParams) {
+  private RequestOptions(@Nullable String tenantAlias, @Nullable AuthMethod authMethod,
+      @Nonnull List<Map.Entry<String, String>> multiHeaders,
+      @Nonnull List<Map.Entry<String, String>> queryParams) {
     this.tenantAlias = tenantAlias;
     this.authMethod = authMethod;
     this.headers = multiHeaders;
@@ -56,7 +58,7 @@ public final class RequestOptions {
     return authMethod;
   }
 
-  void mutateRequest(Request.Builder requestBuilder, HttpUrl.Builder urlBuilder) {
+  void mutateRequest(@Nonnull Request.Builder requestBuilder, @Nonnull HttpUrl.Builder urlBuilder) {
     for (final Map.Entry<String, String> e : headers) {
       requestBuilder.addHeader(e.getKey(), e.getValue());
     }
@@ -160,9 +162,8 @@ public final class RequestOptions {
      * Build an immutable {@link RequestOptions}
      */
     public RequestOptions build() {
-      return new RequestOptions(tenantAlias, authMethod,
-          Collections.unmodifiableList(new ArrayList<>(headers)),
-          Collections.unmodifiableList(new ArrayList<>(queryParams)));
+      return new RequestOptions(tenantAlias, authMethod, unmodifiableList(headers),
+          unmodifiableList(queryParams));
     }
 
   }

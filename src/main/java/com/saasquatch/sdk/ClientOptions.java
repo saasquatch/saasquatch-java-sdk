@@ -21,7 +21,7 @@ public class ClientOptions {
   private final long requestTimeoutMillis;
   private final long connectTimeoutMillis;
 
-  private ClientOptions(@Nullable String tenantAlias, @Nonnull AuthMethod authMethod,
+  private ClientOptions(@Nullable String tenantAlias, @Nullable AuthMethod authMethod,
       @Nonnull String appDomain, long requestTimeoutMillis, long connectTimeoutMillis) {
     this.tenantAlias = tenantAlias;
     this.authMethod = authMethod;
@@ -59,6 +59,7 @@ public class ClientOptions {
 
   public static class Builder {
 
+    private static final String DEFAULT_APP_DOMAIN = "app.referralsaasquatch.com";
     private static final long DEFAULT_REQUEST_TIMEOUT_MILLIS = TimeUnit.SECONDS.toMillis(15);
     private static final long DEFAULT_CONNECT_TIMOEUT_MILLIS = TimeUnit.SECONDS.toMillis(5);
     private static final long MAX_REQUEST_TIMEOUT_MILLIS = TimeUnit.MINUTES.toMillis(1);
@@ -66,7 +67,7 @@ public class ClientOptions {
 
     private String tenantAlias;
     private AuthMethod authMethod;
-    private String appDomain = "app.referralsaasquatch.com";
+    private String appDomain = DEFAULT_APP_DOMAIN;
     private long requestTimeoutMillis = DEFAULT_REQUEST_TIMEOUT_MILLIS;
     private long connectTimeoutMillis = DEFAULT_CONNECT_TIMOEUT_MILLIS;
 
