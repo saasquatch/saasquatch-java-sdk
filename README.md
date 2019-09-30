@@ -47,29 +47,45 @@ android {
 }
 ```
 
-This library aims to abstract away the I/O layer and [Reactive Streams](https://www.reactive-streams.org/) implementations to be implementation agnostic. As of right now, this library depends on [RxJava 2](https://github.com/ReactiveX/RxJava) (with plans of upgrading to RxJava 3), [Gson](https://github.com/google/gson), and [OkHttp](https://square.github.io/okhttp/) (with plans of upgrading to Apache HttpClient 5), but never exposes library-specific interfaces other than Reactive Streams interfaces. __It is recommended that you explicitly import the transitive dependencies if you intend to use them__, since we may switch to other I/O or Reactive Streams libraries in the future.
+This library aims to abstract away the I/O layer and [Reactive Streams](https://www.reactive-streams.org/) implementations to be implementation agnostic. As of right now, this library depends on [RxJava 2](https://github.com/ReactiveX/RxJava) (with plans of upgrading to RxJava 3), [Gson](https://github.com/google/gson), and [OkHttp](https://square.github.io/okhttp/) (with plans of upgrading to Apache HttpClient 5), but never exposes library-specific interfaces other than Reactive Streams interfaces. **It is recommended that you explicitly import the transitive dependencies if you intend to use them**, since we may switch to other I/O or Reactive Streams libraries in the future.
 
 ## Using the SDK
 
-The entry point of the SDK is `SaaSquatchClient`. To create a `SaaSquatchClient` with default options, use:
+The entry point of the SDK is `SaaSquatchClient`. To create a `SaaSquatchClient` for your tenant with default options, use:
 
 ```java
 SaaSquatchClient.createForTenant("yourTenantAlias");
 ```
 
-If you want more advanced options or you are in a multi-tenant environment, you can use:
+If you are in a multi-tenant environment, you can create a tenant-agnostic `SaaSquatchClient` like this:
+
+```java
+SaaSquatchClient.create(ClientOptions.newBuilder().build());
+```
+
+The code above will create a `SaaSquatchClient` without a default `tenantAlias`, in which case you'll need to pass in a `tenantAlias` via `RequestOptions` for every request you make.
+
+You can also use more advanced options like this:
 
 ```java
 SaaSquatchClient.create(ClientOptions.newBuilder()
-    .setTenantAlias("yourTenantAlias") // This is optional
+    .setTenantAlias("yourTenantAlias")
+    /*
+     * This sets the default tenant API key. Note that this option makes more sense
+     * if you are using this SDK on the server side. Use this with caution if you are
+     * building an Android app.
+     */
+    .setAuthMethod(AuthMethod.ofApiKey("yourApiKey"))
     .setRequestTimeout(5, TimeUnit.SECONDS)
     // etc.
     .build());
 ```
 
-If you create a `SaaSquatchClient` without a `tenantAlias`, then you'll need to pass in a `tenantAlias` via `RequestOptions` for every request you make. The `tenantAlias` in `RequestOptions` takes precedence over the one in `SaaSquatchClientOptions`.
+Note that if you are using this SDK on Android, then you most likely
 
 It is recommended that you keep a singleton `SaaSquatchClient` for all your requests. Do not create a new `SaaSquatchClient` for every request. `SaaSquatchClient` implements `Closeable`, and it's a good idea to call `close()` to release resources when you are done with it.
+
+Every API method in `SaaSquatchClient` takes a `RequestOptions`, where you can specify your `tenantAlias` override, authentication method override, etc. The per-method `RequestOptions` always takes precedence over the client-level `ClientOptions`.
 
 `SaaSquatchClient` returns [Reactive Streams](https://www.reactive-streams.org/) interfaces. Assuming you are using RxJava, then a typical API call made with this SDK would look something like this:
 
@@ -109,6 +125,7 @@ TODO
 This project uses a simple Maven build. Compile wilth `mvn compile` and run tests with `mvn test`.
 
 To run integration tests, you'll need a SaaSquatch account, and run:
+
 ```bash
 mvn test -D"com.saasquatch.sdk.test.appDomain"=REPLACEME -D"com.saasquatch.sdk.test.tenantAlias"=REPLACEME -D"com.saasquatch.sdk.test.apiKey"=REPLACEME
 ```

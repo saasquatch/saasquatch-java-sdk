@@ -28,7 +28,8 @@ public abstract class ApiResponse<T> {
   }
 
   public boolean succeeded() {
-    return getStatusCode() < 300;
+    final int statusCode = getStatusCode();
+    return statusCode >= 200 && statusCode < 300;
   }
 
   public boolean failed() {
