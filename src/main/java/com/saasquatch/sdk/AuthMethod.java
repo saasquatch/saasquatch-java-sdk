@@ -47,7 +47,7 @@ public abstract class AuthMethod {
     return new JwtAuth(Objects.requireNonNull(jwt, "jwt"));
   }
 
-  static class NoAuth extends AuthMethod {
+  private static class NoAuth extends AuthMethod {
 
     static final NoAuth INSTANCE = new NoAuth();
 
@@ -60,7 +60,7 @@ public abstract class AuthMethod {
 
   }
 
-  static class ApiKeyAuth extends AuthMethod {
+  private static class ApiKeyAuth extends AuthMethod {
 
     private final String apiKey;
 
@@ -77,7 +77,7 @@ public abstract class AuthMethod {
 
   }
 
-  static class JwtAuth extends AuthMethod {
+  private static class JwtAuth extends AuthMethod {
 
     private final String jwt;
 
