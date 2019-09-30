@@ -82,7 +82,10 @@ public final class RequestOptions {
      * Override the default tenantAlias for a request
      */
     public Builder setTenantAlias(@Nonnull String tenantAlias) {
-      this.tenantAlias = Objects.requireNonNull(tenantAlias, "tenantAlias");
+      if (Objects.requireNonNull(tenantAlias, "tenantAlias").trim().isEmpty()) {
+        throw new IllegalArgumentException("Blank tenantAlias");
+      }
+      this.tenantAlias = tenantAlias;
       return this;
     }
 
@@ -98,8 +101,12 @@ public final class RequestOptions {
      * Add an HTTP header
      */
     public Builder addHeader(@Nonnull String key, @Nonnull String value) {
-      Objects.requireNonNull(key);
-      Objects.requireNonNull(value);
+      if (Objects.requireNonNull(key, "key").trim().isEmpty()) {
+        throw new IllegalArgumentException("Blank key");
+      }
+      if (Objects.requireNonNull(value, "value").trim().isEmpty()) {
+        throw new IllegalArgumentException("Blank key");
+      }
       if (BLOCKED_HEADERS.contains(key)) {
         throw new IllegalArgumentException(key + " is not allowed");
       }
@@ -125,8 +132,12 @@ public final class RequestOptions {
      * Add a URL query parameter. Note that the key and value are expected to be <em>unencoded</em>.
      */
     public Builder addQueryParam(@Nonnull String key, @Nonnull String value) {
-      Objects.requireNonNull(key);
-      Objects.requireNonNull(value);
+      if (Objects.requireNonNull(key, "key").trim().isEmpty()) {
+        throw new IllegalArgumentException("Blank key");
+      }
+      if (Objects.requireNonNull(value, "value").trim().isEmpty()) {
+        throw new IllegalArgumentException("Blank key");
+      }
       queryParams.add(entryOf(key, value));
       return this;
     }

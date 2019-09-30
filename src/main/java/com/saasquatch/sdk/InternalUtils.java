@@ -7,6 +7,7 @@ import java.net.URLEncoder;
 import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.Map;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.reactivestreams.Publisher;
 import io.reactivex.Single;
 import okhttp3.Call;
@@ -47,7 +48,7 @@ class InternalUtils {
     }).toFlowable();
   }
 
-  public static <K, V> Map.Entry<K, V> entryOf(K k, V v) {
+  public static <K, V> Map.Entry<K, V> entryOf(@Nullable K k, @Nullable V v) {
     return new SimpleImmutableEntry<>(k, v);
   }
 

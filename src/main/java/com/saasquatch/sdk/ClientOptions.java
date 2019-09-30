@@ -76,7 +76,10 @@ public class ClientOptions {
      * Set the default tenantAlias that should be used for all requests
      */
     public Builder setTenantAlias(@Nonnull String tenantAlias) {
-      this.tenantAlias = Objects.requireNonNull(tenantAlias, "tenantAlias");
+      if (Objects.requireNonNull(tenantAlias, "tenantAlias").trim().isEmpty()) {
+        throw new IllegalArgumentException("Blank tenantAlias");
+      }
+      this.tenantAlias = tenantAlias;
       return this;
     }
 
