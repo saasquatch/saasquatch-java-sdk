@@ -119,8 +119,7 @@ public class ClientOptions {
      * Build an immutable {@link ClientOptions}
      */
     public ClientOptions build() {
-      return new ClientOptions(tenantAlias, appDomain, requestTimeoutMillis,
-          connectTimeoutMillis);
+      return new ClientOptions(tenantAlias, appDomain, requestTimeoutMillis, connectTimeoutMillis);
     }
 
   }

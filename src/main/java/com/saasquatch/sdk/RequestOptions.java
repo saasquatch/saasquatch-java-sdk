@@ -1,20 +1,16 @@
 package com.saasquatch.sdk;
 
 import static com.saasquatch.sdk.InternalUtils.entryOf;
-import static java.nio.charset.StandardCharsets.UTF_8;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.TreeMap;
 import java.util.TreeSet;
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
-import okhttp3.Credentials;
 import okhttp3.HttpUrl;
 import okhttp3.Request;
 
@@ -37,15 +33,15 @@ public final class RequestOptions {
   }
 
   private final String tenantAlias;
-  private final Map<String, String> singleHeaders;
-  private final List<Map.Entry<String, String>> multiHeaders;
+  private final AuthMethod authMethod;
+  private final List<Map.Entry<String, String>> headers;
   private final List<Map.Entry<String, String>> queryParams;
 
-  private RequestOptions(String tenantAlias, Map<String, String> singleHeaders,
+  private RequestOptions(String tenantAlias, AuthMethod authMethod,
       List<Map.Entry<String, String>> multiHeaders, List<Map.Entry<String, String>> queryParams) {
     this.tenantAlias = tenantAlias;
-    this.singleHeaders = singleHeaders;
-    this.multiHeaders = multiHeaders;
+    this.authMethod = authMethod;
+    this.headers = multiHeaders;
     this.queryParams = queryParams;
   }
 
@@ -55,9 +51,9 @@ public final class RequestOptions {
   }
 
   void mutateRequest(Request.Builder requestBuilder, HttpUrl.Builder urlBuilder) {
-    multiHeaders.forEach(e -> requestBuilder.addHeader(e.getKey(), e.getValue()));
-    singleHeaders.forEach(requestBuilder::header);
+    headers.forEach(e -> requestBuilder.addHeader(e.getKey(), e.getValue()));
     queryParams.forEach(e -> urlBuilder.addQueryParameter(e.getKey(), e.getValue()));
+    authMethod.mutateRequest(requestBuilder);
   }
 
   public static Builder newBuilder() {
@@ -67,8 +63,8 @@ public final class RequestOptions {
   public static final class Builder {
 
     private String tenantAlias;
-    private final Map<String, String> singleHeaders = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
-    private final List<Map.Entry<String, String>> multiHeaders = new ArrayList<>();
+    private AuthMethod authMethod = AuthMethod.noAuth();
+    private final List<Map.Entry<String, String>> headers = new ArrayList<>();
     private final List<Map.Entry<String, String>> queryParams = new ArrayList<>();
 
     private Builder() {}
@@ -82,21 +78,25 @@ public final class RequestOptions {
     }
 
     /**
+     * Set the {@link AuthMethod} for a request
+     */
+    public Builder setAuthMethod(@Nonnull AuthMethod authMethod) {
+      this.authMethod = Objects.requireNonNull(authMethod);
+      return this;
+    }
+
+    /**
      * Set your tenant API key and use it to authenticate your request
      */
     public Builder setApiKey(@Nonnull String apiKey) {
-      Objects.requireNonNull(apiKey, "apiKey");
-      singleHeaders.put("Authorization", Credentials.basic("", apiKey, UTF_8));
-      return this;
+      return setAuthMethod(AuthMethod.ofApiKey(apiKey));
     }
 
     /**
      * Set your JWT and use it to authenticate your request
      */
     public Builder setJwt(@Nonnull String jwt) {
-      Objects.requireNonNull(jwt, "jwt");
-      singleHeaders.put("Authorization", "Bearer " + jwt);
-      return this;
+      return setAuthMethod(AuthMethod.ofJwt(jwt));
     }
 
     /**
@@ -108,7 +108,7 @@ public final class RequestOptions {
       if (BLOCKED_HEADERS.contains(key)) {
         throw new IllegalArgumentException(key + " is not allowed");
       }
-      multiHeaders.add(entryOf(key, value));
+      headers.add(entryOf(key, value));
       return this;
     }
 
@@ -154,11 +154,9 @@ public final class RequestOptions {
      * Build an immutable {@link RequestOptions}
      */
     public RequestOptions build() {
-      return new RequestOptions(tenantAlias,
-          singleHeaders.isEmpty() ? Collections.emptyMap()
-              : Collections.unmodifiableMap(new HashMap<>(singleHeaders)),
-          multiHeaders.isEmpty() ? Collections.emptyList()
-              : Collections.unmodifiableList(new ArrayList<>(multiHeaders)),
+      return new RequestOptions(tenantAlias, authMethod,
+          headers.isEmpty() ? Collections.emptyList()
+              : Collections.unmodifiableList(new ArrayList<>(headers)),
           queryParams.isEmpty() ? Collections.emptyList()
               : Collections.unmodifiableList(new ArrayList<>(queryParams)));
     }
