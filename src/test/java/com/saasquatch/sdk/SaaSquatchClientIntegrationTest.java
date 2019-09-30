@@ -35,18 +35,40 @@ public class SaaSquatchClientIntegrationTest {
     userInput.put("accountId", "asdf");
     userInput.put("firstName", "Foo");
     userInput.put("lastName", "Bar");
-    final MapApiResponse response = Flowable.fromPublisher(
-        saasquatchClient.userUpsert(userInput, null)).blockingSingle();
-    assertEquals(200, response.getStatusCode());
-    final User user = response.toModel(User.class);
-    assertNotNull(user);
-    assertEquals("asdf", user.getId());
-    assertEquals("asdf", user.getAccountId());
-    assertEquals("Foo", user.getFirstName());
-    assertEquals("Bar", user.getLastName());
-    assertNotNull(user.getReferable());
-    assertNotNull(user.getReferralCodes());
-    assertNotNull(user.getSegments());
+    {
+      final MapApiResponse response = Flowable.fromPublisher(
+          saasquatchClient.userUpsert(userInput, null)).blockingSingle();
+      assertEquals(200, response.getStatusCode());
+      final User user = response.toModel(User.class);
+      assertNotNull(user);
+      assertEquals("asdf", user.getId());
+      assertEquals("asdf", user.getAccountId());
+      assertEquals("Foo", user.getFirstName());
+      assertEquals("Bar", user.getLastName());
+      assertNotNull(user.getReferable());
+      assertNotNull(user.getReferralCodes());
+      assertNotNull(user.getSegments());
+    }
+    // Test auth override
+    {
+      final MapApiResponse response = Flowable.fromPublisher(
+          saasquatchClient.userUpsert(userInput,
+              RequestOptions.newBuilder().setAuthMethod(AuthMethod.ofApiKey("fake")).build()))
+          .blockingSingle();
+      assertEquals(401, response.getStatusCode());
+      final ApiError apiError = response.getApiError();
+      assertEquals(401, apiError.getStatusCode());
+    }
+    // Test tenantAlias override
+    {
+      final MapApiResponse response = Flowable.fromPublisher(
+          saasquatchClient.userUpsert(userInput,
+              RequestOptions.newBuilder().setTenantAlias("fake").build()))
+          .blockingSingle();
+      assertEquals(404, response.getStatusCode());
+      final ApiError apiError = response.getApiError();
+      assertEquals(404, apiError.getStatusCode());
+    }
   }
 
   @Test
