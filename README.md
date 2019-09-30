@@ -76,15 +76,15 @@ It is recommended that you keep a singleton `SaaSquatchClient` for all your requ
 ```java
 final Map<String, Object> userInput = ...;
 final String jwt = ...;
-final Publisher<SaaSquatchMapResponse> responsePublisher =
+final Publisher<MapApiResponse> responsePublisher =
     saasquatchClient.userUpsert(userInput,
-        RequestOptions.newBuilder().setJwt(jwt).build());
+        RequestOptions.newBuilder().setAuthMethod(AuthMethod.ofJwt(jwt)).build());
 Flowable.fromPublisher(responsePublisher)
     .doOnNext(response -> {
       System.out.printf("Status[%d] received\n", response.getStatusCode());
       if (response.failed()) {
         // Non 2XX received, in which case we should typically get a standard api error
-        final SaaSquatchApiError apiError = response.getApiError();
+        final ApiError apiError = response.getApiError();
         System.out.println(apiError.getMessage());
       } else {
         // Getting the raw JSON data as a Map and do whatever you want with it
