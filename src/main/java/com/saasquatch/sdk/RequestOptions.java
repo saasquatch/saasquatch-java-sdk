@@ -95,20 +95,6 @@ public final class RequestOptions {
     }
 
     /**
-     * Set your tenant API key and use it to authenticate your request
-     */
-    public Builder setApiKey(@Nonnull String apiKey) {
-      return setAuthMethod(AuthMethod.ofApiKey(apiKey));
-    }
-
-    /**
-     * Set your JWT and use it to authenticate your request
-     */
-    public Builder setJwt(@Nonnull String jwt) {
-      return setAuthMethod(AuthMethod.ofJwt(jwt));
-    }
-
-    /**
      * Add an HTTP header
      */
     public Builder addHeader(@Nonnull String key, @Nonnull String value) {

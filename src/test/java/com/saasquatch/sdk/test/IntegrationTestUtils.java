@@ -5,8 +5,9 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Stream;
 import com.google.common.collect.ImmutableSet;
-import com.saasquatch.sdk.SaaSquatchClient;
+import com.saasquatch.sdk.AuthMethod;
 import com.saasquatch.sdk.ClientOptions;
+import com.saasquatch.sdk.SaaSquatchClient;
 
 public class IntegrationTestUtils {
 
@@ -47,6 +48,7 @@ public class IntegrationTestUtils {
     return SaaSquatchClient.create(ClientOptions.newBuilder()
         .setTenantAlias(getTenantAlias())
         .setAppDomain(getAppDomain())
+        .setAuthMethod(AuthMethod.ofApiKey(getApiKey()))
         .build());
   }
 

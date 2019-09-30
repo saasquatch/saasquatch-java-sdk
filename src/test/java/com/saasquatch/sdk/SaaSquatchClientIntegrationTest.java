@@ -1,6 +1,5 @@
 package com.saasquatch.sdk;
 
-import static com.saasquatch.sdk.test.IntegrationTestUtils.getApiKey;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -37,9 +36,7 @@ public class SaaSquatchClientIntegrationTest {
     userInput.put("firstName", "Foo");
     userInput.put("lastName", "Bar");
     final MapApiResponse response = Flowable.fromPublisher(
-        saasquatchClient.userUpsert(userInput,
-            RequestOptions.newBuilder().setApiKey(getApiKey()).build()))
-        .blockingSingle();
+        saasquatchClient.userUpsert(userInput, null)).blockingSingle();
     assertEquals(200, response.getStatusCode());
     final User user = response.toModel(User.class);
     assertNotNull(user);
@@ -63,7 +60,6 @@ public class SaaSquatchClientIntegrationTest {
         saasquatchClient.widgetUpsert(userInput,
             RequestOptions.newBuilder()
                 .addQueryParam("widgetType", "invalid widget type")
-                .setApiKey(getApiKey())
                 .build()))
         .blockingSingle();
     assertEquals(400, response.getStatusCode());

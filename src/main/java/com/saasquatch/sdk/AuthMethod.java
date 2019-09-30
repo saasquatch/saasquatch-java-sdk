@@ -9,6 +9,8 @@ import okhttp3.Request;
  * Method to authenticate with SaaSquatch
  *
  * @author sli
+ * @see #ofApiKey(String)
+ * @see #ofJwt(String)
  */
 public abstract class AuthMethod {
 
