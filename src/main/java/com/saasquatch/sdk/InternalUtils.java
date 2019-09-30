@@ -65,7 +65,8 @@ class InternalUtils {
   }
 
   /**
-   * Same as {@link Collections#unmodifiableList(List)}, but makes a defensive copy
+   * Same as {@link Collections#unmodifiableList(List)}, but makes a defensive copy so modifying the
+   * original list doesn't modify the unmoodifiable list.
    */
   @Nonnull
   public static <T> List<T> unmodifiableList(@Nonnull List<T> list) {

@@ -1,9 +1,12 @@
 package com.saasquatch.sdk;
 
+import static com.saasquatch.sdk.InternalUtils.unmodifiableList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.AbstractMap.SimpleImmutableEntry;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import org.junit.jupiter.api.Test;
@@ -53,6 +56,15 @@ public class InternalUtilsTest {
     } finally {
       executor.shutdown();
     }
+  }
+
+  @Test
+  public void testUnmodifiableList() {
+    final List<Integer> list = Arrays.asList(1, 2, 3);
+    final List<Integer> unmodifiableList = unmodifiableList(list);
+    list.set(0, 2);
+    assertEquals(Arrays.asList(2, 2, 3), list);
+    assertEquals(Arrays.asList(1, 2, 3), unmodifiableList);
   }
 
 }
