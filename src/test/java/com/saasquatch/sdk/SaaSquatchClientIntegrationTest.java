@@ -24,7 +24,9 @@ public class SaaSquatchClientIntegrationTest {
 
   @AfterAll
   public static void afterAll() {
-    saasquatchClient.close();
+    if (saasquatchClient != null) {
+      saasquatchClient.close();
+    }
   }
 
   @Test
