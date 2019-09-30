@@ -14,9 +14,17 @@ import okhttp3.Request.Builder;
  */
 public abstract class AuthMethod {
 
-  private AuthMethod() {}
+  private final boolean canBeClientDefault;
+
+  private AuthMethod(boolean canBeClientDefault) {
+    this.canBeClientDefault = canBeClientDefault;
+  }
 
   protected abstract void mutateRequest(Request.Builder requestBuilder);
+
+  final boolean canBeClientDefault() {
+    return canBeClientDefault;
+  }
 
   /**
    * No auth
@@ -39,20 +47,25 @@ public abstract class AuthMethod {
     return new JwtAuth(Objects.requireNonNull(jwt, "jwt"));
   }
 
-  private static class NoAuth extends AuthMethod {
+  static class NoAuth extends AuthMethod {
 
     static final NoAuth INSTANCE = new NoAuth();
+
+    public NoAuth() {
+      super(true);
+    }
 
     @Override
     protected void mutateRequest(Builder requestBuilder) {}
 
   }
 
-  private static class ApiKeyAuth extends AuthMethod {
+  static class ApiKeyAuth extends AuthMethod {
 
     private final String apiKey;
 
     ApiKeyAuth(String apiKey) {
+      super(true);
       this.apiKey = apiKey;
     }
 
@@ -63,11 +76,12 @@ public abstract class AuthMethod {
 
   }
 
-  private static class JwtAuth extends AuthMethod {
+  static class JwtAuth extends AuthMethod {
 
     private final String jwt;
 
     JwtAuth(String jwt) {
+      super(false);
       this.jwt = jwt;
     }
 

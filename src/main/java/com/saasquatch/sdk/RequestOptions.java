@@ -10,6 +10,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 import okhttp3.HttpUrl;
 import okhttp3.Request;
@@ -45,15 +46,23 @@ public final class RequestOptions {
     this.queryParams = queryParams;
   }
 
-  // Not public
+  @Nullable
   String getTenantAlias() {
     return tenantAlias;
   }
 
+  @Nullable
+  AuthMethod getAuthMethod() {
+    return authMethod;
+  }
+
   void mutateRequest(Request.Builder requestBuilder, HttpUrl.Builder urlBuilder) {
-    headers.forEach(e -> requestBuilder.addHeader(e.getKey(), e.getValue()));
-    queryParams.forEach(e -> urlBuilder.addQueryParameter(e.getKey(), e.getValue()));
-    authMethod.mutateRequest(requestBuilder);
+    for (final Map.Entry<String, String> e : headers) {
+      requestBuilder.addHeader(e.getKey(), e.getValue());
+    }
+    for (final Map.Entry<String, String> e : queryParams) {
+      urlBuilder.addQueryParameter(e.getKey(), e.getValue());
+    }
   }
 
   public static Builder newBuilder() {
@@ -63,7 +72,7 @@ public final class RequestOptions {
   public static final class Builder {
 
     private String tenantAlias;
-    private AuthMethod authMethod = AuthMethod.noAuth();
+    private AuthMethod authMethod;
     private final List<Map.Entry<String, String>> headers = new ArrayList<>();
     private final List<Map.Entry<String, String>> queryParams = new ArrayList<>();
 
@@ -155,10 +164,8 @@ public final class RequestOptions {
      */
     public RequestOptions build() {
       return new RequestOptions(tenantAlias, authMethod,
-          headers.isEmpty() ? Collections.emptyList()
-              : Collections.unmodifiableList(new ArrayList<>(headers)),
-          queryParams.isEmpty() ? Collections.emptyList()
-              : Collections.unmodifiableList(new ArrayList<>(queryParams)));
+          Collections.unmodifiableList(new ArrayList<>(headers)),
+          Collections.unmodifiableList(new ArrayList<>(queryParams)));
     }
 
   }

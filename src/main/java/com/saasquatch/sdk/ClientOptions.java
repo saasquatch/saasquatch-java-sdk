@@ -16,13 +16,15 @@ import javax.annotation.concurrent.Immutable;
 public class ClientOptions {
 
   private final String tenantAlias;
+  private final AuthMethod authMethod;
   private final String appDomain;
   private final long requestTimeoutMillis;
   private final long connectTimeoutMillis;
 
-  private ClientOptions(@Nullable String tenantAlias, @Nonnull String appDomain,
-      long requestTimeoutMillis, long connectTimeoutMillis) {
+  private ClientOptions(@Nullable String tenantAlias, @Nonnull AuthMethod authMethod,
+      @Nonnull String appDomain, long requestTimeoutMillis, long connectTimeoutMillis) {
     this.tenantAlias = tenantAlias;
+    this.authMethod = authMethod;
     this.appDomain = appDomain;
     this.requestTimeoutMillis = requestTimeoutMillis;
     this.connectTimeoutMillis = connectTimeoutMillis;
@@ -31,6 +33,11 @@ public class ClientOptions {
   @Nullable
   String getTenantAlias() {
     return tenantAlias;
+  }
+
+  @Nullable
+  AuthMethod getAuthMethod() {
+    return authMethod;
   }
 
   @Nonnull
@@ -58,6 +65,7 @@ public class ClientOptions {
     private static final long MAX_CONNECT_TIMEOUT_MILLIS = TimeUnit.SECONDS.toMillis(30);
 
     private String tenantAlias;
+    private AuthMethod authMethod;
     private String appDomain = "app.referralsaasquatch.com";
     private long requestTimeoutMillis = DEFAULT_REQUEST_TIMEOUT_MILLIS;
     private long connectTimeoutMillis = DEFAULT_CONNECT_TIMOEUT_MILLIS;
@@ -69,6 +77,20 @@ public class ClientOptions {
      */
     public Builder setTenantAlias(@Nonnull String tenantAlias) {
       this.tenantAlias = Objects.requireNonNull(tenantAlias, "tenantAlias");
+      return this;
+    }
+
+    /**
+     * Set the default {@link AuthMethod} for all requests. Note that if you set the
+     * {@link AuthMethod}, a default tenantAlias is required.
+     */
+    public Builder setAuthMethod(@Nonnull AuthMethod authMethod) {
+      Objects.requireNonNull(authMethod, "authMethod");
+      if (!authMethod.canBeClientDefault()) {
+        throw new IllegalArgumentException(
+            "The authMethod you have specified cannot be used as the client default");
+      }
+      this.authMethod = authMethod;
       return this;
     }
 
@@ -119,7 +141,11 @@ public class ClientOptions {
      * Build an immutable {@link ClientOptions}
      */
     public ClientOptions build() {
-      return new ClientOptions(tenantAlias, appDomain, requestTimeoutMillis, connectTimeoutMillis);
+      if (authMethod != null && tenantAlias == null) {
+        throw new IllegalArgumentException("tenantAlias is required if you set the authMethod");
+      }
+      return new ClientOptions(tenantAlias, authMethod, appDomain, requestTimeoutMillis,
+          connectTimeoutMillis);
     }
 
   }
