@@ -150,11 +150,17 @@ public final class SaaSquatchRequestOptions {
       return this;
     }
 
+    /**
+     * Build an immutable {@link SaaSquatchRequestOptions}
+     */
     public SaaSquatchRequestOptions build() {
       return new SaaSquatchRequestOptions(tenantAlias,
-          Collections.unmodifiableMap(new HashMap<>(singleHeaders)),
-          Collections.unmodifiableList(new ArrayList<>(multiHeaders)),
-          Collections.unmodifiableList(new ArrayList<>(queryParams)));
+          singleHeaders.isEmpty() ? Collections.emptyMap()
+              : Collections.unmodifiableMap(new HashMap<>(singleHeaders)),
+          multiHeaders.isEmpty() ? Collections.emptyList()
+              : Collections.unmodifiableList(new ArrayList<>(multiHeaders)),
+          queryParams.isEmpty() ? Collections.emptyList()
+              : Collections.unmodifiableList(new ArrayList<>(queryParams)));
     }
 
   }

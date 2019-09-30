@@ -54,6 +54,8 @@ public class SaaSquatchClientOptions {
 
     private static final long DEFAULT_REQUEST_TIMEOUT_MILLIS = TimeUnit.SECONDS.toMillis(15);
     private static final long DEFAULT_CONNECT_TIMOEUT_MILLIS = TimeUnit.SECONDS.toMillis(5);
+    private static final long MAX_REQUEST_TIMEOUT_MILLIS = TimeUnit.MINUTES.toMillis(1);
+    private static final long MAX_CONNECT_TIMEOUT_MILLIS = TimeUnit.SECONDS.toMillis(30);
 
     private String tenantAlias;
     private String appDomain = "app.referralsaasquatch.com";
@@ -90,23 +92,32 @@ public class SaaSquatchClientOptions {
     }
 
     public Builder setRequestTimeout(long duration, @Nonnull TimeUnit timeUnit) {
-      this.requestTimeoutMillis = timeUnit.toMillis(duration);
-      if (this.requestTimeoutMillis <= 0) {
-        this.requestTimeoutMillis = DEFAULT_REQUEST_TIMEOUT_MILLIS;
+      final long millis = timeUnit.toMillis(duration);
+      if (millis <= 0) {
         throw new IllegalArgumentException("Invalid timeout");
       }
+      if (millis > MAX_REQUEST_TIMEOUT_MILLIS) {
+        throw new IllegalArgumentException("Timeout too large");
+      }
+      this.requestTimeoutMillis = millis;
       return this;
     }
 
     public Builder setConnectTimeout(long duration, @Nonnull TimeUnit timeUnit) {
-      this.connectTimeoutMillis = timeUnit.toMillis(duration);
-      if (this.connectTimeoutMillis <= 0) {
-        this.connectTimeoutMillis = DEFAULT_CONNECT_TIMOEUT_MILLIS;
+      final long millis = timeUnit.toMillis(duration);
+      if (millis <= 0) {
         throw new IllegalArgumentException("Invalid timeout");
       }
+      if (millis > MAX_CONNECT_TIMEOUT_MILLIS) {
+        throw new IllegalArgumentException("Timeout too large");
+      }
+      this.connectTimeoutMillis = millis;
       return this;
     }
 
+    /**
+     * Build an immutable {@link SaaSquatchClientOptions}
+     */
     public SaaSquatchClientOptions build() {
       return new SaaSquatchClientOptions(tenantAlias, appDomain, requestTimeoutMillis,
           connectTimeoutMillis);

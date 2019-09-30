@@ -69,7 +69,7 @@ SaaSquatchClient.create(SaaSquatchClientOptions.newBuilder()
 
 If you create a `SaaSquatchClient` without a `tenantAlias`, then you'll need to pass in a `tenantAlias` via `SaaSquatchRequestOptions` for every request you make. The `tenantAlias` in `SaaSquatchRequestOptions` takes precedence over the one in `SaaSquatchClientOptions`.
 
-It is recommended to have a singleton `SaaSquatchClient` for all your requests. Do not create a new `SaaSquatchClient` for every request. `SaaSquatchClient` implements `Closeable`, and it's a good idea to call `close()` to release resources when you are done with it.
+It is recommended that you keep a singleton `SaaSquatchClient` for all your requests. Do not create a new `SaaSquatchClient` for every request. `SaaSquatchClient` implements `Closeable`, and it's a good idea to call `close()` to release resources when you are done with it.
 
 `SaaSquatchClient` returns [Reactive Streams](https://www.reactive-streams.org/) interfaces. Assuming you are using RxJava, then a typical API call made with this SDK would look something like this:
 
@@ -108,4 +108,7 @@ TODO
 
 This project uses a simple Maven build. Compile wilth `mvn compile` and run tests with `mvn test`.
 
-To run integration tests, you'll need a SaaSquatch account, and run `mvn test -D"com.saasquatch.sdk.test.appDomain"=REPLACEME -D"com.saasquatch.sdk.test.tenantAlias"=REPLACEME -D"com.saasquatch.sdk.test.apiKey"=REPLACEME`.
+To run integration tests, you'll need a SaaSquatch account, and run:
+```bash
+mvn test -D"com.saasquatch.sdk.test.appDomain"=REPLACEME -D"com.saasquatch.sdk.test.tenantAlias"=REPLACEME -D"com.saasquatch.sdk.test.apiKey"=REPLACEME
+```

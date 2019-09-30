@@ -15,29 +15,29 @@ import io.reactivex.Flowable;
 
 public class SaaSquatchClientIntegrationTest {
 
-  private static SaaSquatchClient squatchClient;
+  private static SaaSquatchClient saasquatchClient;
 
   @BeforeAll
   public static void beforeAll() {
     IntegrationTestUtils.assumeCanRun();
-    squatchClient = IntegrationTestUtils.newTestClient();
+    saasquatchClient = IntegrationTestUtils.newTestClient();
   }
 
   @AfterAll
   public static void afterAll() {
-    squatchClient.close();
+    saasquatchClient.close();
   }
 
   @Test
   public void testUserUpsert() {
     final Map<String, Object> userInput = new HashMap<>();
-    assertThrows(NullPointerException.class, () -> squatchClient.userUpsert(userInput, null));
+    assertThrows(NullPointerException.class, () -> saasquatchClient.userUpsert(userInput, null));
     userInput.put("id", "asdf");
     userInput.put("accountId", "asdf");
     userInput.put("firstName", "Foo");
     userInput.put("lastName", "Bar");
     final SaaSquatchMapResponse response = Flowable.fromPublisher(
-        squatchClient.userUpsert(userInput,
+        saasquatchClient.userUpsert(userInput,
             SaaSquatchRequestOptions.newBuilder().setApiKey(getApiKey()).build()))
         .blockingSingle();
     assertEquals(200, response.getStatusCode());
@@ -60,7 +60,7 @@ public class SaaSquatchClientIntegrationTest {
     userInput.put("firstName", "Foo");
     userInput.put("lastName", "Bar");
     final SaaSquatchMapResponse response = Flowable.fromPublisher(
-        squatchClient.widgetUpsert(userInput,
+        saasquatchClient.widgetUpsert(userInput,
             SaaSquatchRequestOptions.newBuilder()
                 .addQueryParam("widgetType", "invalid widget type")
                 .setApiKey(getApiKey())
