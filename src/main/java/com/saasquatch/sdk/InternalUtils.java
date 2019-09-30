@@ -1,6 +1,10 @@
 package com.saasquatch.sdk;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.lang.reflect.UndeclaredThrowableException;
+import java.net.URLEncoder;
 import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.Map;
 import javax.annotation.Nonnull;
@@ -46,6 +50,22 @@ class InternalUtils {
 
   public static <K, V> Map.Entry<K, V> entryOf(K k, V v) {
     return new SimpleImmutableEntry<>(k, v);
+  }
+
+  /**
+   * RFC3986 URL encode<br>
+   * Note that this method has the functionality as RSUrlCodec in squatch-common and it's less
+   * efficient, but the difference should be negligible for our use case. For now it's probably not
+   * worth bringing in squatch-common as a dependency. If/when we do, we should replace this with
+   * RSUrlCodec.
+   */
+  public static String urlEncode(@Nonnull String s) {
+    try {
+      return URLEncoder.encode(s, UTF_8.name())
+          .replace("+", "%20").replace("*", "%2A").replace("%7E", "~");
+    } catch (UnsupportedEncodingException e) {
+      throw new UndeclaredThrowableException(e); // Should not happen
+    }
   }
 
 }

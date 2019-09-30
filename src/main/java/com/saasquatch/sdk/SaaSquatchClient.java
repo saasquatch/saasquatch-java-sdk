@@ -1,5 +1,6 @@
 package com.saasquatch.sdk;
 
+import static com.saasquatch.sdk.InternalUtils.urlEncode;
 import java.io.Closeable;
 import java.util.HashMap;
 import java.util.Map;
@@ -85,8 +86,8 @@ public final class SaaSquatchClient implements Closeable {
     if (variables != null) {
       body.put("variables", variables);
     }
-    final HttpUrl.Builder urlBuilder = baseApiUrl(requestOptions)
-        .addPathSegment("graphql");
+    final HttpUrl.Builder urlBuilder =
+        HttpUrl.parse(baseApiUrl(requestOptions) + "/graphql").newBuilder();
     final Request.Builder requestBuilder = new Request.Builder();
     if (requestOptions != null) {
       mutateRequest(requestOptions, requestBuilder, urlBuilder);
@@ -119,15 +120,14 @@ public final class SaaSquatchClient implements Closeable {
       @Nullable RequestOptions requestOptions, boolean widgetRequest) {
     Objects.requireNonNull(accountId, "accountId");
     Objects.requireNonNull(userId, "userId");
-    final HttpUrl.Builder urlBuilder = baseApiUrl(requestOptions)
-        .addPathSegment(widgetRequest ? "widget" : "open")
-        .addPathSegment("account")
-        .addPathSegment(accountId)
-        .addPathSegment("user")
-        .addPathSegment(userId);
+    final StringBuilder urlStrBuilder = new StringBuilder(baseApiUrl(requestOptions))
+        .append(widgetRequest ? "/widget" : "/open")
+        .append("/account/").append(urlEncode(accountId))
+        .append("/user/").append(urlEncode(userId));
     if (widgetRequest) {
-      urlBuilder.addPathSegment("render");
+      urlStrBuilder.append("/render");
     }
+    final HttpUrl.Builder urlBuilder = HttpUrl.parse(urlStrBuilder.toString()).newBuilder();
     final Request.Builder requestBuilder = new Request.Builder();
     if (requestOptions != null) {
       mutateRequest(requestOptions, requestBuilder, urlBuilder);
@@ -162,15 +162,14 @@ public final class SaaSquatchClient implements Closeable {
     final String accountId =
         Objects.requireNonNull((String) body.get("accountId"), "accountId missing");
     final String userId = Objects.requireNonNull((String) body.get("id"), "id missing");
-    final HttpUrl.Builder urlBuilder = baseApiUrl(requestOptions)
-        .addPathSegment(widgetRequest ? "widget" : "open")
-        .addPathSegment("account")
-        .addPathSegment(accountId)
-        .addPathSegment("user")
-        .addPathSegment(userId);
+    final StringBuilder urlStrBuilder = new StringBuilder(baseApiUrl(requestOptions))
+        .append(widgetRequest ? "/widget" : "/open")
+        .append("/account/").append(urlEncode(accountId))
+        .append("/user/").append(urlEncode(userId));
     if (widgetRequest) {
-      urlBuilder.addPathSegment("upsert");
+      urlStrBuilder.append("/upsert");
     }
+    final HttpUrl.Builder urlBuilder = HttpUrl.parse(urlStrBuilder.toString()).newBuilder();
     final Request.Builder requestBuilder = new Request.Builder();
     if (requestOptions != null) {
       mutateRequest(requestOptions, requestBuilder, urlBuilder);
@@ -190,13 +189,10 @@ public final class SaaSquatchClient implements Closeable {
     final String accountId =
         Objects.requireNonNull((String) body.get("accountId"), "accountId missing");
     final String userId = Objects.requireNonNull((String) body.get("userId"), "userId missing");
-    final HttpUrl.Builder urlBuilder = baseApiUrl(requestOptions)
-        .addPathSegment("open")
-        .addPathSegment("account")
-        .addPathSegment(accountId)
-        .addPathSegment("user")
-        .addPathSegment(userId)
-        .addPathSegment("events");
+    final HttpUrl.Builder urlBuilder = HttpUrl.parse(new StringBuilder(baseApiUrl(requestOptions))
+        .append("/open/account/").append(urlEncode(accountId))
+        .append("/user/").append(urlEncode(userId)).append("/events").toString())
+        .newBuilder();
     final Request.Builder requestBuilder = new Request.Builder();
     if (requestOptions != null) {
       mutateRequest(requestOptions, requestBuilder, urlBuilder);
@@ -216,14 +212,11 @@ public final class SaaSquatchClient implements Closeable {
     Objects.requireNonNull(accountId, "accountId");
     Objects.requireNonNull(userId, "userId");
     Objects.requireNonNull(referralCode, "referralCode");
-    final HttpUrl.Builder urlBuilder = baseApiUrl(requestOptions)
-        .addPathSegment("open")
-        .addPathSegment("code")
-        .addPathSegment(referralCode)
-        .addPathSegment("account")
-        .addPathSegment(accountId)
-        .addPathSegment("user")
-        .addPathSegment(userId);
+    final HttpUrl.Builder urlBuilder = HttpUrl.parse(new StringBuilder(baseApiUrl(requestOptions))
+        .append("/open/code/").append(urlEncode(referralCode))
+        .append("/account/").append(urlEncode(accountId))
+        .append("/user/").append(urlEncode(userId)).toString())
+        .newBuilder();
     final Request.Builder requestBuilder = new Request.Builder();
     if (requestOptions != null) {
       mutateRequest(requestOptions, requestBuilder, urlBuilder);
@@ -233,7 +226,7 @@ public final class SaaSquatchClient implements Closeable {
   }
 
   private void mutateRequest(@Nullable RequestOptions requestOptions,
-      Request.Builder requestBuilder, HttpUrl.Builder urlBuilder) {
+      @Nonnull Request.Builder requestBuilder, @Nonnull HttpUrl.Builder urlBuilder) {
     if (requestOptions != null) {
       requestOptions.mutateRequest(requestBuilder, urlBuilder);
     }
@@ -264,12 +257,9 @@ public final class SaaSquatchClient implements Closeable {
     return authMethod == null ? AuthMethod.noAuth() : authMethod;
   }
 
-  private HttpUrl.Builder baseApiUrl(@Nullable RequestOptions requestOptions) {
+  private String baseApiUrl(@Nullable RequestOptions requestOptions) {
     final String tenantAlias = getTenantAlias(requestOptions);
-    return new HttpUrl.Builder().scheme(scheme).host(clientOptions.getAppDomain())
-        .addPathSegment("api")
-        .addPathSegment("v1")
-        .addPathSegment(tenantAlias);
+    return scheme + "://" + clientOptions.getAppDomain() + "/api/v1/" + urlEncode(tenantAlias);
   }
 
   private Flowable<Response> executeRequest(Request.Builder requestBuilder) {
