@@ -5,15 +5,21 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.saasquatch.sdk.models.User;
+import com.saasquatch.sdk.models.UserEventData;
+import com.saasquatch.sdk.models.UserEventResult;
 import com.saasquatch.sdk.test.IntegrationTestUtils;
 import io.reactivex.Flowable;
 
@@ -35,7 +41,7 @@ public class SaaSquatchClientIntegrationTest {
   }
 
   @Test
-  public void testUserUpsert() {
+  public void testUserUpsertAmongOtherThings() {
     final Map<String, Object> userInput = new HashMap<>();
     assertThrows(NullPointerException.class, () -> saasquatchClient.userUpsert(userInput, null));
     userInput.put("id", "asdf");
@@ -104,6 +110,27 @@ public class SaaSquatchClientIntegrationTest {
               RequestOptions.newBuilder().addQueryParam("widgetType", "invalid").build()))
           .blockingSingle();
       assertEquals(400, response.getStatusCode());
+    }
+    final Map<String, Object> userEventInput = new HashMap<>();
+    userEventInput.put("userId", "asdf");
+    userEventInput.put("accountId", "asdf");
+    final Map<String, Object> fakeEvent = new HashMap<>();
+    final Date dateTriggered = new Date();
+    fakeEvent.put("key", "fake");
+    fakeEvent.put("dateTriggered", dateTriggered);
+    fakeEvent.put("fields", ImmutableMap.of("foo", "bar"));
+    userEventInput.put("events", Arrays.asList(fakeEvent));
+    {
+      final MapApiResponse response = Flowable.fromPublisher(
+          saasquatchClient.logUserEvent(userEventInput, null)).blockingSingle();
+      assertEquals(200, response.getStatusCode());
+      final UserEventResult model = response.toModel(UserEventResult.class);
+      assertNotNull(model.getAccountId());
+      assertNotNull(model.getUserId());
+      final List<UserEventData> events = model.getEvents();
+      assertEquals(1, events.size());
+      final UserEventData eventData = events.get(0);
+      assertEquals(dateTriggered.getTime(), eventData.getDateTriggered().getTime());
     }
   }
 
