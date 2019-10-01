@@ -120,7 +120,7 @@ public final class SaaSquatchClient implements Closeable {
       boolean widgetRequest) {
     requireNotBlank(accountId, "accountId");
     requireNotBlank(userId, "userId");
-    final StringBuilder urlStrBuilder = new StringBuilder(baseApiUrl(requestOptions))
+    final StringBuilder urlStrBuilder = baseApiUrl(requestOptions)
         .append(widgetRequest ? "/widget" : "/open")
         .append("/account/").append(urlEncode(accountId))
         .append("/user/").append(urlEncode(userId));
@@ -163,7 +163,7 @@ public final class SaaSquatchClient implements Closeable {
     final Map<String, Object> body = userInput;
     final String accountId = requireNotBlank((String) body.get("accountId"), "accountId");
     final String userId = requireNotBlank((String) body.get("id"), "id");
-    final StringBuilder urlStrBuilder = new StringBuilder(baseApiUrl(requestOptions))
+    final StringBuilder urlStrBuilder = baseApiUrl(requestOptions)
         .append(widgetRequest ? "/widget" : "/open")
         .append("/account/").append(urlEncode(accountId))
         .append("/user/").append(urlEncode(userId));
@@ -190,7 +190,7 @@ public final class SaaSquatchClient implements Closeable {
     final Map<String, Object> body = userEventInput;
     final String accountId = requireNotBlank((String) body.get("accountId"), "accountId");
     final String userId = requireNotBlank((String) body.get("userId"), "userId");
-    final HttpUrl.Builder urlBuilder = HttpUrl.parse(new StringBuilder(baseApiUrl(requestOptions))
+    final HttpUrl.Builder urlBuilder = HttpUrl.parse(baseApiUrl(requestOptions)
         .append("/open/account/").append(urlEncode(accountId))
         .append("/user/").append(urlEncode(userId)).append("/events").toString())
         .newBuilder();
@@ -211,7 +211,7 @@ public final class SaaSquatchClient implements Closeable {
     requireNotBlank(accountId, "accountId");
     requireNotBlank(userId, "userId");
     requireNotBlank(referralCode, "referralCode");
-    final HttpUrl.Builder urlBuilder = HttpUrl.parse(new StringBuilder(baseApiUrl(requestOptions))
+    final HttpUrl.Builder urlBuilder = HttpUrl.parse(baseApiUrl(requestOptions)
         .append("/open/code/").append(urlEncode(referralCode))
         .append("/account/").append(urlEncode(accountId))
         .append("/user/").append(urlEncode(userId)).toString())
@@ -254,13 +254,14 @@ public final class SaaSquatchClient implements Closeable {
     return authMethod == null ? AuthMethod.noAuth() : authMethod;
   }
 
-  private String baseApiUrl(@Nullable RequestOptions requestOptions) {
+  private StringBuilder baseApiUrl(@Nullable RequestOptions requestOptions) {
     /*
      * Not using okhttp HttpUrl.Builder here because Apache's URIBuilder cannot do append path
      * segment, and we don't want to depend on okhttp too much.
      */
     final String tenantAlias = getTenantAlias(requestOptions);
-    return scheme + "://" + clientOptions.getAppDomain() + "/api/v1/" + urlEncode(tenantAlias);
+    return new StringBuilder(scheme).append("://").append(clientOptions.getAppDomain())
+        .append("/api/v1/").append(urlEncode(tenantAlias));
   }
 
   private Flowable<Response> executeRequest(Request.Builder requestBuilder) {
