@@ -4,6 +4,7 @@ import static com.saasquatch.sdk.InternalUtils.requireNotBlank;
 import static com.saasquatch.sdk.InternalUtils.urlEncode;
 import java.util.Objects;
 import javax.annotation.Nonnull;
+import javax.annotation.concurrent.Immutable;
 import com.saasquatch.sdk.annotations.ClassicOnly;
 
 /**
@@ -13,6 +14,7 @@ import com.saasquatch.sdk.annotations.ClassicOnly;
  * @see #of(String, String)
  * @see #ofClassic(String)
  */
+@Immutable
 public final class WidgetType {
 
   private final String themeWidgetType;

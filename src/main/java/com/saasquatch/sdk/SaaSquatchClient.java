@@ -103,20 +103,21 @@ public final class SaaSquatchClient implements Closeable {
    */
   public Publisher<MapApiResponse> getUser(@Nonnull String accountId, @Nonnull String userId,
       @Nullable RequestOptions requestOptions) {
-    return _getUser(accountId, userId, requestOptions, false).map(MapApiResponse::new);
+    return _getUser(accountId, userId, null, requestOptions, false).map(MapApiResponse::new);
   }
 
   /**
    * Render a widget for a user.<br>
    * The response is the widget HTML.
    */
-  public Publisher<TextApiResponse> renderWidget(@Nonnull String accountId,
-      @Nonnull String userId, @Nullable RequestOptions requestOptions) {
-    return _getUser(accountId, userId, requestOptions, true).map(TextApiResponse::new);
+  public Publisher<TextApiResponse> renderWidget(@Nonnull String accountId, @Nonnull String userId,
+      @Nullable WidgetType widgetType, @Nullable RequestOptions requestOptions) {
+    return _getUser(accountId, userId, widgetType, requestOptions, true).map(TextApiResponse::new);
   }
 
   private Flowable<Response> _getUser(@Nonnull String accountId, @Nonnull String userId,
-      @Nullable RequestOptions requestOptions, boolean widgetRequest) {
+      @Nullable WidgetType widgetType, @Nullable RequestOptions requestOptions,
+      boolean widgetRequest) {
     requireNotBlank(accountId, "accountId");
     requireNotBlank(userId, "userId");
     final StringBuilder urlStrBuilder = new StringBuilder(baseApiUrl(requestOptions))
@@ -129,6 +130,9 @@ public final class SaaSquatchClient implements Closeable {
     final HttpUrl.Builder urlBuilder = HttpUrl.parse(urlStrBuilder.toString()).newBuilder();
     final Request.Builder requestBuilder = new Request.Builder();
     mutateRequest(requestOptions, requestBuilder, urlBuilder);
+    if (widgetType != null) {
+      urlBuilder.addQueryParameter("widgetType", widgetType.toString());
+    }
     requestBuilder.url(urlBuilder.build()).get();
     return executeRequest(requestBuilder);
   }
@@ -141,7 +145,7 @@ public final class SaaSquatchClient implements Closeable {
    */
   public Publisher<MapApiResponse> userUpsert(@Nonnull Map<String, Object> userInput,
       @Nullable RequestOptions requestOptions) {
-    return _userUpsert(userInput, requestOptions, false).map(MapApiResponse::new);
+    return _userUpsert(userInput, null, requestOptions, false).map(MapApiResponse::new);
   }
 
   /**
@@ -149,12 +153,13 @@ public final class SaaSquatchClient implements Closeable {
    * By default, the result of the response can be unmarshalled to {@link WidgetUpsertResult}.
    */
   public Publisher<MapApiResponse> widgetUpsert(@Nonnull Map<String, Object> userInput,
-      @Nullable RequestOptions requestOptions) {
-    return _userUpsert(userInput, requestOptions, true).map(MapApiResponse::new);
+      @Nullable WidgetType widgetType, @Nullable RequestOptions requestOptions) {
+    return _userUpsert(userInput, widgetType, requestOptions, true).map(MapApiResponse::new);
   }
 
   private Flowable<Response> _userUpsert(@Nonnull Map<String, Object> userInput,
-      @Nullable RequestOptions requestOptions, boolean widgetRequest) {
+      @Nullable WidgetType widgetType, @Nullable RequestOptions requestOptions,
+      boolean widgetRequest) {
     final Map<String, Object> body = userInput;
     final String accountId = requireNotBlank((String) body.get("accountId"), "accountId");
     final String userId = requireNotBlank((String) body.get("id"), "id");
@@ -168,6 +173,9 @@ public final class SaaSquatchClient implements Closeable {
     final HttpUrl.Builder urlBuilder = HttpUrl.parse(urlStrBuilder.toString()).newBuilder();
     final Request.Builder requestBuilder = new Request.Builder();
     mutateRequest(requestOptions, requestBuilder, urlBuilder);
+    if (widgetType != null) {
+      urlBuilder.addQueryParameter("widgetType", widgetType.toString());
+    }
     requestBuilder.url(urlBuilder.build()).put(InternalRequestBodies.jsonPojo(body));
     return executeRequest(requestBuilder);
   }
