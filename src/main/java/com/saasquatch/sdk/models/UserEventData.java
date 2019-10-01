@@ -3,7 +3,7 @@ package com.saasquatch.sdk.models;
 import java.util.Date;
 import java.util.Map;
 
-public class UserEventData implements SaaSquatchModel {
+public class UserEventData implements Model {
 
   private final String id;
   private final String key;

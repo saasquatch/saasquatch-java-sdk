@@ -2,7 +2,7 @@ package com.saasquatch.sdk.models;
 
 import java.util.List;
 
-public class UserEventResult implements SaaSquatchModel {
+public class UserEventResult implements Model {
 
   private final String accountId;
   private final String userId;

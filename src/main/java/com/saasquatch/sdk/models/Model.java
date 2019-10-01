@@ -5,6 +5,6 @@ package com.saasquatch.sdk.models;
  *
  * @author sli
  */
-public interface SaaSquatchModel {
+public interface Model {
 
 }

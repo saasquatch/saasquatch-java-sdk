@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import com.google.gson.reflect.TypeToken;
-import com.saasquatch.sdk.models.SaaSquatchModel;
+import com.saasquatch.sdk.models.Model;
 import okhttp3.Response;
 
 /**
@@ -39,7 +39,7 @@ public class MapApiResponse extends ApiResponse<Map<String, Object>> {
    * customizing the JSON response body with things like {@code extraFields}. Otherwise it may cause
    * unexpected behaviors.
    */
-  public <T extends SaaSquatchModel> T toModel(@Nonnull Class<? extends T> modelClass) {
+  public <T extends Model> T toModel(@Nonnull Class<? extends T> modelClass) {
     Objects.requireNonNull(modelClass, "modelClass");
     final T model = gson.fromJson(gson.toJsonTree(getData()), modelClass);
     if (model == null) {

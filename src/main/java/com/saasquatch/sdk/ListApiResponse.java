@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import com.google.gson.reflect.TypeToken;
-import com.saasquatch.sdk.models.SaaSquatchModel;
+import com.saasquatch.sdk.models.Model;
 import okhttp3.Response;
 
 /**
@@ -38,7 +38,7 @@ public class ListApiResponse extends ApiResponse<List<Object>> {
    * customizing the JSON response body with things like {@code extraFields}. Otherwise it may cause
    * unexpected behaviors.
    */
-  public <T extends SaaSquatchModel> List<T> toModelList(@Nonnull Class<? extends T> modelClass) {
+  public <T extends Model> List<T> toModelList(@Nonnull Class<? extends T> modelClass) {
     Objects.requireNonNull(modelClass, "modelClass");
     /*
      * I know modelClass is technically not being used here, but it's included to be JSON library
