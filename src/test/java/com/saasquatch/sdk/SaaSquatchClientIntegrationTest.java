@@ -169,7 +169,7 @@ public class SaaSquatchClientIntegrationTest {
     final String messageLink =
         saasquatchClient.getUserMessageLink("asdf", "asdf", "r1", "FACEBOOK", null, null);
     assertEquals("https://staging.referralsaasquatch.com/a/test_ayqmunvultmjb/"
-        + "message/redirect/FACEBOOK?programId=r1", messageLink);
+        + "message/redirect/FACEBOOK?accountId=asdf&userId=asdf&programId=r1", messageLink);
   }
 
 }

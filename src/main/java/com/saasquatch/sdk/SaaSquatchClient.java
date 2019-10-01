@@ -92,6 +92,8 @@ public final class SaaSquatchClient implements Closeable {
     final HttpUrl.Builder urlBuilder = HttpUrl.parse(baseAUrl(requestOptions)
         .append("/message/redirect/").append(urlEncode(shareMedium)).toString())
         .newBuilder();
+    urlBuilder.addQueryParameter("accountId", accountId);
+    urlBuilder.addQueryParameter("userId", userId);
     if (programId != null) {
       urlBuilder.addQueryParameter("programId", programId);
     }
