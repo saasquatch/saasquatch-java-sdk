@@ -247,6 +247,10 @@ public final class SaaSquatchClient implements Closeable {
   }
 
   private String baseApiUrl(@Nullable RequestOptions requestOptions) {
+    /*
+     * Not using okhttp HttpUrl.Builder here because Apache's URIBuilder cannot do append path
+     * segment, and we don't want to depend on okhttp too much.
+     */
     final String tenantAlias = getTenantAlias(requestOptions);
     return scheme + "://" + clientOptions.getAppDomain() + "/api/v1/" + urlEncode(tenantAlias);
   }
