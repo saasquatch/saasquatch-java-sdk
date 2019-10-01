@@ -1,6 +1,7 @@
 package com.saasquatch.sdk.test;
 
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -25,7 +26,7 @@ public class IntegrationTestUtils {
   public static void assumeCanRun() {
     final boolean canRun = canRun();
     if (!canRun) {
-      System.out.printf(
+      System.out.printf(Locale.ROOT,
           "Not all of %s system properties are present. Skipping integration tests.\n",
           REQUIRED_SYSTEM_PROPERTIES);
     }
