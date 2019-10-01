@@ -11,7 +11,6 @@ public class User implements Model {
   private final String accountId;
   private final String firstName;
   private final String lastName;
-  private final String lastInitial;
   private final String email;
   private final String emailHash;
   private final String cookieId;
@@ -30,18 +29,17 @@ public class User implements Model {
   private final Map<String, Object> customFields;
   private final Set<String> segments;
 
-  User(String id, String accountId, String firstName, String lastName, String lastInitial,
-      String email, String emailHash, String cookieId, String paymentProviderId,
-      String referralCode, Map<String, String> referralCodes, String locale, Boolean referable,
-      String firstSeenIP, String lastSeenIP, Date dateCreated, Date dateBlocked,
-      Set<String> referredByCodes, Map<String, Object> shareLinks,
+  User(String id, String accountId, String firstName, String lastName, String email,
+      String emailHash, String cookieId, String paymentProviderId, String referralCode,
+      Map<String, String> referralCodes, String locale, Boolean referable, String firstSeenIP,
+      String lastSeenIP, Date dateCreated, Date dateBlocked, Set<String> referredByCodes,
+      Map<String, Object> shareLinks,
       Map<String, Map<String, Map<String, String>>> programShareLinks,
       Map<String, Object> customFields, Set<String> segments) {
     this.id = id;
     this.accountId = accountId;
     this.firstName = firstName;
     this.lastName = lastName;
-    this.lastInitial = lastInitial;
     this.email = email;
     this.emailHash = emailHash;
     this.cookieId = cookieId;
@@ -75,10 +73,6 @@ public class User implements Model {
 
   public String getLastName() {
     return lastName;
-  }
-
-  public String getLastInitial() {
-    return lastInitial;
   }
 
   public String getEmail() {
