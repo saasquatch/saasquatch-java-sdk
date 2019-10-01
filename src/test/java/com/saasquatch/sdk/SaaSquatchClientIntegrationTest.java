@@ -164,4 +164,12 @@ public class SaaSquatchClientIntegrationTest {
     assertTrue(totalCountElem.isJsonPrimitive());
   }
 
+  @Test
+  public void testMessageLink() {
+    final String messageLink =
+        saasquatchClient.getMessageLinkForUser("asdf", "asdf", "r1", "FACEBOOK", null, null);
+    assertEquals("https://staging.referralsaasquatch.com/a/test_ayqmunvultmjb/"
+        + "message/redirect/FACEBOOK?programId=r1", messageLink);
+  }
+
 }

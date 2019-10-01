@@ -77,7 +77,10 @@ public final class SaaSquatchClient implements Closeable {
   }
 
   /**
-   * Build a message link for a given user with the specified program and mediums.
+   * Build a message link for a given user with the specified program and mediums.<br>
+   * Note that this method simply builds a URL and does not do any I/O. Depending on the combination
+   * of shareMedium and engagementMedium, the URL built may not work. And since this method does not
+   * make an API call, the configured {@link AuthMethod} and HTTP headers are ignored.
    */
   public String getMessageLinkForUser(@Nonnull String accountId, @Nonnull String userId,
       @Nullable String programId, @Nonnull String shareMedium, @Nullable String engagementMedium,
