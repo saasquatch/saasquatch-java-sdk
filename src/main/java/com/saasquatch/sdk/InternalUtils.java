@@ -9,6 +9,7 @@ import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import javax.annotation.Nonnull;
@@ -22,6 +23,13 @@ import okhttp3.Response;
 
 class InternalUtils {
 
+  /**
+   * Convenience method for String.format with Locale.ROOT
+   */
+  public static String format(String format, Object... args) {
+    return String.format(Locale.ROOT, format, args);
+  }
+
   @Nonnull
   public static String buildUserAgent() {
     @Nullable
@@ -32,7 +40,7 @@ class InternalUtils {
     final String osVersion = System.getProperty("os.version", "");
     @Nonnull
     final String osStr = (osName + ' ' + osVersion).trim();
-    return String.format("SaaSquatch SDK; %s; %s",
+    return format("SaaSquatch SDK; %s; %s",
         javaVersion == null ? "Unknown Java version" : "Java " + javaVersion,
         osStr.isEmpty() ? "Unknown OS" : osStr);
   }

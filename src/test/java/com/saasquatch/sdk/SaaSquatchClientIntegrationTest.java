@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -81,7 +82,7 @@ public class SaaSquatchClientIntegrationTest {
           saasquatchClient.renderWidget("asdf", "asdf", null, null))
           .blockingSingle();
       assertEquals(200, response.getStatusCode());
-      assertTrue(response.getData().toLowerCase().contains("<!doctype html>"));
+      assertTrue(response.getData().toLowerCase(Locale.ROOT).contains("<!doctype html>"));
     }
   }
 

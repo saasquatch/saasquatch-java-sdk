@@ -1,5 +1,6 @@
 package com.saasquatch.sdk;
 
+import static com.saasquatch.sdk.InternalUtils.format;
 import static com.saasquatch.sdk.InternalUtils.requireNotBlank;
 import static com.saasquatch.sdk.InternalUtils.urlEncode;
 import java.util.Objects;
@@ -53,7 +54,7 @@ public final class WidgetType {
     }
     String s = _toString;
     if (s == null) {
-      _toString = s = String.format("p/%s/w/%s", urlEncode(programId), urlEncode(widgetKey));
+      _toString = s = format("p/%s/w/%s", urlEncode(programId), urlEncode(widgetKey));
     }
     return s;
   }

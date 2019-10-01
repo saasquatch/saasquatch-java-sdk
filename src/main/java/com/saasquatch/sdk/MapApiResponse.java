@@ -1,6 +1,7 @@
 package com.saasquatch.sdk;
 
 import static com.saasquatch.sdk.InternalGsonHolder.gson;
+import static com.saasquatch.sdk.InternalUtils.format;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Objects;
@@ -44,7 +45,7 @@ public class MapApiResponse extends ApiResponse<Map<String, Object>> {
     final T model = gson.fromJson(gson.toJsonTree(getData()), modelClass);
     if (model == null) {
       throw new IllegalStateException(
-          String.format("Unable to convert to model with class [%s]", modelClass));
+          format("Unable to convert to model with class [%s]", modelClass));
     }
     return model;
   }
