@@ -68,6 +68,9 @@ class InternalUtils {
     }).toFlowable();
   }
 
+  /**
+   * Convenience method for {@link SimpleImmutableEntry}
+   */
   public static <K, V> Map.Entry<K, V> entryOf(@Nullable K k, @Nullable V v) {
     return new SimpleImmutableEntry<>(k, v);
   }
@@ -86,10 +89,9 @@ class InternalUtils {
       default:
         break;
     }
-    final Object[] arr = list.toArray();
     @SuppressWarnings("unchecked")
-    final List<T> listCopy = (List<T>) Arrays.asList(arr);
-    return Collections.unmodifiableList(listCopy);
+    final List<T> defensiveCopy = (List<T>) Arrays.asList(list.toArray());
+    return Collections.unmodifiableList(defensiveCopy);
   }
 
   /**
