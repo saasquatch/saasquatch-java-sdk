@@ -88,9 +88,7 @@ public final class SaaSquatchClient implements Closeable {
     requireNotBlank(accountId, "accountId");
     requireNotBlank(userId, "userId");
     requireNotBlank(shareMedium, "shareMedium");
-    final String tenantAlias = getTenantAlias(requestOptions);
-    final HttpUrl.Builder urlBuilder = HttpUrl.parse(new StringBuilder(scheme).append("://")
-        .append(clientOptions.getAppDomain()).append("/a/").append(urlEncode(tenantAlias))
+    final HttpUrl.Builder urlBuilder = HttpUrl.parse(baseAUrl(requestOptions)
         .append("/message/redirect/").append(urlEncode(shareMedium)).toString())
         .newBuilder();
     if (programId != null) {
@@ -280,6 +278,9 @@ public final class SaaSquatchClient implements Closeable {
     return authMethod == null ? AuthMethod.noAuth() : authMethod;
   }
 
+  /**
+   * Get the base /api/v1/tenantAlias url
+   */
   private StringBuilder baseApiUrl(@Nullable RequestOptions requestOptions) {
     /*
      * Not using okhttp HttpUrl.Builder here because Apache's URIBuilder cannot do append path
@@ -288,6 +289,16 @@ public final class SaaSquatchClient implements Closeable {
     final String tenantAlias = getTenantAlias(requestOptions);
     return new StringBuilder(scheme).append("://").append(clientOptions.getAppDomain())
         .append("/api/v1/").append(urlEncode(tenantAlias));
+  }
+
+  /**
+   * Get the base /a/tenantAlias url
+   */
+  private StringBuilder baseAUrl(@Nullable RequestOptions requestOptions) {
+    // Not using okhttp HttpUrl.Builder intentionally
+    final String tenantAlias = getTenantAlias(requestOptions);
+    return new StringBuilder(scheme).append("://").append(clientOptions.getAppDomain())
+        .append("/a/").append(urlEncode(tenantAlias));
   }
 
   private Flowable<Response> executeRequest(Request.Builder requestBuilder) {
