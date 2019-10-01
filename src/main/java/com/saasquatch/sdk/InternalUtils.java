@@ -25,23 +25,35 @@ class InternalUtils {
   /**
    * Convenience method for String.format with Locale.ROOT
    */
-  public static String format(String format, Object... args) {
+  public static String format(@Nonnull String format, Object... args) {
     return String.format(Locale.ROOT, format, args);
   }
 
   @Nonnull
   public static String buildUserAgent() {
     @Nullable
-    final String javaVersion = System.getProperty("java.version");
+    final String javaVersion = getSysProp("java.version", null);
     @Nonnull
-    final String osName = System.getProperty("os.name", "");
+    final String osName = getSysProp("os.name", "");
     @Nonnull
-    final String osVersion = System.getProperty("os.version", "");
+    final String osVersion = getSysProp("os.version", "");
     @Nonnull
     final String osStr = (osName + ' ' + osVersion).trim();
     return format("SaaSquatch SDK; %s; %s",
         javaVersion == null ? "Unknown Java version" : "Java " + javaVersion,
         osStr.isEmpty() ? "Unknown OS" : osStr);
+  }
+
+  /**
+   * Same as {@link System#getProperty(String, String)}, but falls back to the default when it
+   * errors.
+   */
+  public static String getSysProp(@Nonnull String key, @Nullable String def) {
+    try {
+      return System.getProperty(key, def);
+    } catch (Throwable t) {
+      return def;
+    }
   }
 
   /**
