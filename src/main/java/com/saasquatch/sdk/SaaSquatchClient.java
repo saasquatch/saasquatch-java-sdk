@@ -204,6 +204,28 @@ public final class SaaSquatchClient implements Closeable {
     return executeRequest(requestBuilder);
   }
 
+  public Publisher<MapApiResponse> getUserShareLinks(@Nonnull String accountId,
+      @Nonnull String userId, @Nullable String programId, @Nullable String shareMedium,
+      @Nullable String engagementMedium, @Nullable RequestOptions requestOptions) {
+    // api/v1/:tenantAlias/account/:accountId/user/:userId/shareurls
+    requireNotBlank(accountId, "accountId");
+    requireNotBlank(userId, "usreId");
+    final HttpUrl.Builder urlBuilder = HttpUrl.parse(baseApiUrl(requestOptions)
+        .append("/account/").append(urlEncode(accountId))
+        .append("/user/").append(urlEncode(userId)).append("/shareurls").toString())
+        .newBuilder();
+    final Request.Builder requestBuilder = new Request.Builder();
+    mutateRequest(requestOptions, requestBuilder, urlBuilder);
+    if (shareMedium != null) {
+      urlBuilder.addQueryParameter("shareMedium", shareMedium);
+    }
+    if (engagementMedium != null) {
+      urlBuilder.addQueryParameter("engagementMedium", engagementMedium);
+    }
+    requestBuilder.url(urlBuilder.build()).get();
+    return executeRequest(requestBuilder).map(MapApiResponse::new);
+  }
+
   /**
    * Log a user event.<br>
    * By default, the result of the response can be unmarshalled to {@link UserEventResult}.<br>
