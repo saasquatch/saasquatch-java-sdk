@@ -78,7 +78,7 @@ public class SaaSquatchClientIntegrationTest {
     // Attempt to render a widget
     {
       final TextApiResponse response = Flowable.fromPublisher(
-          saasquatchClient.renderWidget("asdf", "asdf", null))
+          saasquatchClient.renderWidget("asdf", "asdf", null, null))
           .blockingSingle();
       assertEquals(200, response.getStatusCode());
       assertTrue(response.getData().contains("<!doctype html>"));
@@ -93,7 +93,7 @@ public class SaaSquatchClientIntegrationTest {
     userInput.put("firstName", "Foo");
     userInput.put("lastName", "Bar");
     final MapApiResponse response = Flowable.fromPublisher(
-        saasquatchClient.widgetUpsert(userInput,
+        saasquatchClient.widgetUpsert(userInput, null,
             RequestOptions.newBuilder()
                 .addQueryParam("widgetType", "invalid widget type")
                 .build()))

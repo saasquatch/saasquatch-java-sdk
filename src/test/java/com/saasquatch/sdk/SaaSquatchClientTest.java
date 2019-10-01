@@ -17,11 +17,11 @@ public class SaaSquatchClientTest {
       assertThrows(IllegalArgumentException.class, () -> saasquatchClient.getUser(" ", null, null));
       assertThrows(IllegalArgumentException.class, () -> saasquatchClient.getUser(" ", " ", null));
       assertThrows(NullPointerException.class,
-          () -> saasquatchClient.renderWidget(null, null, null));
+          () -> saasquatchClient.renderWidget(null, null, null, null));
       assertThrows(IllegalArgumentException.class,
-          () -> saasquatchClient.renderWidget(" ", null, null));
+          () -> saasquatchClient.renderWidget(" ", null, null, null));
       assertThrows(IllegalArgumentException.class,
-          () -> saasquatchClient.renderWidget(" ", " ", null));
+          () -> saasquatchClient.renderWidget(" ", " ", null, null));
       assertThrows(NullPointerException.class, () -> saasquatchClient.userUpsert(null, null));
       assertThrows(NullPointerException.class,
           () -> saasquatchClient.userUpsert(Collections.emptyMap(), null));
@@ -30,11 +30,11 @@ public class SaaSquatchClientTest {
       assertThrows(IllegalArgumentException.class,
           () -> saasquatchClient.userUpsert(ImmutableMap.of("accountId", "foo", "id", " "), null));
       assertThrows(NullPointerException.class,
-          () -> saasquatchClient.widgetUpsert(Collections.emptyMap(), null));
-      assertThrows(IllegalArgumentException.class,
-          () -> saasquatchClient.widgetUpsert(Collections.singletonMap("accountId", " "), null));
+          () -> saasquatchClient.widgetUpsert(Collections.emptyMap(), null, null));
       assertThrows(IllegalArgumentException.class, () -> saasquatchClient
-          .widgetUpsert(ImmutableMap.of("accountId", "foo", "id", " "), null));
+          .widgetUpsert(Collections.singletonMap("accountId", " "), null, null));
+      assertThrows(IllegalArgumentException.class, () -> saasquatchClient
+          .widgetUpsert(ImmutableMap.of("accountId", "foo", "id", " "), null, null));
     }
   }
 
