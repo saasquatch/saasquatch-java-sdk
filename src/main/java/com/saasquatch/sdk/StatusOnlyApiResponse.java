@@ -14,7 +14,11 @@ public class StatusOnlyApiResponse extends ApiResponse<Void> {
     super(response);
   }
 
+  /**
+   * @deprecated always null
+   */
   @Override
+  @Deprecated
   public Void getData() {
     return null;
   }
