@@ -93,7 +93,7 @@ public class SaaSquatchClientIntegrationTest {
     {
       final TextApiResponse response = Flowable.fromPublisher(
           saasquatchClient.renderWidget("asdf", "asdf",
-              WidgetType.ofClassic("CONVERSION_WIDGET"), null))
+              ClassicWidgetType.CONVERSION_WIDGET, null))
           .blockingSingle();
       assertEquals(200, response.getStatusCode());
     }
@@ -142,7 +142,8 @@ public class SaaSquatchClientIntegrationTest {
     userInput.put("firstName", "Foo");
     userInput.put("lastName", "Bar");
     final MapApiResponse response = Flowable.fromPublisher(
-        saasquatchClient.widgetUpsert(userInput, WidgetType.ofClassic("invalidWidgetType"), null))
+        saasquatchClient.widgetUpsert(userInput, null,
+            RequestOptions.newBuilder().addQueryParam("widgetType", "invalid").build()))
         .blockingSingle();
     assertEquals(400, response.getStatusCode());
     final ApiError apiError = response.getApiError();
