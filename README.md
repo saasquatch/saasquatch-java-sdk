@@ -127,5 +127,5 @@ This project uses a simple Maven build. Compile wilth `mvn compile` and run test
 To run integration tests, you'll need a SaaSquatch account, and run:
 
 ```bash
-mvn test -D"com.saasquatch.sdk.test.appDomain"=REPLACEME -D"com.saasquatch.sdk.test.tenantAlias"=REPLACEME -D"com.saasquatch.sdk.test.apiKey"=REPLACEME
+mvn test -D"com.saasquatch.sdk.test.appDomain"="REPLACEME" -D"com.saasquatch.sdk.test.tenantAlias"="REPLACEME" -D"com.saasquatch.sdk.test.apiKey"="REPLACEME"
 ```
