@@ -80,9 +80,10 @@ public final class SaaSquatchClient implements Closeable {
    * Build a message link for a given user with the specified program and mediums.<br>
    * Note that this method simply builds a URL and does not do any I/O. Depending on the combination
    * of shareMedium and engagementMedium, the URL built may not work. And since this method does not
-   * make an API call, the configured {@link AuthMethod} and HTTP headers are ignored.
+   * make an API call, the configured {@link AuthMethod} and HTTP headers are ignored.<br>
+   * <a href="https://docs.referralsaasquatch.com/features/message-links/">Link to official docs</a>
    */
-  public String getMessageLinkForUser(@Nonnull String accountId, @Nonnull String userId,
+  public String getUserMessageLink(@Nonnull String accountId, @Nonnull String userId,
       @Nullable String programId, @Nonnull String shareMedium, @Nullable String engagementMedium,
       @Nullable RequestOptions requestOptions) {
     requireNotBlank(accountId, "accountId");
@@ -204,6 +205,11 @@ public final class SaaSquatchClient implements Closeable {
     return executeRequest(requestBuilder);
   }
 
+  /**
+   * Get a Map of a user's share links<br>
+   * <a href="https://docs.referralsaasquatch.com/api/methods/#lookup-a-users-share-urls">Link to
+   * official docs</a>
+   */
   public Publisher<MapApiResponse> getUserShareLinks(@Nonnull String accountId,
       @Nonnull String userId, @Nullable String programId, @Nullable String shareMedium,
       @Nullable String engagementMedium, @Nullable RequestOptions requestOptions) {
