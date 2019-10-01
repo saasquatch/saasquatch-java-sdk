@@ -16,7 +16,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.reactivestreams.Publisher;
 import io.reactivex.Single;
-import okhttp3.Call;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -53,15 +52,14 @@ class InternalUtils {
   public static Publisher<Response> executeRequest(@Nonnull OkHttpClient okHttpClient,
       @Nonnull Request request) {
     return Single.<Response>create(emitter -> {
-      final Call call = okHttpClient.newCall(request);
-      call.enqueue(new okhttp3.Callback() {
+      okHttpClient.newCall(request).enqueue(new okhttp3.Callback() {
         @Override
-        public void onFailure(Call call, IOException ex) {
+        public void onFailure(okhttp3.Call call, IOException ex) {
           emitter.onError(ex);
         }
 
         @Override
-        public void onResponse(Call call, Response resp) throws IOException {
+        public void onResponse(okhttp3.Call call, Response resp) throws IOException {
           emitter.onSuccess(resp);
         }
       });

@@ -76,6 +76,29 @@ public final class SaaSquatchClient implements Closeable {
     this.executor.shutdown();
   }
 
+  /**
+   * Build a message link for a given user with the specified program and mediums.
+   */
+  public String getMessageLinkForUser(@Nonnull String accountId, @Nonnull String userId,
+      @Nullable String programId, @Nonnull String shareMedium, @Nullable String engagementMedium,
+      @Nullable RequestOptions requestOptions) {
+    requireNotBlank(accountId, "accountId");
+    requireNotBlank(userId, "userId");
+    requireNotBlank(shareMedium, "shareMedium");
+    final String tenantAlias = getTenantAlias(requestOptions);
+    final HttpUrl.Builder urlBuilder = HttpUrl.parse(new StringBuilder(scheme).append("://")
+        .append(clientOptions.getAppDomain()).append("/a/").append(urlEncode(tenantAlias))
+        .append("/message/redirect/").append(urlEncode(shareMedium)).toString())
+        .newBuilder();
+    if (programId != null) {
+      urlBuilder.addQueryParameter("programId", programId);
+    }
+    if (engagementMedium != null) {
+      urlBuilder.addQueryParameter("engagementMedium", engagementMedium);
+    }
+    return urlBuilder.build().toString();
+  }
+
   public Publisher<GraphQLApiResponse> graphQL(@Nonnull String query,
       @Nullable String operationName, @Nullable Map<String, Object> variables,
       @Nullable RequestOptions requestOptions) {
