@@ -84,6 +84,27 @@ public class SaaSquatchClientIntegrationTest {
       assertEquals(200, response.getStatusCode());
       assertTrue(response.getData().toLowerCase(Locale.ROOT).contains("<!doctype html>"));
     }
+    {
+      final TextApiResponse response = Flowable.fromPublisher(
+          saasquatchClient.renderWidget("asdf", "asdf",
+              WidgetType.ofClassic("CONVERSION_WIDGET"), null))
+          .blockingSingle();
+      assertEquals(200, response.getStatusCode());
+    }
+    {
+      final TextApiResponse response = Flowable.fromPublisher(
+          saasquatchClient.renderWidget("asdf", "asdf", null,
+              RequestOptions.newBuilder().addQueryParam("widgetType", "CONVERSION_WIDGET").build()))
+          .blockingSingle();
+      assertEquals(200, response.getStatusCode());
+    }
+    {
+      final TextApiResponse response = Flowable.fromPublisher(
+          saasquatchClient.renderWidget("asdf", "asdf", null,
+              RequestOptions.newBuilder().addQueryParam("widgetType", "invalid").build()))
+          .blockingSingle();
+      assertEquals(400, response.getStatusCode());
+    }
   }
 
   @Test
@@ -94,10 +115,7 @@ public class SaaSquatchClientIntegrationTest {
     userInput.put("firstName", "Foo");
     userInput.put("lastName", "Bar");
     final MapApiResponse response = Flowable.fromPublisher(
-        saasquatchClient.widgetUpsert(userInput, null,
-            RequestOptions.newBuilder()
-                .addQueryParam("widgetType", "invalid widget type")
-                .build()))
+        saasquatchClient.widgetUpsert(userInput, WidgetType.ofClassic("invalidWidgetType"), null))
         .blockingSingle();
     assertEquals(400, response.getStatusCode());
     final ApiError apiError = response.getApiError();
