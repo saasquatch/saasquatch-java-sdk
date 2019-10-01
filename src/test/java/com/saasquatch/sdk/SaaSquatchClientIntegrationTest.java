@@ -111,7 +111,9 @@ public class SaaSquatchClientIntegrationTest {
     final GraphQLApiResponse response =
         Flowable.fromPublisher(saasquatchClient.graphQL(query, null, null, null)).blockingSingle();
     assertEquals(200, response.getStatusCode());
-    final JsonObject dataJson = gson.toJsonTree(response.getData().getData()).getAsJsonObject();
+    final GraphQLResult graphQLResult = response.getData();
+    assertTrue(graphQLResult.getErrors() == null || graphQLResult.getErrors().isEmpty());
+    final JsonObject dataJson = gson.toJsonTree(graphQLResult.getData()).getAsJsonObject();
     final JsonElement totalCountElem = dataJson.get("users").getAsJsonObject().get("totalCount");
     assertTrue(totalCountElem.isJsonPrimitive());
   }
