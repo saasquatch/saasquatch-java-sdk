@@ -81,7 +81,7 @@ public class SaaSquatchClientIntegrationTest {
           saasquatchClient.renderWidget("asdf", "asdf", null, null))
           .blockingSingle();
       assertEquals(200, response.getStatusCode());
-      assertTrue(response.getData().contains("<!doctype html>"));
+      assertTrue(response.getData().toLowerCase().contains("<!doctype html>"));
     }
   }
 
