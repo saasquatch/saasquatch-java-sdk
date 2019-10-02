@@ -83,7 +83,7 @@ public final class SaaSquatchClient implements Closeable {
    * make an API call, the configured {@link AuthMethod} and HTTP headers are ignored.<br>
    * <a href="https://docs.referralsaasquatch.com/features/message-links/">Link to official docs</a>
    */
-  public String getUserMessageLink(@Nonnull String accountId, @Nonnull String userId,
+  public String buildUserMessageLink(@Nonnull String accountId, @Nonnull String userId,
       @Nullable String programId, @Nonnull String shareMedium, @Nullable String engagementMedium,
       @Nullable RequestOptions requestOptions) {
     requireNotBlank(accountId, "accountId");
