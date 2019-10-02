@@ -15,6 +15,7 @@ import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.reactivestreams.Publisher;
+import io.reactivex.Flowable;
 import io.reactivex.Single;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -61,7 +62,7 @@ class InternalUtils {
    *
    * @returns a {@link Publisher} that emits one element
    */
-  public static Publisher<Response> executeRequest(@Nonnull OkHttpClient okHttpClient,
+  public static Flowable<Response> executeRequest(@Nonnull OkHttpClient okHttpClient,
       @Nonnull Request request) {
     return Single.<Response>create(emitter -> {
       okHttpClient.newCall(request).enqueue(new okhttp3.Callback() {
