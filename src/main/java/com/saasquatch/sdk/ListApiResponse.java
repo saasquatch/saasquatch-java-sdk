@@ -3,6 +3,7 @@ package com.saasquatch.sdk;
 import static com.saasquatch.sdk.InternalGsonHolder.gson;
 import static com.saasquatch.sdk.InternalUtils.format;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import javax.annotation.Nonnull;
@@ -51,7 +52,7 @@ public class ListApiResponse extends ApiResponse<List<Object>> {
       throw new IllegalStateException(
           format("Unable to convert to model list with class [%s]", modelClass));
     }
-    return gson.fromJson(gson.toJsonTree(getData()), new TypeToken<List<T>>() {}.getType());
+    return Collections.unmodifiableList(modelList);
   }
 
 }
