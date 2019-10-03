@@ -1,8 +1,8 @@
 package com.saasquatch.sdk;
 
 import static com.saasquatch.sdk.InternalUtils.entryOf;
-import static com.saasquatch.sdk.InternalUtils.unmodifiableList;
 import static com.saasquatch.sdk.InternalUtils.requireNotBlank;
+import static com.saasquatch.sdk.InternalUtils.unmodifiableList;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -31,7 +31,7 @@ public final class RequestOptions {
     final Set<String> blockedHeaders = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
     blockedHeaders.addAll(Arrays.asList("Authorization", "Accept-Encoding", "Content-Encoding",
         "Content-Length", "Content-Type", "Accept", "Accept-Charset", "Cookie", "Set-Cookie",
-        "Set-Cookie2", "Cache-Control", "Host", "X-SaaSquatch-User-Token"));
+        "Set-Cookie2", "Cache-Control", "Host", "X-SaaSquatch-User-Token", "User-Agent"));
     BLOCKED_HEADERS = Collections.unmodifiableSet(blockedHeaders);
   }
 
@@ -59,12 +59,15 @@ public final class RequestOptions {
     return authMethod;
   }
 
-  void mutateRequest(@Nonnull Request.Builder requestBuilder, @Nonnull HttpUrl.Builder urlBuilder) {
-    for (final Map.Entry<String, String> e : headers) {
-      requestBuilder.addHeader(e.getKey(), e.getValue());
-    }
+  void mutateUrl(@Nonnull HttpUrl.Builder urlBuilder) {
     for (final Map.Entry<String, String> e : queryParams) {
       urlBuilder.addQueryParameter(e.getKey(), e.getValue());
+    }
+  }
+
+  void mutateRequest(@Nonnull Request.Builder requestBuilder) {
+    for (final Map.Entry<String, String> e : headers) {
+      requestBuilder.addHeader(e.getKey(), e.getValue());
     }
   }
 
