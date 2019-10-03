@@ -39,8 +39,11 @@ public final class SaaSquatchClient implements Closeable {
     this.clientOptions = clientOptions;
     this.protocol = clientOptions.getAppDomain().startsWith("localhost:") ? "http" : "https";
     this.executor = Executors.newCachedThreadPool(InternalThreadFactory.INSTANCE);
+    final okhttp3.Dispatcher dispatcher = new okhttp3.Dispatcher(this.executor);
+    dispatcher.setMaxRequestsPerHost(clientOptions.getMaxConcurrentRequests());
+    dispatcher.setMaxRequests(clientOptions.getMaxConcurrentRequests() * 2);
     this.okHttpClient = new OkHttpClient.Builder()
-        .dispatcher(new okhttp3.Dispatcher(this.executor))
+        .dispatcher(dispatcher)
         .callTimeout(clientOptions.getRequestTimeoutMillis(), TimeUnit.MILLISECONDS)
         .connectTimeout(clientOptions.getConnectTimeoutMillis(), TimeUnit.MILLISECONDS)
         .build();
@@ -89,7 +92,7 @@ public final class SaaSquatchClient implements Closeable {
     requireNotBlank(accountId, "accountId");
     requireNotBlank(userId, "userId");
     requireNotBlank(shareMedium, "shareMedium");
-    final HttpUrl.Builder urlBuilder = HttpUrl.parse(baseAUrl(requestOptions)
+    final HttpUrl.Builder urlBuilder = HttpUrl.parse(baseTenantAUrl(requestOptions)
         .append("/message/redirect/").append(urlEncode(shareMedium)).toString())
         .newBuilder();
     urlBuilder.addQueryParameter("accountId", accountId);
@@ -115,7 +118,7 @@ public final class SaaSquatchClient implements Closeable {
       body.put("variables", variables);
     }
     final HttpUrl.Builder urlBuilder =
-        HttpUrl.parse(baseApiUrl(requestOptions) + "/graphql").newBuilder();
+        HttpUrl.parse(baseTenantApiUrl(requestOptions) + "/graphql").newBuilder();
     final Request.Builder requestBuilder = new Request.Builder();
     mutateRequest(requestOptions, requestBuilder, urlBuilder);
     requestBuilder.url(urlBuilder.build()).post(InternalRequestBodies.jsonPojo(body));
@@ -147,7 +150,7 @@ public final class SaaSquatchClient implements Closeable {
       boolean widgetRequest) {
     requireNotBlank(accountId, "accountId");
     requireNotBlank(userId, "userId");
-    final StringBuilder urlStrBuilder = baseApiUrl(requestOptions)
+    final StringBuilder urlStrBuilder = baseTenantApiUrl(requestOptions)
         .append(widgetRequest ? "/widget" : "/open")
         .append("/account/").append(urlEncode(accountId))
         .append("/user/").append(urlEncode(userId));
@@ -190,7 +193,7 @@ public final class SaaSquatchClient implements Closeable {
     final Map<String, Object> body = userInput;
     final String accountId = requireNotBlank((String) body.get("accountId"), "accountId");
     final String userId = requireNotBlank((String) body.get("id"), "id");
-    final StringBuilder urlStrBuilder = baseApiUrl(requestOptions)
+    final StringBuilder urlStrBuilder = baseTenantApiUrl(requestOptions)
         .append(widgetRequest ? "/widget" : "/open")
         .append("/account/").append(urlEncode(accountId))
         .append("/user/").append(urlEncode(userId));
@@ -218,7 +221,7 @@ public final class SaaSquatchClient implements Closeable {
     // api/v1/:tenantAlias/account/:accountId/user/:userId/shareurls
     requireNotBlank(accountId, "accountId");
     requireNotBlank(userId, "usreId");
-    final HttpUrl.Builder urlBuilder = HttpUrl.parse(baseApiUrl(requestOptions)
+    final HttpUrl.Builder urlBuilder = HttpUrl.parse(baseTenantApiUrl(requestOptions)
         .append("/account/").append(urlEncode(accountId))
         .append("/user/").append(urlEncode(userId)).append("/shareurls").toString())
         .newBuilder();
@@ -244,7 +247,7 @@ public final class SaaSquatchClient implements Closeable {
     final Map<String, Object> body = userEventInput;
     final String accountId = requireNotBlank((String) body.get("accountId"), "accountId");
     final String userId = requireNotBlank((String) body.get("userId"), "userId");
-    final HttpUrl.Builder urlBuilder = HttpUrl.parse(baseApiUrl(requestOptions)
+    final HttpUrl.Builder urlBuilder = HttpUrl.parse(baseTenantApiUrl(requestOptions)
         .append("/open/account/").append(urlEncode(accountId))
         .append("/user/").append(urlEncode(userId)).append("/events").toString())
         .newBuilder();
@@ -265,7 +268,7 @@ public final class SaaSquatchClient implements Closeable {
     requireNotBlank(accountId, "accountId");
     requireNotBlank(userId, "userId");
     requireNotBlank(referralCode, "referralCode");
-    final HttpUrl.Builder urlBuilder = HttpUrl.parse(baseApiUrl(requestOptions)
+    final HttpUrl.Builder urlBuilder = HttpUrl.parse(baseTenantApiUrl(requestOptions)
         .append("/open/code/").append(urlEncode(referralCode))
         .append("/account/").append(urlEncode(accountId))
         .append("/user/").append(urlEncode(userId)).toString())
@@ -309,26 +312,31 @@ public final class SaaSquatchClient implements Closeable {
   }
 
   /**
+   * Get the base url with protocol and app domain
+   */
+  private StringBuilder baseUrl(@Nullable RequestOptions requestOptions) {
+    return new StringBuilder(protocol).append("://").append(clientOptions.getAppDomain());
+  }
+
+  /**
    * Get the base /api/v1/tenantAlias url
    */
-  private StringBuilder baseApiUrl(@Nullable RequestOptions requestOptions) {
+  private StringBuilder baseTenantApiUrl(@Nullable RequestOptions requestOptions) {
     /*
      * Not using okhttp HttpUrl.Builder here because Apache's URIBuilder cannot do append path
      * segment, and we don't want to depend on okhttp too much.
      */
     final String tenantAlias = getTenantAlias(requestOptions);
-    return new StringBuilder(protocol).append("://").append(clientOptions.getAppDomain())
-        .append("/api/v1/").append(urlEncode(tenantAlias));
+    return baseUrl(requestOptions).append("/api/v1/").append(urlEncode(tenantAlias));
   }
 
   /**
    * Get the base /a/tenantAlias url
    */
-  private StringBuilder baseAUrl(@Nullable RequestOptions requestOptions) {
+  private StringBuilder baseTenantAUrl(@Nullable RequestOptions requestOptions) {
     // Not using okhttp HttpUrl.Builder intentionally
     final String tenantAlias = getTenantAlias(requestOptions);
-    return new StringBuilder(protocol).append("://").append(clientOptions.getAppDomain())
-        .append("/a/").append(urlEncode(tenantAlias));
+    return baseUrl(requestOptions).append("/a/").append(urlEncode(tenantAlias));
   }
 
   private Flowable<Response> executeRequest(Request.Builder requestBuilder) {
