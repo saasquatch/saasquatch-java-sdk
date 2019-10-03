@@ -45,7 +45,7 @@ public abstract class AuthMethod {
   /**
    * Authenticate with the given JWT
    */
-  public static JwtAuth ofJwt(@Nonnull String jwt) {
+  public static AuthMethod ofJwt(@Nonnull String jwt) {
     return new JwtAuth(requireNotBlank(jwt, "jwt"));
   }
 
