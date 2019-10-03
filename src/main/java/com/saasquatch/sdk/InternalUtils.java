@@ -39,10 +39,20 @@ class InternalUtils {
     @Nonnull
     final String osVersion = getSysProp("os.version", "");
     @Nonnull
-    final String osStr = (osName + ' ' + osVersion).trim();
-    return format("SaaSquatch SDK; %s; %s",
-        javaVersion == null ? "Unknown Java version" : "Java " + javaVersion,
-        osStr.isEmpty() ? "Unknown OS" : osStr);
+    final String osArch = getSysProp("os.arch", "");
+    @Nonnull
+    final String osStr = (osName + ' ' + osVersion + ' ' + osArch).trim();
+    @Nullable
+    final String nBit = getSysProp("sun.arch.data.model", null);
+    final StringBuilder uaBuilder = new StringBuilder("SaaSquatch SDK (");
+    uaBuilder.append(javaVersion == null ? "Unknown Java version" : "Java " + javaVersion);
+    uaBuilder.append("; ");
+    uaBuilder.append(osStr.isEmpty() ? "Unknown OS" : osStr).append("; ");
+    if (nBit != null && !nBit.toLowerCase(Locale.ROOT).equals("unknown")) {
+      uaBuilder.append(nBit).append("-bit");
+    }
+    uaBuilder.append(')');
+    return uaBuilder.toString();
   }
 
   /**
