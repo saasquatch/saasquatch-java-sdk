@@ -30,14 +30,14 @@ import okhttp3.Response;
 public final class SaaSquatchClient implements Closeable {
 
   private final ClientOptions clientOptions;
-  private final String scheme;
+  private final String protocol;
   private final ExecutorService executor;
   private final OkHttpClient okHttpClient;
   private final String userAgent;
 
   private SaaSquatchClient(@Nonnull ClientOptions clientOptions) {
     this.clientOptions = clientOptions;
-    this.scheme = clientOptions.getAppDomain().startsWith("localhost:") ? "http" : "https";
+    this.protocol = clientOptions.getAppDomain().startsWith("localhost:") ? "http" : "https";
     this.executor = Executors.newCachedThreadPool(InternalThreadFactory.INSTANCE);
     this.okHttpClient = new OkHttpClient.Builder()
         .dispatcher(new okhttp3.Dispatcher(this.executor))
@@ -317,7 +317,7 @@ public final class SaaSquatchClient implements Closeable {
      * segment, and we don't want to depend on okhttp too much.
      */
     final String tenantAlias = getTenantAlias(requestOptions);
-    return new StringBuilder(scheme).append("://").append(clientOptions.getAppDomain())
+    return new StringBuilder(protocol).append("://").append(clientOptions.getAppDomain())
         .append("/api/v1/").append(urlEncode(tenantAlias));
   }
 
@@ -327,7 +327,7 @@ public final class SaaSquatchClient implements Closeable {
   private StringBuilder baseAUrl(@Nullable RequestOptions requestOptions) {
     // Not using okhttp HttpUrl.Builder intentionally
     final String tenantAlias = getTenantAlias(requestOptions);
-    return new StringBuilder(scheme).append("://").append(clientOptions.getAppDomain())
+    return new StringBuilder(protocol).append("://").append(clientOptions.getAppDomain())
         .append("/a/").append(urlEncode(tenantAlias));
   }
 
