@@ -41,7 +41,7 @@ public class SaaSquatchClientIntegrationTest {
   }
 
   @Test
-  public void testUserUpsertAmongOtherThings() {
+  public void testUserUpsert() {
     final Map<String, Object> userInput = new HashMap<>();
     assertThrows(NullPointerException.class, () -> saasquatchClient.userUpsert(userInput, null));
     userInput.put("id", "asdf");
@@ -82,6 +82,20 @@ public class SaaSquatchClientIntegrationTest {
       final ApiError apiError = response.getApiError();
       assertEquals(404, apiError.getStatusCode());
     }
+  }
+
+  @Test
+  public void testBadUserUpsert() {
+    final Map<String, Object> userInput = new HashMap<>();
+    userInput.put("id", "asdf");
+    userInput.put("accountId", "asdf");
+    userInput.put("locale", "???");
+    final MapApiResponse response = Flowable.fromPublisher(
+        saasquatchClient.userUpsert(userInput, null))
+        .blockingSingle();
+    assertEquals(400, response.getStatusCode());
+    final ApiError apiError = response.getApiError();
+    assertEquals(400, apiError.getStatusCode());
   }
 
   @Test

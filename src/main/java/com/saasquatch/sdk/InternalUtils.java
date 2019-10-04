@@ -162,9 +162,8 @@ class InternalUtils {
 
   public static String generateClientId() {
     final Random random = ThreadLocalRandom.current();
-    final int len = 8;
-    final CharBuffer buf = CharBuffer.allocate(len);
-    for (int i = 0; i < len; i++) {
+    final CharBuffer buf = CharBuffer.allocate(8);
+    while (buf.hasRemaining()) {
       buf.put(Character.forDigit(random.nextInt(16), 16));
     }
     buf.flip();
