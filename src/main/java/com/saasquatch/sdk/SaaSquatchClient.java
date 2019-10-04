@@ -122,9 +122,9 @@ public final class SaaSquatchClient implements Closeable {
     }
     final HttpUrl.Builder urlBuilder =
         HttpUrl.parse(baseTenantApiUrl(requestOptions) + "/graphql").newBuilder();
-    mutateUrl(requestOptions, urlBuilder);
+    mutateUrl(urlBuilder, requestOptions);
     final Request.Builder request = new Request.Builder().url(urlBuilder.build());
-    mutateRequest(requestOptions, request);
+    mutateRequest(request, requestOptions);
     request.post(InternalRequestBodies.jsonPojo(body));
     return executeRequest(request).map(GraphQLApiResponse::new);
   }
@@ -162,12 +162,12 @@ public final class SaaSquatchClient implements Closeable {
       urlStrBuilder.append("/render");
     }
     final HttpUrl.Builder urlBuilder = HttpUrl.parse(urlStrBuilder.toString()).newBuilder();
-    mutateUrl(requestOptions, urlBuilder);
+    mutateUrl(urlBuilder, requestOptions);
     if (widgetType != null) {
       urlBuilder.addQueryParameter("widgetType", widgetType.toString());
     }
     final Request.Builder request = new Request.Builder().url(urlBuilder.build());
-    mutateRequest(requestOptions, request);
+    mutateRequest(request, requestOptions);
     request.get();
     return executeRequest(request);
   }
@@ -206,12 +206,12 @@ public final class SaaSquatchClient implements Closeable {
       urlStrBuilder.append("/upsert");
     }
     final HttpUrl.Builder urlBuilder = HttpUrl.parse(urlStrBuilder.toString()).newBuilder();
-    mutateUrl(requestOptions, urlBuilder);
+    mutateUrl(urlBuilder, requestOptions);
     if (widgetType != null) {
       urlBuilder.addQueryParameter("widgetType", widgetType.toString());
     }
     final Request.Builder request = new Request.Builder().url(urlBuilder.build());
-    mutateRequest(requestOptions, request);
+    mutateRequest(request, requestOptions);
     request.put(InternalRequestBodies.jsonPojo(body));
     return executeRequest(request);
   }
@@ -231,7 +231,7 @@ public final class SaaSquatchClient implements Closeable {
         .append("/account/").append(urlEncode(accountId))
         .append("/user/").append(urlEncode(userId)).append("/shareurls").toString())
         .newBuilder();
-    mutateUrl(requestOptions, urlBuilder);
+    mutateUrl(urlBuilder, requestOptions);
     if (shareMedium != null) {
       urlBuilder.addQueryParameter("shareMedium", shareMedium);
     }
@@ -239,7 +239,7 @@ public final class SaaSquatchClient implements Closeable {
       urlBuilder.addQueryParameter("engagementMedium", engagementMedium);
     }
     final Request.Builder request = new Request.Builder().url(urlBuilder.build());
-    mutateRequest(requestOptions, request);
+    mutateRequest(request, requestOptions);
     request.get();
     return executeRequest(request).map(MapApiResponse::new);
   }
@@ -258,9 +258,9 @@ public final class SaaSquatchClient implements Closeable {
         .append("/open/account/").append(urlEncode(accountId))
         .append("/user/").append(urlEncode(userId)).append("/events").toString())
         .newBuilder();
-    mutateUrl(requestOptions, urlBuilder);
+    mutateUrl(urlBuilder, requestOptions);
     final Request.Builder request = new Request.Builder().url(urlBuilder.build());
-    mutateRequest(requestOptions, request);
+    mutateRequest(request, requestOptions);
     request.post(InternalRequestBodies.jsonPojo(body));
     return executeRequest(request).map(MapApiResponse::new);
   }
@@ -281,9 +281,9 @@ public final class SaaSquatchClient implements Closeable {
         .append("/account/").append(urlEncode(accountId))
         .append("/user/").append(urlEncode(userId)).toString())
         .newBuilder();
-    mutateUrl(requestOptions, urlBuilder);
+    mutateUrl(urlBuilder, requestOptions);
     final Request.Builder request = new Request.Builder().url(urlBuilder.build());
-    mutateRequest(requestOptions, request);
+    mutateRequest(request, requestOptions);
     request.post(InternalRequestBodies.jsonString("{}"));
     return executeRequest(request).map(MapApiResponse::new);
   }
@@ -291,8 +291,8 @@ public final class SaaSquatchClient implements Closeable {
   /**
    * All the common url mutations happen here
    */
-  private void mutateUrl(@Nullable RequestOptions requestOptions,
-      @Nonnull HttpUrl.Builder urlBuilder) {
+  private void mutateUrl(@Nonnull HttpUrl.Builder urlBuilder,
+      @Nullable RequestOptions requestOptions) {
     if (requestOptions != null) {
       requestOptions.mutateUrl(urlBuilder);
     }
@@ -301,8 +301,8 @@ public final class SaaSquatchClient implements Closeable {
   /**
    * All the common request mutations happen here
    */
-  private void mutateRequest(@Nullable RequestOptions requestOptions,
-      @Nonnull Request.Builder request) {
+  private void mutateRequest(@Nonnull Request.Builder request,
+      @Nullable RequestOptions requestOptions) {
     if (requestOptions != null) {
       requestOptions.mutateRequest(request);
     }
