@@ -1,8 +1,11 @@
 package com.saasquatch.sdk;
 
 import static com.saasquatch.sdk.InternalUtils.entryOf;
+import static com.saasquatch.sdk.InternalUtils.requireNotBlank;
 import static com.saasquatch.sdk.InternalUtils.unmodifiableList;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.AbstractMap.SimpleImmutableEntry;
@@ -67,6 +70,13 @@ public class InternalUtilsTest {
     list.set(0, 2);
     assertEquals(Arrays.asList(2, 2, 3), list);
     assertEquals(Arrays.asList(1, 2, 3), unmodifiableList);
+  }
+
+  @Test
+  public void testRequireNotBlank() {
+    assertThrows(NullPointerException.class, () -> requireNotBlank(null, ""));
+    assertDoesNotThrow(() -> requireNotBlank("foo", null));
+    assertThrows(IllegalArgumentException.class, () -> requireNotBlank("\t", "\t"));
   }
 
 }

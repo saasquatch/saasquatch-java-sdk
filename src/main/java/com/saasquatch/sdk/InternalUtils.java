@@ -141,9 +141,18 @@ class InternalUtils {
   }
 
   @Nonnull
-  public static String requireNotBlank(@Nullable String s, @Nonnull String msg) {
-    if (Objects.requireNonNull(s, msg).trim().isEmpty()) {
-      throw new IllegalArgumentException(msg);
+  public static String requireNotBlank(@Nullable String s, @Nullable String msg) {
+    if (msg == null) {
+      Objects.requireNonNull(s);
+    } else {
+      Objects.requireNonNull(s, msg);
+    }
+    if (s.trim().isEmpty()) {
+      if (msg == null) {
+        throw new IllegalArgumentException(s);
+      } else {
+        throw new IllegalArgumentException(msg);
+      }
     }
     return s;
   }
