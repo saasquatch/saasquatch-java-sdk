@@ -31,16 +31,16 @@ import okhttp3.Response;
 public final class SaaSquatchClient implements Closeable {
 
   private final ClientOptions clientOptions;
-  private final String clientId;
   private final String protocol;
+  private final String clientId;
   private final ExecutorService executor;
   private final OkHttpClient okHttpClient;
   private final String userAgent;
 
   private SaaSquatchClient(@Nonnull ClientOptions clientOptions) {
     this.clientOptions = clientOptions;
-    this.clientId = UUID.randomUUID().toString();
     this.protocol = clientOptions.getAppDomain().startsWith("localhost:") ? "http" : "https";
+    this.clientId = UUID.randomUUID().toString();
     this.executor = Executors.newCachedThreadPool(InternalThreadFactory.INSTANCE);
     final okhttp3.Dispatcher dispatcher = new okhttp3.Dispatcher(this.executor);
     dispatcher.setMaxRequestsPerHost(clientOptions.getMaxConcurrentRequests());
@@ -50,7 +50,7 @@ public final class SaaSquatchClient implements Closeable {
         .callTimeout(clientOptions.getRequestTimeoutMillis(), TimeUnit.MILLISECONDS)
         .connectTimeout(clientOptions.getConnectTimeoutMillis(), TimeUnit.MILLISECONDS)
         .build();
-    this.userAgent = InternalUtils.buildUserAgent(clientId);
+    this.userAgent = InternalUtils.buildUserAgent(this.clientId);
   }
 
   /**
@@ -58,14 +58,13 @@ public final class SaaSquatchClient implements Closeable {
    *
    * @param tenantAlias Your tenantAlias. This will be the default tenantAlias for all your
    *        requests. If you are in a multi-tenant environment, you should be using
-   *        {@link SaaSquatchClient#create(ClientOptions)} without a tenantAlias, and then
-   *        pass the tenantAlias you want to use in every request via
+   *        {@link SaaSquatchClient#create(ClientOptions)} without a tenantAlias, and then pass the
+   *        tenantAlias you want to use in every request via
    *        {@link RequestOptions#setTenantAlias(String)}
    * @see #create(ClientOptions)
    */
   public static SaaSquatchClient createForTenant(@Nonnull String tenantAlias) {
-    return new SaaSquatchClient(
-        ClientOptions.newBuilder().setTenantAlias(tenantAlias).build());
+    return new SaaSquatchClient(ClientOptions.newBuilder().setTenantAlias(tenantAlias).build());
   }
 
   /**
@@ -362,7 +361,7 @@ public final class SaaSquatchClient implements Closeable {
     return baseUrl(requestOptions).append("/a/").append(urlEncode(tenantAlias));
   }
 
-  private Flowable<Response> executeRequest(Request.Builder request) {
+  private Flowable<Response> executeRequest(@Nonnull Request.Builder request) {
     return InternalUtils.executeRequest(okHttpClient, request.build());
   }
 

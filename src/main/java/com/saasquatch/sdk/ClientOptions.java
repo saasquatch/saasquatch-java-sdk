@@ -27,19 +27,19 @@ public class ClientOptions {
   private final String tenantAlias;
   private final AuthMethod authMethod;
   private final String appDomain;
+  private final int maxConcurrentRequests;
   private final int requestTimeoutMillis;
   private final int connectTimeoutMillis;
-  private final int maxConcurrentRequests;
 
   private ClientOptions(@Nullable String tenantAlias, @Nullable AuthMethod authMethod,
-      @Nonnull String appDomain, int requestTimeoutMillis, int connectTimeoutMillis,
-      int maxConcurrentRequests) {
+      @Nonnull String appDomain, int maxConcurrentRequests, int requestTimeoutMillis,
+      int connectTimeoutMillis) {
     this.tenantAlias = tenantAlias;
     this.authMethod = authMethod;
     this.appDomain = appDomain;
+    this.maxConcurrentRequests = maxConcurrentRequests;
     this.requestTimeoutMillis = requestTimeoutMillis;
     this.connectTimeoutMillis = connectTimeoutMillis;
-    this.maxConcurrentRequests = maxConcurrentRequests;
   }
 
   @Nullable
@@ -57,16 +57,16 @@ public class ClientOptions {
     return appDomain;
   }
 
+  int getMaxConcurrentRequests() {
+    return maxConcurrentRequests;
+  }
+
   int getRequestTimeoutMillis() {
     return requestTimeoutMillis;
   }
 
   int getConnectTimeoutMillis() {
     return connectTimeoutMillis;
-  }
-
-  int getMaxConcurrentRequests() {
-    return maxConcurrentRequests;
   }
 
   public static Builder newBuilder() {
@@ -78,9 +78,9 @@ public class ClientOptions {
     private String tenantAlias;
     private AuthMethod authMethod;
     private String appDomain = DEFAULT_APP_DOMAIN;
+    private int maxConcurrentRequests = DEFAULT_MAX_REQUESTS;
     private int requestTimeoutMillis = DEFAULT_REQUEST_TIMEOUT_MILLIS;
     private int connectTimeoutMillis = DEFAULT_CONNECT_TIMOEUT_MILLIS;
-    private int maxConcurrentRequests = DEFAULT_MAX_REQUESTS;
 
     private Builder() {}
 
@@ -127,6 +127,17 @@ public class ClientOptions {
       return this;
     }
 
+    public Builder setMaxConcurrentRequests(int maxConcurrentRequests) {
+      if (maxConcurrentRequests <= 0) {
+        throw new IllegalArgumentException("non-positive maxConcurrentRequests");
+      }
+      if (maxConcurrentRequests > MAX_MAX_REQUESTS) {
+        throw new IllegalArgumentException("maxConcurrentRequests too large");
+      }
+      this.maxConcurrentRequests = maxConcurrentRequests;
+      return this;
+    }
+
     public Builder setRequestTimeout(long duration, @Nonnull TimeUnit timeUnit) {
       final int millis = (int) timeUnit.toMillis(duration);
       if (millis <= 0) {
@@ -151,17 +162,6 @@ public class ClientOptions {
       return this;
     }
 
-    public Builder setMaxConcurrentRequests(int maxConcurrentRequests) {
-      if (maxConcurrentRequests <= 0) {
-        throw new IllegalArgumentException("non-positive maxConcurrentRequests");
-      }
-      if (maxConcurrentRequests > MAX_MAX_REQUESTS) {
-        throw new IllegalArgumentException("maxConcurrentRequests too large");
-      }
-      this.maxConcurrentRequests = maxConcurrentRequests;
-      return this;
-    }
-
     /**
      * Build an immutable {@link ClientOptions}
      */
@@ -169,8 +169,8 @@ public class ClientOptions {
       if (authMethod != null && tenantAlias == null) {
         throw new IllegalArgumentException("tenantAlias is required if you set the authMethod");
       }
-      return new ClientOptions(tenantAlias, authMethod, appDomain, requestTimeoutMillis,
-          connectTimeoutMillis, maxConcurrentRequests);
+      return new ClientOptions(tenantAlias, authMethod, appDomain, maxConcurrentRequests,
+          requestTimeoutMillis, connectTimeoutMillis);
     }
 
   }

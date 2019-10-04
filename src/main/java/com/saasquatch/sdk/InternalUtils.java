@@ -149,7 +149,7 @@ class InternalUtils {
     }
     if (s.trim().isEmpty()) {
       if (msg == null) {
-        throw new IllegalArgumentException(s);
+        throw new IllegalArgumentException();
       } else {
         throw new IllegalArgumentException(msg);
       }
