@@ -6,6 +6,7 @@ import java.io.Closeable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -30,6 +31,7 @@ import okhttp3.Response;
 public final class SaaSquatchClient implements Closeable {
 
   private final ClientOptions clientOptions;
+  private final String clientId;
   private final String protocol;
   private final ExecutorService executor;
   private final OkHttpClient okHttpClient;
@@ -37,6 +39,7 @@ public final class SaaSquatchClient implements Closeable {
 
   private SaaSquatchClient(@Nonnull ClientOptions clientOptions) {
     this.clientOptions = clientOptions;
+    this.clientId = UUID.randomUUID().toString();
     this.protocol = clientOptions.getAppDomain().startsWith("localhost:") ? "http" : "https";
     this.executor = Executors.newCachedThreadPool(InternalThreadFactory.INSTANCE);
     final okhttp3.Dispatcher dispatcher = new okhttp3.Dispatcher(this.executor);
@@ -47,7 +50,7 @@ public final class SaaSquatchClient implements Closeable {
         .callTimeout(clientOptions.getRequestTimeoutMillis(), TimeUnit.MILLISECONDS)
         .connectTimeout(clientOptions.getConnectTimeoutMillis(), TimeUnit.MILLISECONDS)
         .build();
-    this.userAgent = InternalUtils.buildUserAgent();
+    this.userAgent = InternalUtils.buildUserAgent(clientId);
   }
 
   /**

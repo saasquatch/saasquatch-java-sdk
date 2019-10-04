@@ -1,6 +1,5 @@
 package com.saasquatch.sdk;
 
-import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -8,14 +7,19 @@ enum InternalThreadFactory implements ThreadFactory {
 
   INSTANCE;
 
-  private final ThreadFactory defaultThreadFactory = Executors.defaultThreadFactory();
+  private final String baseName = "SaaSquatch-SDK-Dispatcher";
+  private final ThreadGroup threadGroup = new ThreadGroup(baseName);
   private final AtomicLong idx = new AtomicLong();
 
   @Override
   public Thread newThread(Runnable r) {
-    final Thread thread = defaultThreadFactory.newThread(r);
-    thread.setDaemon(true);
-    thread.setName("SaaSquatch-SDK-Dispatcher-" + idx.getAndIncrement());
+    final Thread thread = new Thread(threadGroup, r, baseName + '-' + idx.getAndIncrement());
+    if (!thread.isDaemon()) {
+      thread.setDaemon(true);
+    }
+    if (thread.getPriority() != Thread.NORM_PRIORITY) {
+      thread.setPriority(Thread.NORM_PRIORITY);
+    }
     return thread;
   }
 

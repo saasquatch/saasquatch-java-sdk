@@ -1,5 +1,6 @@
 package com.saasquatch.sdk;
 
+import static com.saasquatch.sdk.InternalUtils.entryOf;
 import static com.saasquatch.sdk.InternalUtils.unmodifiableList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -7,6 +8,7 @@ import java.util.AbstractMap.SimpleEntry;
 import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import org.junit.jupiter.api.Test;
@@ -20,7 +22,7 @@ public class InternalUtilsTest {
 
   @Test
   public void testBuildUserAgent() {
-    final String userAgent = InternalUtils.buildUserAgent();
+    final String userAgent = InternalUtils.buildUserAgent(UUID.randomUUID().toString());
     assertTrue(userAgent.startsWith("SaaSquatch SDK"));
   }
 
@@ -28,8 +30,8 @@ public class InternalUtilsTest {
   public void testEntryOf() {
     final Object k = new Object();
     final Object v = new Object();
-    assertEquals(new SimpleImmutableEntry<>(k, v), InternalUtils.entryOf(k, v));
-    assertEquals(new SimpleEntry<>(k, v), InternalUtils.entryOf(k, v));
+    assertEquals(new SimpleImmutableEntry<>(k, v), entryOf(k, v));
+    assertEquals(new SimpleEntry<>(k, v), entryOf(k, v));
   }
 
   @Test
