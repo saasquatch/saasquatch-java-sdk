@@ -81,8 +81,6 @@ SaaSquatchClient.create(ClientOptions.newBuilder()
     .build());
 ```
 
-Note that if you are using this SDK on Android, then you most likely
-
 It is recommended that you keep a singleton `SaaSquatchClient` for all your requests. Do not create a new `SaaSquatchClient` for every request. `SaaSquatchClient` implements `Closeable`, and it's a good idea to call `close()` to release resources when you are done with it.
 
 Every API method in `SaaSquatchClient` takes a `RequestOptions`, where you can specify your `tenantAlias` override, authentication method override, etc. The per-method `RequestOptions` always takes precedence over the client-level `ClientOptions`.
