@@ -82,6 +82,11 @@ public class SaaSquatchClientIntegrationTest {
       final ApiError apiError = response.getApiError();
       assertEquals(404, apiError.getStatusCode());
     }
+  }
+
+  @Test
+  public void testWidgetRender() {
+    upsertEmptyUser("asdf", "asdf");
     // Attempt to render a widget
     {
       final TextApiResponse response = Flowable.fromPublisher(
@@ -111,6 +116,11 @@ public class SaaSquatchClientIntegrationTest {
           .blockingSingle();
       assertEquals(400, response.getStatusCode());
     }
+  }
+
+  @Test
+  public void testBasicLogUserEvent() {
+    upsertEmptyUser("asdf", "asdf");
     final Map<String, Object> userEventInput = new HashMap<>();
     userEventInput.put("userId", "asdf");
     userEventInput.put("accountId", "asdf");
@@ -170,6 +180,13 @@ public class SaaSquatchClientIntegrationTest {
         saasquatchClient.buildUserMessageLink("asdf", "asdf", "r1", "FACEBOOK", null, null);
     assertEquals("https://staging.referralsaasquatch.com/a/test_ayqmunvultmjb/"
         + "message/redirect/FACEBOOK?accountId=asdf&userId=asdf&programId=r1", messageLink);
+  }
+
+  private void upsertEmptyUser(String accountId, String userId) {
+    final MapApiResponse response = Flowable.fromPublisher(saasquatchClient.userUpsert(
+        ImmutableMap.of("accountId", accountId, "id", userId), null))
+        .blockingSingle();
+    assertTrue(response.succeeded());
   }
 
 }
