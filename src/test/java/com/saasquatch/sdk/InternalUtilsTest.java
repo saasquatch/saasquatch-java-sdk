@@ -11,7 +11,6 @@ import java.util.AbstractMap.SimpleEntry;
 import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import org.junit.jupiter.api.Test;
@@ -25,7 +24,7 @@ public class InternalUtilsTest {
 
   @Test
   public void testBuildUserAgent() {
-    final String userAgent = InternalUtils.buildUserAgent(UUID.randomUUID().toString());
+    final String userAgent = InternalUtils.buildUserAgent("foo");
     assertTrue(userAgent.startsWith("SaaSquatch SDK"));
   }
 
@@ -39,7 +38,8 @@ public class InternalUtilsTest {
 
   @Test
   public void testRxExecuteRequestWorks() {
-    final ExecutorService executor = Executors.newCachedThreadPool(InternalThreadFactory.INSTANCE);
+    final ExecutorService executor =
+        Executors.newCachedThreadPool(new InternalThreadFactory("foo"));
     try {
       final OkHttpClient okHttpClient = new OkHttpClient.Builder()
           .dispatcher(new okhttp3.Dispatcher(executor))

@@ -3,13 +3,16 @@ package com.saasquatch.sdk;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicLong;
 
-enum InternalThreadFactory implements ThreadFactory {
+class InternalThreadFactory implements ThreadFactory {
 
-  INSTANCE;
-
-  private final String baseName = "SaaSquatch-SDK-Dispatcher";
-  private final ThreadGroup threadGroup = new ThreadGroup(baseName);
   private final AtomicLong idx = new AtomicLong();
+  private final String baseName;
+  private final ThreadGroup threadGroup;
+
+  public InternalThreadFactory(String clientId) {
+    this.baseName = "SaaSquatch-SDK-" + clientId;
+    this.threadGroup = new ThreadGroup(baseName);
+  }
 
   @Override
   public Thread newThread(Runnable r) {

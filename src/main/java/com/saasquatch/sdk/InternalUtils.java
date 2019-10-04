@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.nio.CharBuffer;
 import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.Arrays;
 import java.util.Collections;
@@ -12,6 +13,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.reactivestreams.Publisher;
@@ -155,6 +158,17 @@ class InternalUtils {
       }
     }
     return s;
+  }
+
+  public static String generateClientId() {
+    final Random random = ThreadLocalRandom.current();
+    final int len = 8;
+    final CharBuffer buf = CharBuffer.allocate(len);
+    for (int i = 0; i < len; i++) {
+      buf.put(Character.forDigit(random.nextInt(16), 16));
+    }
+    buf.flip();
+    return buf.toString();
   }
 
 }
