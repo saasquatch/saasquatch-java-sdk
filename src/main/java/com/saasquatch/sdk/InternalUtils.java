@@ -35,18 +35,13 @@ class InternalUtils {
 
   @Nonnull
   public static String buildUserAgent(@Nonnull String clientId) {
-    @Nullable
-    final String javaVersion = getSysProp("java.version", null);
-    @Nonnull
+    final String javaVersion = getSysProp("java.version", "");
     final String osName = getSysProp("os.name", "");
-    @Nonnull
     final String osVersion = getSysProp("os.version", "");
-    @Nonnull
     final String osArch = getSysProp("os.arch", "");
-    @Nonnull
     final String osStr = (osName + ' ' + osVersion + ' ' + osArch).trim();
     final StringBuilder uaBuilder = new StringBuilder("SaaSquatch SDK (");
-    uaBuilder.append(javaVersion == null ? "Unknown Java version" : "Java " + javaVersion);
+    uaBuilder.append(javaVersion.isEmpty() ? "Unknown Java version" : "Java " + javaVersion);
     uaBuilder.append("; ");
     uaBuilder.append(osStr.isEmpty() ? "Unknown OS" : osStr).append("; ");
     uaBuilder.append(clientId);
