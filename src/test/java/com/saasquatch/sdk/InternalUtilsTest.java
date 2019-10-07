@@ -67,11 +67,13 @@ public class InternalUtilsTest {
 
   @Test
   public void testUnmodifiableList() {
-    final List<Integer> list = Arrays.asList(1, 2, 3);
-    final List<Integer> unmodifiableList = unmodifiableList(list);
-    list.set(0, 2);
-    assertEquals(Arrays.asList(2, 2, 3), list);
-    assertEquals(Arrays.asList(1, 2, 3), unmodifiableList);
+    {
+      final List<Integer> list = Arrays.asList(1, 2, 3);
+      final List<Integer> unmodifiableList = unmodifiableList(list);
+      list.set(0, 2);
+      assertEquals(Arrays.asList(2, 2, 3), list);
+      assertEquals(Arrays.asList(1, 2, 3), unmodifiableList);
+    }
     assertSame(Collections.emptyList(), unmodifiableList(Arrays.asList()));
     assertEquals("SingletonList", unmodifiableList(Arrays.asList(1)).getClass().getSimpleName());
   }
