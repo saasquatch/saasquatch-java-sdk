@@ -155,9 +155,9 @@ class InternalUtils {
     return s;
   }
 
-  public static String generateClientId() {
+  public static String randomHexString(int length) {
     final Random random = ThreadLocalRandom.current();
-    final CharBuffer buf = CharBuffer.allocate(8);
+    final CharBuffer buf = CharBuffer.allocate(length);
     while (buf.hasRemaining()) {
       buf.put(Character.forDigit(random.nextInt(16), 16));
     }

@@ -39,7 +39,7 @@ public final class SaaSquatchClient implements Closeable {
   private SaaSquatchClient(@Nonnull ClientOptions clientOptions) {
     this.clientOptions = clientOptions;
     this.protocol = clientOptions.getAppDomain().startsWith("localhost:") ? "http" : "https";
-    this.clientId = InternalUtils.generateClientId();
+    this.clientId = InternalUtils.randomHexString(8);
     this.executor = Executors.newCachedThreadPool(new InternalThreadFactory(this.clientId));
     final okhttp3.Dispatcher dispatcher = new okhttp3.Dispatcher(this.executor);
     dispatcher.setMaxRequestsPerHost(clientOptions.getMaxConcurrentRequests());
