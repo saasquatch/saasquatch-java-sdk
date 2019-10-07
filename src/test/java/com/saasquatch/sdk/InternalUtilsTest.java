@@ -5,11 +5,13 @@ import static com.saasquatch.sdk.InternalUtils.requireNotBlank;
 import static com.saasquatch.sdk.InternalUtils.unmodifiableList;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -70,6 +72,8 @@ public class InternalUtilsTest {
     list.set(0, 2);
     assertEquals(Arrays.asList(2, 2, 3), list);
     assertEquals(Arrays.asList(1, 2, 3), unmodifiableList);
+    assertSame(Collections.emptyList(), unmodifiableList(Arrays.asList()));
+    assertEquals("SingletonList", unmodifiableList(Arrays.asList(1)).getClass().getSimpleName());
   }
 
   @Test
