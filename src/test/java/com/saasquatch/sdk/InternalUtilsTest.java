@@ -8,11 +8,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import java.security.Permission;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.PropertyPermission;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import org.junit.jupiter.api.Test;
@@ -28,6 +30,27 @@ public class InternalUtilsTest {
   public void testBuildUserAgent() {
     final String userAgent = InternalUtils.buildUserAgent("foo");
     assertTrue(userAgent.startsWith("SaaSquatch SDK"));
+  }
+
+  @Test
+  public void testGetSysProp() {
+    final SecurityManager customSecurityManager = new SecurityManager() {
+
+      @Override
+      public void checkPermission(Permission perm) {
+        if (perm instanceof PropertyPermission) {
+          throw new SecurityException(perm.getName());
+        }
+      }
+
+    };
+    System.setSecurityManager(customSecurityManager);
+    try {
+      assertThrows(SecurityException.class, () -> System.getProperty("someRandomProperty"));
+      assertEquals("foo", InternalUtils.getSysProp("someRandomProperty", "foo"));
+    } finally {
+      System.setSecurityManager(null);
+    }
   }
 
   @Test
