@@ -120,7 +120,7 @@ public class ClientOptions {
       if (appDomain.startsWith("/") || appDomain.endsWith("/")) {
         throw new IllegalArgumentException("appDomain should not start or end with a slash");
       }
-      if (!appDomain.matches("[a-zA-Z0-9\\.\\/]+")) {
+      if (!appDomain.matches("[a-zA-Z0-9\\.\\/:]+")) {
         throw new IllegalArgumentException("appDomain contains invalid characters");
       }
       this.appDomain = appDomain;

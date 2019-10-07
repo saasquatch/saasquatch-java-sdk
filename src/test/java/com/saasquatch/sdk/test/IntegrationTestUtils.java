@@ -12,6 +12,7 @@ import com.saasquatch.sdk.SaaSquatchClient;
 
 public class IntegrationTestUtils {
 
+  private static final String PROD_APP_DOMAIN = "app.referralsaasquatch.com";
   private static final String CONST_BASE = "com.saasquatch.sdk.test.";
   public static final String APP_DOMAIN_PROP = CONST_BASE + "appDomain";
   public static final String TENANT_ALIAS_PROP = CONST_BASE + "tenantAlias";
@@ -34,7 +35,12 @@ public class IntegrationTestUtils {
   }
 
   public static String getAppDomain() {
-    return System.getProperty(APP_DOMAIN_PROP);
+    final String appDomain = System.getProperty(APP_DOMAIN_PROP);
+    if (appDomain != null && appDomain.toLowerCase(Locale.ROOT).contains(PROD_APP_DOMAIN)) {
+      System.out.println("Running tests against the production app is not allowed!!!");
+      return null;
+    }
+    return appDomain;
   }
 
   public static String getTenantAlias() {
