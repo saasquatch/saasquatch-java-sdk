@@ -14,9 +14,14 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.ThreadLocalRandom;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import org.apache.hc.client5.http.async.methods.SimpleHttpRequest;
+import org.apache.hc.client5.http.async.methods.SimpleHttpResponse;
+import org.apache.hc.client5.http.impl.async.CloseableHttpAsyncClient;
+import org.apache.hc.core5.concurrent.FutureCallback;
 import org.reactivestreams.Publisher;
 import io.reactivex.rxjava3.core.Flowable;
 import io.reactivex.rxjava3.core.Single;
@@ -70,6 +75,7 @@ class InternalUtils {
       @Nonnull Request request) {
     return Single.<Response>create(emitter -> {
       okHttpClient.newCall(request).enqueue(new okhttp3.Callback() {
+
         @Override
         public void onFailure(okhttp3.Call call, IOException ex) {
           emitter.onError(ex);
@@ -79,6 +85,31 @@ class InternalUtils {
         public void onResponse(okhttp3.Call call, Response resp) throws IOException {
           emitter.onSuccess(resp);
         }
+
+      });
+    }).toFlowable();
+  }
+
+  public static Flowable<SimpleHttpResponse> executeRequest(
+      @Nonnull CloseableHttpAsyncClient httpAsyncClient, @Nonnull SimpleHttpRequest request) {
+    return Single.<SimpleHttpResponse>create(emitter -> {
+      httpAsyncClient.execute(request, new FutureCallback<SimpleHttpResponse>() {
+
+        @Override
+        public void failed(Exception ex) {
+          emitter.onError(ex);
+        }
+
+        @Override
+        public void completed(SimpleHttpResponse result) {
+          emitter.onSuccess(result);
+        }
+
+        @Override
+        public void cancelled() {
+          emitter.onError(new CancellationException());
+        }
+
       });
     }).toFlowable();
   }
@@ -110,7 +141,7 @@ class InternalUtils {
   }
 
   /**
-   * RFC3986 URL encode<br>
+   * (Almost) RFC3986 URL encode<br>
    * Note that this method has the same functionality as RSUrlCodec in squatch-common and it's less
    * efficient, but the difference should be negligible for our use case. For now it's probably not
    * worth bringing in squatch-common as a dependency. If/when we do, we should replace this with
@@ -119,8 +150,7 @@ class InternalUtils {
   @Nonnull
   public static String urlEncode(@Nonnull String s) {
     try {
-      return URLEncoder.encode(s, UTF_8.name())
-          .replace("+", "%20").replace("*", "%2A").replace("%7E", "~");
+      return URLEncoder.encode(s, UTF_8.name()).replace("+", "%20").replace("*", "%2A");
     } catch (UnsupportedEncodingException e) {
       throw new RuntimeException(e); // Seriously Java?
     }
