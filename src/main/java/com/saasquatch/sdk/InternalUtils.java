@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Random;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ThreadLocalRandom;
 import javax.annotation.Nonnull;
@@ -186,10 +185,9 @@ class InternalUtils {
   }
 
   public static String randomHexString(int length) {
-    final Random random = ThreadLocalRandom.current();
     final CharBuffer buf = CharBuffer.allocate(length);
     while (buf.hasRemaining()) {
-      buf.put(Character.forDigit(random.nextInt(16), 16));
+      buf.put(Character.forDigit(ThreadLocalRandom.current().nextInt(16), 16));
     }
     buf.flip();
     return buf.toString();

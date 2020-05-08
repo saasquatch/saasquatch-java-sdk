@@ -3,6 +3,7 @@ package com.saasquatch.sdk;
 import static com.saasquatch.sdk.InternalUtils.requireNotBlank;
 import static com.saasquatch.sdk.InternalUtils.urlEncode;
 import java.io.Closeable;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -11,6 +12,11 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import org.apache.hc.client5.http.config.RequestConfig;
+import org.apache.hc.client5.http.impl.async.CloseableHttpAsyncClient;
+import org.apache.hc.client5.http.impl.async.HttpAsyncClients;
+import org.apache.hc.client5.http.impl.nio.PoolingAsyncClientConnectionManagerBuilder;
+import org.apache.hc.core5.concurrent.DefaultThreadFactory;
 import org.reactivestreams.Publisher;
 import com.saasquatch.sdk.models.User;
 import com.saasquatch.sdk.models.UserEventResult;
@@ -34,6 +40,7 @@ public final class SaaSquatchClient implements Closeable {
   private final String clientId;
   private final ExecutorService executor;
   private final OkHttpClient okHttpClient;
+  private final CloseableHttpAsyncClient httpAsyncClient;
   private final String userAgent;
 
   private SaaSquatchClient(@Nonnull ClientOptions clientOptions) {
@@ -48,6 +55,15 @@ public final class SaaSquatchClient implements Closeable {
         .dispatcher(dispatcher)
         .callTimeout(clientOptions.getRequestTimeoutMillis(), TimeUnit.MILLISECONDS)
         .connectTimeout(clientOptions.getConnectTimeoutMillis(), TimeUnit.MILLISECONDS)
+        .build();
+    this.httpAsyncClient = HttpAsyncClients.custom().disableCookieManagement()
+        .setDefaultRequestConfig(RequestConfig.custom()
+            .setConnectTimeout(clientOptions.getConnectTimeoutMillis(), TimeUnit.MILLISECONDS)
+            .setResponseTimeout(clientOptions.getRequestTimeoutMillis(), TimeUnit.MILLISECONDS)
+            .build())
+        .setConnectionManager(PoolingAsyncClientConnectionManagerBuilder.create()
+            .setMaxConnPerRoute(100).setMaxConnTotal(200).build())
+        .setThreadFactory(new DefaultThreadFactory("", true))
         .build();
     this.userAgent = InternalUtils.buildUserAgent(this.clientId);
   }
@@ -78,6 +94,11 @@ public final class SaaSquatchClient implements Closeable {
   @Override
   public void close() {
     this.executor.shutdown();
+    try {
+      this.httpAsyncClient.close();
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   /**
