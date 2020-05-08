@@ -15,7 +15,7 @@ import org.reactivestreams.Publisher;
 import com.saasquatch.sdk.models.User;
 import com.saasquatch.sdk.models.UserEventResult;
 import com.saasquatch.sdk.models.WidgetUpsertResult;
-import io.reactivex.Flowable;
+import io.reactivex.rxjava3.core.Flowable;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;

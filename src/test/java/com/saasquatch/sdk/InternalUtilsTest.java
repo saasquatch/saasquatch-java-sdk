@@ -18,7 +18,7 @@ import java.util.PropertyPermission;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import org.junit.jupiter.api.Test;
-import io.reactivex.Flowable;
+import io.reactivex.rxjava3.core.Flowable;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;

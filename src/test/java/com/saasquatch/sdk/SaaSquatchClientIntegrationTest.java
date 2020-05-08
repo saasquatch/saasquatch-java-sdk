@@ -21,7 +21,7 @@ import com.saasquatch.sdk.models.User;
 import com.saasquatch.sdk.models.UserEventData;
 import com.saasquatch.sdk.models.UserEventResult;
 import com.saasquatch.sdk.test.IntegrationTestUtils;
-import io.reactivex.Flowable;
+import io.reactivex.rxjava3.core.Flowable;
 
 public class SaaSquatchClientIntegrationTest {
 
