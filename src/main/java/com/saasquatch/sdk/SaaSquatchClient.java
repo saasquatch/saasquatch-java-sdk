@@ -62,7 +62,8 @@ public final class SaaSquatchClient implements Closeable {
             .setResponseTimeout(clientOptions.getRequestTimeoutMillis(), TimeUnit.MILLISECONDS)
             .build())
         .setConnectionManager(PoolingAsyncClientConnectionManagerBuilder.create()
-            .setMaxConnPerRoute(100).setMaxConnTotal(200).build())
+            .setMaxConnPerRoute(clientOptions.getMaxConcurrentRequests())
+            .setMaxConnTotal(clientOptions.getMaxConcurrentRequests() * 2).build())
         .setThreadFactory(new DefaultThreadFactory("", true))
         .build();
     this.userAgent = InternalUtils.buildUserAgent(this.clientId);
