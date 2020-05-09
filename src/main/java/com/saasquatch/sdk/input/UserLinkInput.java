@@ -5,14 +5,13 @@ import javax.annotation.Nonnull;
 import com.saasquatch.sdk.SaaSquatchClient;
 
 /**
- * Input for creating a user message link.
+ * Input for creating user message links and share links.
  *
  * @author sli
  * @see #newBuilder()
- * @see SaaSquatchClient#buildUserMessageLink(UserMessageLinkInput,
- *      com.saasquatch.sdk.RequestOptions)
+ * @see SaaSquatchClient#buildUserMessageLink(UserLinkInput, com.saasquatch.sdk.RequestOptions)
  */
-public final class UserMessageLinkInput {
+public final class UserLinkInput {
 
   private final String accountId;
   private final String userId;
@@ -20,7 +19,7 @@ public final class UserMessageLinkInput {
   private final String shareMedium;
   private final String engagementMedium;
 
-  UserMessageLinkInput(String accountId, String userId, String programId, String shareMedium,
+  UserLinkInput(String accountId, String userId, String programId, String shareMedium,
       String engagementMedium) {
     this.accountId = accountId;
     this.userId = userId;
@@ -88,10 +87,9 @@ public final class UserMessageLinkInput {
       return this;
     }
 
-    public UserMessageLinkInput build() {
-      return new UserMessageLinkInput(requireNotBlank(accountId, "accountId"),
-          requireNotBlank(userId, "userId"), programId, requireNotBlank(shareMedium, "shareMedium"),
-          engagementMedium);
+    public UserLinkInput build() {
+      return new UserLinkInput(requireNotBlank(accountId, "accountId"),
+          requireNotBlank(userId, "userId"), programId, shareMedium, engagementMedium);
     }
 
   }

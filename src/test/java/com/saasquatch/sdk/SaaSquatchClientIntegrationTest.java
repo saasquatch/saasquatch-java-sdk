@@ -20,7 +20,7 @@ import com.google.gson.JsonObject;
 import com.saasquatch.sdk.auth.AuthMethod;
 import com.saasquatch.sdk.input.ClassicWidgetType;
 import com.saasquatch.sdk.input.GraphQLInput;
-import com.saasquatch.sdk.input.UserMessageLinkInput;
+import com.saasquatch.sdk.input.UserLinkInput;
 import com.saasquatch.sdk.models.User;
 import com.saasquatch.sdk.models.UserEventData;
 import com.saasquatch.sdk.models.UserEventResult;
@@ -197,7 +197,7 @@ public class SaaSquatchClientIntegrationTest {
   @Test
   public void testMessageLink() {
     final String messageLink =
-        saasquatchClient.buildUserMessageLink(UserMessageLinkInput.newBuilder().setAccountId("asdf")
+        saasquatchClient.buildUserMessageLink(UserLinkInput.newBuilder().setAccountId("asdf")
             .setUserId("asdf").setProgramId("r1").setShareMedium("FACEBOOK").build(), null);
     assertEquals("https://staging.referralsaasquatch.com/a/test_ayqmunvultmjb/"
         + "message/redirect/FACEBOOK?accountId=asdf&userId=asdf&programId=r1", messageLink);

@@ -23,7 +23,7 @@ import org.apache.hc.core5.net.URIBuilder;
 import org.reactivestreams.Publisher;
 import com.saasquatch.sdk.auth.AuthMethod;
 import com.saasquatch.sdk.input.GraphQLInput;
-import com.saasquatch.sdk.input.UserMessageLinkInput;
+import com.saasquatch.sdk.input.UserLinkInput;
 import com.saasquatch.sdk.input.WidgetType;
 import com.saasquatch.sdk.internal.InternalThreadFactory;
 import com.saasquatch.sdk.internal.InternalUtils;
@@ -106,20 +106,21 @@ public final class SaaSquatchClient implements Closeable {
    * make an API call, the configured {@link AuthMethod} and HTTP headers are ignored.<br>
    * <a href="https://docs.referralsaasquatch.com/features/message-links/">Link to official docs</a>
    */
-  public String buildUserMessageLink(@Nonnull UserMessageLinkInput userMessageLinkInput,
+  public String buildUserMessageLink(@Nonnull UserLinkInput userLinkInput,
       @Nullable RequestOptions requestOptions) {
-    Objects.requireNonNull(userMessageLinkInput, "userMessageLinkInput");
+    Objects.requireNonNull(userLinkInput, "userLinkInput");
+    requireNotBlank(userLinkInput.getShareMedium(), "shareMedium");
     try {
       final URIBuilder urlBuilder =
           new URIBuilder(baseTenantAUrl(requestOptions).append("/message/redirect/")
-              .append(urlEncode(userMessageLinkInput.getShareMedium())).toString());
-      urlBuilder.addParameter("accountId", userMessageLinkInput.getAccountId());
-      urlBuilder.addParameter("userId", userMessageLinkInput.getUserId());
-      if (userMessageLinkInput.getProgramId() != null) {
-        urlBuilder.addParameter("programId", userMessageLinkInput.getProgramId());
+              .append(urlEncode(userLinkInput.getShareMedium())).toString());
+      urlBuilder.addParameter("accountId", userLinkInput.getAccountId());
+      urlBuilder.addParameter("userId", userLinkInput.getUserId());
+      if (userLinkInput.getProgramId() != null) {
+        urlBuilder.addParameter("programId", userLinkInput.getProgramId());
       }
-      if (userMessageLinkInput.getEngagementMedium() != null) {
-        urlBuilder.addParameter("engagementMedium", userMessageLinkInput.getEngagementMedium());
+      if (userLinkInput.getEngagementMedium() != null) {
+        urlBuilder.addParameter("engagementMedium", userLinkInput.getEngagementMedium());
       }
       return urlBuilder.build().toString();
     } catch (URISyntaxException e) {
@@ -239,22 +240,19 @@ public final class SaaSquatchClient implements Closeable {
    * <a href="https://docs.referralsaasquatch.com/api/methods/#lookup-a-users-share-urls">Link to
    * official docs</a>
    */
-  public Publisher<MapApiResponse> getUserShareLinks(@Nonnull String accountId,
-      @Nonnull String userId, @Nullable String programId, @Nullable String shareMedium,
-      @Nullable String engagementMedium, @Nullable RequestOptions requestOptions) {
+  public Publisher<MapApiResponse> getUserShareLinks(@Nonnull UserLinkInput userLinkInput,
+      @Nullable RequestOptions requestOptions) {
     // api/v1/:tenantAlias/account/:accountId/user/:userId/shareurls
-    requireNotBlank(accountId, "accountId");
-    requireNotBlank(userId, "usreId");
     try {
-      final URIBuilder urlBuilder = new URIBuilder(
-          baseTenantApiUrl(requestOptions).append("/account/").append(urlEncode(accountId))
-              .append("/user/").append(urlEncode(userId)).append("/shareurls").toString());
+      final URIBuilder urlBuilder = new URIBuilder(baseTenantApiUrl(requestOptions)
+          .append("/account/").append(urlEncode(userLinkInput.getAccountId())).append("/user/")
+          .append(urlEncode(userLinkInput.getUserId())).append("/shareurls").toString());
       mutateUrl(urlBuilder, requestOptions);
-      if (shareMedium != null) {
-        urlBuilder.addParameter("shareMedium", shareMedium);
+      if (userLinkInput.getShareMedium() != null) {
+        urlBuilder.addParameter("shareMedium", userLinkInput.getShareMedium());
       }
-      if (engagementMedium != null) {
-        urlBuilder.addParameter("engagementMedium", engagementMedium);
+      if (userLinkInput.getEngagementMedium() != null) {
+        urlBuilder.addParameter("engagementMedium", userLinkInput.getEngagementMedium());
       }
       final SimpleHttpRequest request = SimpleHttpRequests.get(urlBuilder.build());
       mutateRequest(request, requestOptions);
