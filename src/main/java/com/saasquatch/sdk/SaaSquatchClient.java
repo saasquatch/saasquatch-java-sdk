@@ -6,7 +6,6 @@ import static com.saasquatch.sdk.InternalUtils.urlEncode;
 import java.io.Closeable;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -137,7 +136,7 @@ public final class SaaSquatchClient implements Closeable {
       mutateUrl(urlBuilder, requestOptions);
       final SimpleHttpRequest request = SimpleHttpRequests.post(urlBuilder.build());
       mutateRequest(request, requestOptions);
-      setJsonBody(request, body);
+      setJsonPojoBody(request, body);
       return executeRequest(request).map(GraphQLApiResponse::new);
     } catch (URISyntaxException e) {
       throw new RuntimeException(e);
@@ -229,7 +228,7 @@ public final class SaaSquatchClient implements Closeable {
       }
       final SimpleHttpRequest request = SimpleHttpRequests.put(urlBuilder.build());
       mutateRequest(request, requestOptions);
-      setJsonBody(request, body);
+      setJsonPojoBody(request, body);
       return executeRequest(request);
     } catch (URISyntaxException e) {
       throw new RuntimeException(e);
@@ -283,7 +282,7 @@ public final class SaaSquatchClient implements Closeable {
       mutateUrl(urlBuilder, requestOptions);
       final SimpleHttpRequest request = SimpleHttpRequests.post(urlBuilder.build());
       mutateRequest(request, requestOptions);
-      setJsonBody(request, body);
+      setJsonPojoBody(request, body);
       return executeRequest(request).map(MapApiResponse::new);
     } catch (URISyntaxException e) {
       throw new RuntimeException(e);
@@ -308,7 +307,7 @@ public final class SaaSquatchClient implements Closeable {
       mutateUrl(urlBuilder, requestOptions);
       final SimpleHttpRequest request = SimpleHttpRequests.post(urlBuilder.build());
       mutateRequest(request, requestOptions);
-      setJsonBody(request, Collections.emptyMap());
+      setJsonStringBody(request, "{}");
       return executeRequest(request).map(MapApiResponse::new);
     } catch (URISyntaxException e) {
       throw new RuntimeException(e);
@@ -383,8 +382,12 @@ public final class SaaSquatchClient implements Closeable {
     return baseUrl(requestOptions).append("/a/").append(urlEncode(tenantAlias));
   }
 
-  private void setJsonBody(@Nonnull SimpleHttpRequest request, Object body) {
+  private void setJsonPojoBody(@Nonnull SimpleHttpRequest request, Object body) {
     request.setBody(gson.toJson(body), ContentType.APPLICATION_JSON);
+  }
+
+  private void setJsonStringBody(@Nonnull SimpleHttpRequest request, String jsonStr) {
+    request.setBody(jsonStr, ContentType.APPLICATION_JSON);
   }
 
   private Flowable<SimpleHttpResponse> executeRequest(@Nonnull SimpleHttpRequest request) {
