@@ -76,7 +76,7 @@ public final class ClientOptions {
     return new Builder();
   }
 
-  public static class Builder {
+  public static final class Builder {
 
     private String tenantAlias;
     private AuthMethod authMethod;
