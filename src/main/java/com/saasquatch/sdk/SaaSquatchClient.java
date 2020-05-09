@@ -197,7 +197,8 @@ public final class SaaSquatchClient implements Closeable {
    */
   public Publisher<MapApiResponse> userUpsert(@Nonnull Map<String, Object> userInput,
       @Nullable RequestOptions requestOptions) {
-    return _userUpsert(userInput, null, requestOptions, false).map(MapApiResponse::new);
+    return _userUpsert((String) userInput.get("accountId"), (String) userInput.get("id"), userInput,
+        null, requestOptions, false).map(MapApiResponse::new);
   }
 
   /**
@@ -206,18 +207,18 @@ public final class SaaSquatchClient implements Closeable {
    */
   public Publisher<MapApiResponse> widgetUpsert(@Nonnull Map<String, Object> userInput,
       @Nullable WidgetType widgetType, @Nullable RequestOptions requestOptions) {
-    return _userUpsert(userInput, widgetType, requestOptions, true).map(MapApiResponse::new);
+    return _userUpsert((String) userInput.get("accountId"), (String) userInput.get("id"), userInput,
+        widgetType, requestOptions, true).map(MapApiResponse::new);
   }
 
-  private Flowable<SimpleHttpResponse> _userUpsert(@Nonnull Map<String, Object> userInput,
-      @Nullable WidgetType widgetType, @Nullable RequestOptions requestOptions,
-      boolean widgetRequest) {
-    final Map<String, Object> body = userInput;
-    final String accountId = requireNotBlank((String) body.get("accountId"), "accountId");
-    final String userId = requireNotBlank((String) body.get("id"), "id");
+  private Flowable<SimpleHttpResponse> _userUpsert(@Nonnull String accountId,
+      @Nonnull String userId, @Nonnull Object body, @Nullable WidgetType widgetType,
+      @Nullable RequestOptions requestOptions, boolean widgetRequest) {
+    final String _accountId = requireNotBlank(accountId, "accountId");
+    final String _userId = requireNotBlank(userId, "id");
     final StringBuilder urlStrBuilder = baseTenantApiUrl(requestOptions)
         .append(widgetRequest ? "/widget" : "/open").append("/account/")
-        .append(urlEncode(accountId)).append("/user/").append(urlEncode(userId));
+        .append(urlEncode(_accountId)).append("/user/").append(urlEncode(_userId));
     if (widgetRequest) {
       urlStrBuilder.append("/upsert");
     }
@@ -270,7 +271,7 @@ public final class SaaSquatchClient implements Closeable {
    */
   public Publisher<MapApiResponse> logUserEvent(@Nonnull UserEventInput userEventInput,
       @Nullable RequestOptions requestOptions) {
-    return logUserEvent(userEventInput.getAccountId(), userEventInput.getUserId(), userEventInput,
+    return _logUserEvent(userEventInput.getAccountId(), userEventInput.getUserId(), userEventInput,
         requestOptions);
   }
 
@@ -284,10 +285,10 @@ public final class SaaSquatchClient implements Closeable {
     final Map<String, Object> body = userEventInput;
     final String accountId = requireNotBlank((String) body.get("accountId"), "accountId");
     final String userId = requireNotBlank((String) body.get("userId"), "userId");
-    return logUserEvent(accountId, userId, body, requestOptions);
+    return _logUserEvent(accountId, userId, body, requestOptions);
   }
 
-  private Publisher<MapApiResponse> logUserEvent(@Nonnull String accountId, @Nonnull String userId,
+  private Publisher<MapApiResponse> _logUserEvent(@Nonnull String accountId, @Nonnull String userId,
       @Nonnull Object body, @Nullable RequestOptions requestOptions) {
     try {
       final URIBuilder urlBuilder = new URIBuilder(
