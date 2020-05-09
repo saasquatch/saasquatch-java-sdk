@@ -1,4 +1,4 @@
-package com.saasquatch.sdk.inputs;
+package com.saasquatch.sdk.input;
 
 import static com.saasquatch.sdk.internal.InternalUtils.format;
 import static com.saasquatch.sdk.internal.InternalUtils.requireNotBlank;

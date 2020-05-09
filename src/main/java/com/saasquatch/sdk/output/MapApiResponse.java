@@ -1,4 +1,4 @@
-package com.saasquatch.sdk.response;
+package com.saasquatch.sdk.output;
 
 import static com.saasquatch.sdk.internal.InternalGsonHolder.gson;
 import static com.saasquatch.sdk.internal.InternalUtils.format;

@@ -1,4 +1,4 @@
-package com.saasquatch.sdk.response;
+package com.saasquatch.sdk.output;
 
 import javax.annotation.Nullable;
 import org.apache.hc.client5.http.async.methods.SimpleHttpResponse;

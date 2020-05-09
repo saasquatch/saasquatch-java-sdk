@@ -23,15 +23,15 @@ import org.apache.hc.core5.http.ContentType;
 import org.apache.hc.core5.net.URIBuilder;
 import org.reactivestreams.Publisher;
 import com.saasquatch.sdk.auth.AuthMethod;
-import com.saasquatch.sdk.inputs.WidgetType;
+import com.saasquatch.sdk.input.WidgetType;
 import com.saasquatch.sdk.internal.InternalThreadFactory;
 import com.saasquatch.sdk.internal.InternalUtils;
 import com.saasquatch.sdk.models.User;
 import com.saasquatch.sdk.models.UserEventResult;
 import com.saasquatch.sdk.models.WidgetUpsertResult;
-import com.saasquatch.sdk.response.GraphQLApiResponse;
-import com.saasquatch.sdk.response.MapApiResponse;
-import com.saasquatch.sdk.response.TextApiResponse;
+import com.saasquatch.sdk.output.GraphQLApiResponse;
+import com.saasquatch.sdk.output.MapApiResponse;
+import com.saasquatch.sdk.output.TextApiResponse;
 import io.reactivex.rxjava3.core.Flowable;
 
 /**

@@ -1,4 +1,4 @@
-package com.saasquatch.sdk.inputs;
+package com.saasquatch.sdk.input;
 
 import com.saasquatch.sdk.annotations.ClassicOnly;
 
