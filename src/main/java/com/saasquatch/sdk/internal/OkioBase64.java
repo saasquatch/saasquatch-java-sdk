@@ -1,18 +1,16 @@
 /*
- *  Licensed to the Apache Software Foundation (ASF) under one or more
- *  contributor license agreements.  See the NOTICE file distributed with
- *  this work for additional information regarding copyright ownership.
- *  The ASF licenses this file to You under the Apache License, Version 2.0
- *  (the "License"); you may not use this file except in compliance with
- *  the License.  You may obtain a copy of the License at
+ * Licensed to the Apache Software Foundation (ASF) under one or more contributor license
+ * agreements. See the NOTICE file distributed with this work for additional information regarding
+ * copyright ownership. The ASF licenses this file to You under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance with the License. You may obtain a
+ * copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
  */
 
 /**
@@ -20,14 +18,13 @@
  *
  * @author Alexander Y. Kleymenov
  */
-package com.saasquatch.sdk;
+package com.saasquatch.sdk.internal;
 
 import static java.nio.charset.StandardCharsets.US_ASCII;
 
-final class OkioBase64 {
+public final class OkioBase64 {
 
-  private OkioBase64() {
-  }
+  private OkioBase64() {}
 
   public static byte[] decode(String in) {
     // Ignore trailing '=' padding and whitespace from the input.
@@ -51,18 +48,18 @@ final class OkioBase64 {
       int bits;
       if (c >= 'A' && c <= 'Z') {
         // char ASCII value
-        //  A    65    0
-        //  Z    90    25 (ASCII - 65)
+        // A 65 0
+        // Z 90 25 (ASCII - 65)
         bits = c - 65;
       } else if (c >= 'a' && c <= 'z') {
         // char ASCII value
-        //  a    97    26
-        //  z    122   51 (ASCII - 71)
+        // a 97 26
+        // z 122 51 (ASCII - 71)
         bits = c - 71;
       } else if (c >= '0' && c <= '9') {
         // char ASCII value
-        //  0    48    52
-        //  9    57    61 (ASCII + 4)
+        // 0 48 52
+        // 9 57 61 (ASCII + 4)
         bits = c + 4;
       } else if (c == '+' || c == '-') {
         bits = 62;
@@ -102,7 +99,8 @@ final class OkioBase64 {
     }
 
     // If we sized our out array perfectly, we're done.
-    if (outCount == out.length) return out;
+    if (outCount == out.length)
+      return out;
 
     // Copy the decoded bytes to a new, right-sized array.
     byte[] prefix = new byte[outCount];
@@ -110,19 +108,15 @@ final class OkioBase64 {
     return prefix;
   }
 
-  private static final byte[] MAP = new byte[] {
-      'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S',
-      'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l',
-      'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4',
-      '5', '6', '7', '8', '9', '+', '/'
-  };
+  private static final byte[] MAP = new byte[] {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',
+      'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c',
+      'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v',
+      'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '/'};
 
-  private static final byte[] URL_MAP = new byte[] {
-      'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S',
-      'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l',
-      'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4',
-      '5', '6', '7', '8', '9', '-', '_'
-  };
+  private static final byte[] URL_MAP = new byte[] {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I',
+      'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b',
+      'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u',
+      'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '-', '_'};
 
   public static String encode(byte[] in) {
     return encode(in, MAP);

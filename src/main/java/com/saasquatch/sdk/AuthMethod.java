@@ -5,6 +5,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
 import org.apache.hc.client5.http.async.methods.SimpleHttpRequest;
+import com.saasquatch.sdk.internal.OkioBase64;
 
 /**
  * Method to authenticate with SaaSquatch
