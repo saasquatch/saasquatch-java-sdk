@@ -79,8 +79,8 @@ public final class RequestOptions {
 
     private String tenantAlias;
     private AuthMethod authMethod;
-    private final List<Map.Entry<String, String>> headers = new ArrayList<>();
-    private final List<Map.Entry<String, String>> queryParams = new ArrayList<>();
+    private List<Map.Entry<String, String>> headers = Collections.emptyList();
+    private List<Map.Entry<String, String>> queryParams = Collections.emptyList();
 
     private Builder() {}
 
@@ -109,6 +109,9 @@ public final class RequestOptions {
       if (BLOCKED_HEADERS.contains(key)) {
         throw new IllegalArgumentException(key + " is not allowed");
       }
+      if (headers.isEmpty()) {
+        headers = new ArrayList<>();
+      }
       headers.add(entryOf(key, value));
       return this;
     }
@@ -128,18 +131,21 @@ public final class RequestOptions {
     }
 
     /**
-     * Add a URL query parameter. Note that the key and value are expected to be <em>unencoded</em>.
+     * Add a URL query parameter. Note that the key and value should <em>NOT</em> be URL encoded.
      */
     public Builder addQueryParam(@Nonnull String key, @Nonnull String value) {
       requireNotBlank(key, "key");
       requireNotBlank(value, "value");
+      if (queryParams.isEmpty()) {
+        queryParams = new ArrayList<>();
+      }
       queryParams.add(entryOf(key, value));
       return this;
     }
 
     /**
-     * Convenience method for {@link #addQueryParam(String, String)(String, String)} where you can
-     * pass in multiple query parameters
+     * Convenience method for {@link #addQueryParam(String, String) where you can pass in multiple
+     * query parameters
      */
     public Builder addQueryParams(@Nonnull String... keysAndValues) {
       if ((keysAndValues.length & 1) != 0) {
