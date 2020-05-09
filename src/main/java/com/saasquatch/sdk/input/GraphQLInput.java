@@ -7,12 +7,14 @@ import java.util.Map;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import com.saasquatch.sdk.SaaSquatchClient;
 
 /**
  * Input of a GraphQL request
  *
  * @author sli
  * @see #newBuilder()
+ * @see SaaSquatchClient#graphQL(GraphQLInput, com.saasquatch.sdk.RequestOptions)
  */
 public final class GraphQLInput {
 
@@ -37,6 +39,10 @@ public final class GraphQLInput {
 
   public Map<String, Object> getVariables() {
     return variables;
+  }
+
+  public static GraphQLInput ofQuery(String query) {
+    return newBuilder().setQuery(query).build();
   }
 
   public static Builder newBuilder() {

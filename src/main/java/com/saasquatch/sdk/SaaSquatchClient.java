@@ -6,7 +6,6 @@ import static com.saasquatch.sdk.internal.InternalUtils.urlEncode;
 import java.io.Closeable;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -23,6 +22,7 @@ import org.apache.hc.core5.http.ContentType;
 import org.apache.hc.core5.net.URIBuilder;
 import org.reactivestreams.Publisher;
 import com.saasquatch.sdk.auth.AuthMethod;
+import com.saasquatch.sdk.input.GraphQLInput;
 import com.saasquatch.sdk.input.WidgetType;
 import com.saasquatch.sdk.internal.InternalThreadFactory;
 import com.saasquatch.sdk.internal.InternalUtils;
@@ -128,23 +128,15 @@ public final class SaaSquatchClient implements Closeable {
     }
   }
 
-  public Publisher<GraphQLApiResponse> graphQL(@Nonnull String query,
-      @Nullable String operationName, @Nullable Map<String, Object> variables,
+  public Publisher<GraphQLApiResponse> graphQL(@Nonnull GraphQLInput graphQLInput,
       @Nullable RequestOptions requestOptions) {
-    final Map<String, Object> body = new HashMap<>();
-    body.put("query", requireNotBlank(query, "query"));
-    if (operationName != null) {
-      body.put("operationName", operationName);
-    }
-    if (variables != null) {
-      body.put("variables", variables);
-    }
+    Objects.requireNonNull(graphQLInput, "graphQLInput");
     try {
       final URIBuilder urlBuilder = new URIBuilder(baseTenantApiUrl(requestOptions) + "/graphql");
       mutateUrl(urlBuilder, requestOptions);
       final SimpleHttpRequest request = SimpleHttpRequests.post(urlBuilder.build());
       mutateRequest(request, requestOptions);
-      setJsonPojoBody(request, body);
+      setJsonPojoBody(request, graphQLInput);
       return executeRequest(request).map(GraphQLApiResponse::new);
     } catch (URISyntaxException e) {
       throw new RuntimeException(e);
