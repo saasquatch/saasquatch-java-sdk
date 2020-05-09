@@ -23,6 +23,7 @@ import org.apache.hc.core5.net.URIBuilder;
 import org.reactivestreams.Publisher;
 import com.saasquatch.sdk.auth.AuthMethod;
 import com.saasquatch.sdk.input.GraphQLInput;
+import com.saasquatch.sdk.input.UserEventInput;
 import com.saasquatch.sdk.input.UserLinkInput;
 import com.saasquatch.sdk.input.WidgetType;
 import com.saasquatch.sdk.internal.InternalThreadFactory;
@@ -267,11 +268,27 @@ public final class SaaSquatchClient implements Closeable {
    * By default, the result of the response can be unmarshalled to {@link UserEventResult}.<br>
    * <a href="https://docs.referralsaasquatch.com/api/methods/#trackEvent">Link to official docs</a>
    */
+  public Publisher<MapApiResponse> logUserEvent(@Nonnull UserEventInput userEventInput,
+      @Nullable RequestOptions requestOptions) {
+    return logUserEvent(userEventInput.getAccountId(), userEventInput.getUserId(), userEventInput,
+        requestOptions);
+  }
+
+  /**
+   * Log a user event.<br>
+   * By default, the result of the response can be unmarshalled to {@link UserEventResult}.<br>
+   * <a href="https://docs.referralsaasquatch.com/api/methods/#trackEvent">Link to official docs</a>
+   */
   public Publisher<MapApiResponse> logUserEvent(@Nonnull Map<String, Object> userEventInput,
       @Nullable RequestOptions requestOptions) {
     final Map<String, Object> body = userEventInput;
     final String accountId = requireNotBlank((String) body.get("accountId"), "accountId");
     final String userId = requireNotBlank((String) body.get("userId"), "userId");
+    return logUserEvent(accountId, userId, body, requestOptions);
+  }
+
+  private Publisher<MapApiResponse> logUserEvent(@Nonnull String accountId, @Nonnull String userId,
+      @Nonnull Object body, @Nullable RequestOptions requestOptions) {
     try {
       final URIBuilder urlBuilder = new URIBuilder(
           baseTenantApiUrl(requestOptions).append("/open/account/").append(urlEncode(accountId))

@@ -7,6 +7,13 @@ import java.util.Map;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 
+/**
+ * Input for a single instance of user event data
+ *
+ * @author sli
+ * @see #newBuilder()
+ * @see UserEventInput.Builder#addEvents(UserEventDataInput...)
+ */
 public final class UserEventDataInput {
 
   private final String key;

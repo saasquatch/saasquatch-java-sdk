@@ -6,7 +6,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import javax.annotation.Nonnull;
+import com.saasquatch.sdk.SaaSquatchClient;
 
+/**
+ * Input for log user event API
+ *
+ * @author sli
+ * @see #newBuilder()
+ * @see SaaSquatchClient#logUserEvent(UserEventInput, com.saasquatch.sdk.RequestOptions)
+ */
 public final class UserEventInput {
 
   private final String accountId;
