@@ -13,7 +13,7 @@ public final class UserEventDataInput {
   private final Date dateTriggered;
   private final Map<String, Object> fields;
 
-  public UserEventDataInput(String key, Date dateTriggered, Map<String, Object> fields) {
+  private UserEventDataInput(String key, Date dateTriggered, Map<String, Object> fields) {
     this.key = key;
     this.dateTriggered = dateTriggered;
     this.fields = fields;
@@ -41,7 +41,7 @@ public final class UserEventDataInput {
     private Date dateTriggered;
     private Map<String, Object> fields;
 
-    public Builder() {}
+    private Builder() {}
 
     public Builder setKey(@Nonnull String key) {
       this.key = requireNotBlank(key, "key");
