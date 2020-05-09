@@ -165,7 +165,7 @@ public final class SaaSquatchClient implements Closeable {
       final URIBuilder urlBuilder = new URIBuilder(urlStrBuilder.toString());
       mutateUrl(urlBuilder, requestOptions);
       if (widgetType != null) {
-        urlBuilder.addParameter("widgetType", widgetType.toString());
+        urlBuilder.addParameter("widgetType", widgetType.getWidgetType());
       }
       final SimpleHttpRequest request = SimpleHttpRequests.get(urlBuilder.build());
       mutateRequest(request, requestOptions);
