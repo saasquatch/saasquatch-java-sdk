@@ -1,7 +1,6 @@
 package com.saasquatch.sdk;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -24,9 +23,6 @@ import org.apache.hc.core5.concurrent.FutureCallback;
 import org.reactivestreams.Publisher;
 import io.reactivex.rxjava3.core.Flowable;
 import io.reactivex.rxjava3.core.Single;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 
 class InternalUtils {
 
@@ -70,25 +66,6 @@ class InternalUtils {
    *
    * @returns a {@link Publisher} that emits one element
    */
-  public static Flowable<Response> executeRequest(@Nonnull OkHttpClient okHttpClient,
-      @Nonnull Request request) {
-    return Single.<Response>create(emitter -> {
-      okHttpClient.newCall(request).enqueue(new okhttp3.Callback() {
-
-        @Override
-        public void onFailure(okhttp3.Call call, IOException ex) {
-          emitter.onError(ex);
-        }
-
-        @Override
-        public void onResponse(okhttp3.Call call, Response resp) throws IOException {
-          emitter.onSuccess(resp);
-        }
-
-      });
-    }).toFlowable();
-  }
-
   public static Flowable<SimpleHttpResponse> executeRequest(
       @Nonnull CloseableHttpAsyncClient httpAsyncClient, @Nonnull SimpleHttpRequest request) {
     return Single.<SimpleHttpResponse>create(emitter -> {

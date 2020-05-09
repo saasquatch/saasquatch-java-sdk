@@ -17,11 +17,14 @@ import java.util.List;
 import java.util.PropertyPermission;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import org.apache.hc.client5.http.async.methods.SimpleHttpRequest;
+import org.apache.hc.client5.http.async.methods.SimpleHttpRequests;
+import org.apache.hc.client5.http.async.methods.SimpleHttpResponse;
+import org.apache.hc.client5.http.impl.async.CloseableHttpAsyncClient;
+import org.apache.hc.client5.http.impl.async.HttpAsyncClients;
 import org.junit.jupiter.api.Test;
+import io.reactivex.rxjava3.annotations.NonNull;
 import io.reactivex.rxjava3.core.Flowable;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 import reactor.core.publisher.Mono;
 
 public class InternalUtilsTest {
@@ -62,26 +65,24 @@ public class InternalUtilsTest {
   }
 
   @Test
-  public void testRxExecuteRequestWorks() {
+  public void testRxExecuteRequestWorks() throws Exception {
     final ExecutorService executor =
         Executors.newCachedThreadPool(new InternalThreadFactory("foo"));
-    try {
-      final OkHttpClient okHttpClient = new OkHttpClient.Builder()
-          .dispatcher(new okhttp3.Dispatcher(executor))
-          .build();
+    try (CloseableHttpAsyncClient httpAsyncClient = HttpAsyncClients.createDefault()) {
+      httpAsyncClient.start();
       {
-        final Request request = new Request.Builder().url("https://example.com").get().build();
-        final Response response =
-            Flowable.fromPublisher(InternalUtils.executeRequest(okHttpClient, request))
+        final SimpleHttpRequest request = SimpleHttpRequests.get("https://example.com");
+        final SimpleHttpResponse response =
+            Flowable.fromPublisher(InternalUtils.executeRequest(httpAsyncClient, request))
                 .blockingSingle();
-        assertEquals(200, response.code());
+        assertEquals(200, response.getCode());
       }
       // Test Reactive Streams implementation agnostic
       {
-        final Request request = new Request.Builder().url("https://example.com").get().build();
-        final Response response =
-            Mono.from(InternalUtils.executeRequest(okHttpClient, request)).block();
-        assertEquals(200, response.code());
+        final SimpleHttpRequest request = SimpleHttpRequests.get("https://example.com");
+        final @NonNull SimpleHttpResponse response =
+            Mono.from(InternalUtils.executeRequest(httpAsyncClient, request)).block();
+        assertEquals(200, response.getCode());
       }
     } finally {
       executor.shutdown();

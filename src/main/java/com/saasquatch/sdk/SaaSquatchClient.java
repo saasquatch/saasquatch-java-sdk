@@ -54,6 +54,7 @@ public final class SaaSquatchClient implements Closeable {
             .setMaxConnPerRoute(clientOptions.getMaxConcurrentRequests())
             .setMaxConnTotal(clientOptions.getMaxConcurrentRequests() * 2).build())
         .setThreadFactory(new InternalThreadFactory(this.clientId)).build();
+    this.httpAsyncClient.start();
     this.userAgent = InternalUtils.buildUserAgent(this.clientId);
   }
 
@@ -369,10 +370,6 @@ public final class SaaSquatchClient implements Closeable {
    * Get the base /api/v1/tenantAlias url
    */
   private StringBuilder baseTenantApiUrl(@Nullable RequestOptions requestOptions) {
-    /*
-     * Not using okhttp URIBuilder here because Apache's URIBuilder cannot do append path segment,
-     * and we don't want to depend on okhttp too much.
-     */
     final String tenantAlias = getTenantAlias(requestOptions);
     return baseUrl(requestOptions).append("/api/v1/").append(urlEncode(tenantAlias));
   }
@@ -381,7 +378,6 @@ public final class SaaSquatchClient implements Closeable {
    * Get the base /a/tenantAlias url
    */
   private StringBuilder baseTenantAUrl(@Nullable RequestOptions requestOptions) {
-    // Not using okhttp URIBuilder intentionally
     final String tenantAlias = getTenantAlias(requestOptions);
     return baseUrl(requestOptions).append("/a/").append(urlEncode(tenantAlias));
   }
