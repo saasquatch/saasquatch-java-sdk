@@ -7,7 +7,6 @@ import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.annotation.concurrent.Immutable;
 import com.saasquatch.sdk.auth.AuthMethod;
 
 /**
@@ -16,7 +15,6 @@ import com.saasquatch.sdk.auth.AuthMethod;
  * @author sli
  * @see #newBuilder()
  */
-@Immutable
 public final class ClientOptions {
 
   private static final String DEFAULT_APP_DOMAIN = "app.referralsaasquatch.com";

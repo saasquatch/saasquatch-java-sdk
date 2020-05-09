@@ -5,9 +5,7 @@ import static com.saasquatch.sdk.internal.InternalUtils.requireNotBlank;
 import static com.saasquatch.sdk.internal.InternalUtils.urlEncode;
 import java.util.Objects;
 import javax.annotation.Nonnull;
-import javax.annotation.concurrent.Immutable;
 
-@Immutable
 public final class GAWidgetType implements WidgetType {
 
   private final String programId;

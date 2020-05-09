@@ -1,10 +1,8 @@
 package com.saasquatch.sdk.auth;
 
-import javax.annotation.concurrent.Immutable;
 import org.apache.hc.client5.http.async.methods.SimpleHttpRequest;
 import org.apache.hc.core5.http.HttpHeaders;
 
-@Immutable
 class JwtAuth extends AuthMethod {
 
   private final String jwt;

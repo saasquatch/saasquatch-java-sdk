@@ -1,12 +1,10 @@
 package com.saasquatch.sdk.auth;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
-import javax.annotation.concurrent.Immutable;
 import org.apache.hc.client5.http.async.methods.SimpleHttpRequest;
 import org.apache.hc.core5.http.HttpHeaders;
 import com.saasquatch.sdk.internal.OkioBase64;
 
-@Immutable
 class TenantApiKeyAuth extends AuthMethod {
 
   private final String apiKey;

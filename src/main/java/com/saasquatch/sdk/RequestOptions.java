@@ -13,7 +13,6 @@ import java.util.Set;
 import java.util.TreeSet;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.annotation.concurrent.Immutable;
 import org.apache.hc.client5.http.async.methods.SimpleHttpRequest;
 import org.apache.hc.core5.net.URIBuilder;
 import com.saasquatch.sdk.auth.AuthMethod;
@@ -24,7 +23,6 @@ import com.saasquatch.sdk.auth.AuthMethod;
  * @author sli
  * @see #newBuilder()
  */
-@Immutable
 public final class RequestOptions {
 
   private static final Set<String> BLOCKED_HEADERS;
