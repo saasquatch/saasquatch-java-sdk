@@ -8,6 +8,7 @@ import java.nio.CharBuffer;
 import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -118,6 +119,19 @@ public final class InternalUtils {
     @SuppressWarnings("unchecked")
     final List<T> defensiveCopy = (List<T>) Arrays.asList(list.toArray());
     return Collections.unmodifiableList(defensiveCopy);
+  }
+
+  public static <K, V> Map<K, V> unmodifiableMap(@Nonnull Map<K, V> map) {
+    switch (map.size()) {
+      case 0:
+        return Collections.emptyMap();
+      case 1: {
+        final Map.Entry<K, V> singleEntry = map.entrySet().iterator().next();
+        return Collections.singletonMap(singleEntry.getKey(), singleEntry.getValue());
+      }
+      default:
+        return Collections.unmodifiableMap(new HashMap<>(map));
+    }
   }
 
   /**

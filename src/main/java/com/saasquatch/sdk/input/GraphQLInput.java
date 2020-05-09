@@ -1,8 +1,7 @@
 package com.saasquatch.sdk.input;
 
 import static com.saasquatch.sdk.internal.InternalUtils.requireNotBlank;
-import java.util.Collections;
-import java.util.HashMap;
+import static com.saasquatch.sdk.internal.InternalUtils.unmodifiableMap;
 import java.util.Map;
 import java.util.Objects;
 import javax.annotation.Nonnull;
@@ -74,7 +73,7 @@ public final class GraphQLInput {
 
     public GraphQLInput build() {
       return new GraphQLInput(requireNotBlank(query, "query"), operationName,
-          variables == null ? null : Collections.unmodifiableMap(new HashMap<>(variables)));
+          variables == null ? null : unmodifiableMap(variables));
     }
 
   }
