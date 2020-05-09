@@ -17,7 +17,7 @@ import com.saasquatch.sdk.auth.AuthMethod;
  * @see #newBuilder()
  */
 @Immutable
-public class ClientOptions {
+public final class ClientOptions {
 
   private static final String DEFAULT_APP_DOMAIN = "app.referralsaasquatch.com";
   private static final int DEFAULT_REQUEST_TIMEOUT_MILLIS = 10000;
