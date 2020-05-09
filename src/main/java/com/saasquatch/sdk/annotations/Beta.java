@@ -5,14 +5,13 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
- * Marker for things that are considered internal and are subject to change without warning, even
- * though they may be public in Java.
+ * Marker for things that are in beta and are subject to change without warning.
  *
  * @author sli
  */
 @Documented
 // This annotation is for documentation purposes only, at least for now.
 @Retention(RetentionPolicy.SOURCE)
-public @interface Internal {
+public @interface Beta {
 
 }
