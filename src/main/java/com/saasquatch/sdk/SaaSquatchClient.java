@@ -21,9 +21,9 @@ import org.apache.hc.client5.http.impl.nio.PoolingAsyncClientConnectionManagerBu
 import org.apache.hc.core5.http.ContentType;
 import org.apache.hc.core5.net.URIBuilder;
 import org.reactivestreams.Publisher;
-import com.saasquatch.sdk.annotations.Beta;
 import com.saasquatch.sdk.auth.AuthMethod;
 import com.saasquatch.sdk.input.GraphQLInput;
+import com.saasquatch.sdk.input.UserMessageLinkInput;
 import com.saasquatch.sdk.input.WidgetType;
 import com.saasquatch.sdk.internal.InternalThreadFactory;
 import com.saasquatch.sdk.internal.InternalUtils;
@@ -106,23 +106,20 @@ public final class SaaSquatchClient implements Closeable {
    * make an API call, the configured {@link AuthMethod} and HTTP headers are ignored.<br>
    * <a href="https://docs.referralsaasquatch.com/features/message-links/">Link to official docs</a>
    */
-  @Beta
-  public String buildUserMessageLink(@Nonnull String accountId, @Nonnull String userId,
-      @Nullable String programId, @Nonnull String shareMedium, @Nullable String engagementMedium,
+  public String buildUserMessageLink(@Nonnull UserMessageLinkInput userMessageLinkInput,
       @Nullable RequestOptions requestOptions) {
-    requireNotBlank(accountId, "accountId");
-    requireNotBlank(userId, "userId");
-    requireNotBlank(shareMedium, "shareMedium");
+    Objects.requireNonNull(userMessageLinkInput, "userMessageLinkInput");
     try {
-      final URIBuilder urlBuilder = new URIBuilder(baseTenantAUrl(requestOptions)
-          .append("/message/redirect/").append(urlEncode(shareMedium)).toString());
-      urlBuilder.addParameter("accountId", accountId);
-      urlBuilder.addParameter("userId", userId);
-      if (programId != null) {
-        urlBuilder.addParameter("programId", programId);
+      final URIBuilder urlBuilder =
+          new URIBuilder(baseTenantAUrl(requestOptions).append("/message/redirect/")
+              .append(urlEncode(userMessageLinkInput.getShareMedium())).toString());
+      urlBuilder.addParameter("accountId", userMessageLinkInput.getAccountId());
+      urlBuilder.addParameter("userId", userMessageLinkInput.getUserId());
+      if (userMessageLinkInput.getProgramId() != null) {
+        urlBuilder.addParameter("programId", userMessageLinkInput.getProgramId());
       }
-      if (engagementMedium != null) {
-        urlBuilder.addParameter("engagementMedium", engagementMedium);
+      if (userMessageLinkInput.getEngagementMedium() != null) {
+        urlBuilder.addParameter("engagementMedium", userMessageLinkInput.getEngagementMedium());
       }
       return urlBuilder.build().toString();
     } catch (URISyntaxException e) {
