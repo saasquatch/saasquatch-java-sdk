@@ -45,13 +45,14 @@ public final class SaaSquatchClient implements Closeable {
   private final ClientOptions clientOptions;
   private final String protocol;
   private final String clientId;
-  private final CloseableHttpAsyncClient httpAsyncClient;
   private final String userAgent;
+  private final CloseableHttpAsyncClient httpAsyncClient;
 
   private SaaSquatchClient(@Nonnull ClientOptions clientOptions) {
     this.clientOptions = clientOptions;
     this.protocol = clientOptions.getAppDomain().startsWith("localhost:") ? "http" : "https";
     this.clientId = InternalUtils.randomHexString(8);
+    this.userAgent = InternalUtils.buildUserAgent(this.clientId);
     this.httpAsyncClient = HttpAsyncClients.custom().disableCookieManagement()
         .setDefaultRequestConfig(RequestConfig.custom()
             .setConnectTimeout(clientOptions.getConnectTimeoutMillis(), TimeUnit.MILLISECONDS)
@@ -60,9 +61,9 @@ public final class SaaSquatchClient implements Closeable {
         .setConnectionManager(PoolingAsyncClientConnectionManagerBuilder.create()
             .setMaxConnPerRoute(clientOptions.getMaxConcurrentRequests())
             .setMaxConnTotal(clientOptions.getMaxConcurrentRequests() * 2).build())
+        .setUserAgent(this.userAgent)
         .setThreadFactory(new InternalThreadFactory(this.clientId)).build();
     this.httpAsyncClient.start();
-    this.userAgent = InternalUtils.buildUserAgent(this.clientId);
   }
 
   /**
@@ -339,7 +340,6 @@ public final class SaaSquatchClient implements Closeable {
       requestOptions.mutateRequest(request);
     }
     getAuthMethod(requestOptions).mutateRequest(request);
-    request.setHeader("User-Agent", userAgent);
   }
 
   @Nonnull
