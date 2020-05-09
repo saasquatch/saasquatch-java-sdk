@@ -14,11 +14,15 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.TimeUnit;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.apache.hc.client5.http.async.methods.SimpleHttpRequest;
 import org.apache.hc.client5.http.async.methods.SimpleHttpResponse;
+import org.apache.hc.client5.http.config.RequestConfig;
 import org.apache.hc.client5.http.impl.async.CloseableHttpAsyncClient;
+import org.apache.hc.client5.http.impl.async.HttpAsyncClients;
+import org.apache.hc.client5.http.impl.nio.PoolingAsyncClientConnectionManagerBuilder;
 import org.apache.hc.core5.concurrent.FutureCallback;
 import org.reactivestreams.Publisher;
 import io.reactivex.rxjava3.core.Flowable;
@@ -168,6 +172,22 @@ class InternalUtils {
     }
     buf.flip();
     return buf.toString();
+  }
+
+  public static CloseableHttpAsyncClient buildHttpAsyncClient(ClientOptions clientOptions,
+      String clientId) {
+    final CloseableHttpAsyncClient httpAsyncClient =
+        HttpAsyncClients.custom().disableCookieManagement()
+            .setDefaultRequestConfig(RequestConfig.custom()
+                .setConnectTimeout(clientOptions.getConnectTimeoutMillis(), TimeUnit.MILLISECONDS)
+                .setResponseTimeout(clientOptions.getRequestTimeoutMillis(), TimeUnit.MILLISECONDS)
+                .build())
+            .setConnectionManager(PoolingAsyncClientConnectionManagerBuilder.create()
+                .setMaxConnPerRoute(clientOptions.getMaxConcurrentRequests())
+                .setMaxConnTotal(clientOptions.getMaxConcurrentRequests() * 2).build())
+            .setThreadFactory(new InternalThreadFactory(clientId)).build();
+    httpAsyncClient.start();
+    return httpAsyncClient;
   }
 
 }

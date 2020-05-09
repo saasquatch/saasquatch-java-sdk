@@ -41,11 +41,11 @@ public final class RequestOptions {
   private final List<Map.Entry<String, String>> queryParams;
 
   private RequestOptions(@Nullable String tenantAlias, @Nullable AuthMethod authMethod,
-      @Nonnull List<Map.Entry<String, String>> multiHeaders,
+      @Nonnull List<Map.Entry<String, String>> headers,
       @Nonnull List<Map.Entry<String, String>> queryParams) {
     this.tenantAlias = tenantAlias;
     this.authMethod = authMethod;
-    this.headers = multiHeaders;
+    this.headers = headers;
     this.queryParams = queryParams;
   }
 

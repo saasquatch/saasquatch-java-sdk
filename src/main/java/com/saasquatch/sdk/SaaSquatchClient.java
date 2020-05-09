@@ -9,16 +9,12 @@ import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.TimeUnit;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.apache.hc.client5.http.async.methods.SimpleHttpRequest;
 import org.apache.hc.client5.http.async.methods.SimpleHttpRequests;
 import org.apache.hc.client5.http.async.methods.SimpleHttpResponse;
-import org.apache.hc.client5.http.config.RequestConfig;
 import org.apache.hc.client5.http.impl.async.CloseableHttpAsyncClient;
-import org.apache.hc.client5.http.impl.async.HttpAsyncClients;
-import org.apache.hc.client5.http.impl.nio.PoolingAsyncClientConnectionManagerBuilder;
 import org.apache.hc.core5.http.ContentType;
 import org.apache.hc.core5.net.URIBuilder;
 import org.reactivestreams.Publisher;
@@ -45,16 +41,7 @@ public final class SaaSquatchClient implements Closeable {
     this.clientOptions = clientOptions;
     this.protocol = clientOptions.getAppDomain().startsWith("localhost:") ? "http" : "https";
     this.clientId = InternalUtils.randomHexString(8);
-    this.httpAsyncClient = HttpAsyncClients.custom().disableCookieManagement()
-        .setDefaultRequestConfig(RequestConfig.custom()
-            .setConnectTimeout(clientOptions.getConnectTimeoutMillis(), TimeUnit.MILLISECONDS)
-            .setResponseTimeout(clientOptions.getRequestTimeoutMillis(), TimeUnit.MILLISECONDS)
-            .build())
-        .setConnectionManager(PoolingAsyncClientConnectionManagerBuilder.create()
-            .setMaxConnPerRoute(clientOptions.getMaxConcurrentRequests())
-            .setMaxConnTotal(clientOptions.getMaxConcurrentRequests() * 2).build())
-        .setThreadFactory(new InternalThreadFactory(this.clientId)).build();
-    this.httpAsyncClient.start();
+    this.httpAsyncClient = InternalUtils.buildHttpAsyncClient(clientOptions, clientId);
     this.userAgent = InternalUtils.buildUserAgent(this.clientId);
   }
 
