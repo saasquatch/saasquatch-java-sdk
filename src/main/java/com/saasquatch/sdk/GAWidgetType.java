@@ -1,21 +1,32 @@
 package com.saasquatch.sdk;
 
 import static com.saasquatch.sdk.InternalUtils.format;
+import static com.saasquatch.sdk.InternalUtils.requireNotBlank;
 import static com.saasquatch.sdk.InternalUtils.urlEncode;
 import java.util.Objects;
+import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
 
 @Immutable
-final class GAWidgetType implements WidgetType {
+public final class GAWidgetType implements WidgetType {
 
   private final String programId;
   private final String widgetKey;
   // Lazy init
-  private String _toString;
+  private String _widgetType;
 
   public GAWidgetType(String programId, String widgetKey) {
     this.programId = programId;
     this.widgetKey = widgetKey;
+  }
+
+  @Override
+  public String getWidgetType() {
+    String s = _widgetType;
+    if (s == null) {
+      _widgetType = s = format("p/%s/w/%s", urlEncode(programId), urlEncode(widgetKey));
+    }
+    return s;
   }
 
   @Override
@@ -37,11 +48,15 @@ final class GAWidgetType implements WidgetType {
 
   @Override
   public String toString() {
-    String s = _toString;
-    if (s == null) {
-      _toString = s = format("p/%s/w/%s", urlEncode(programId), urlEncode(widgetKey));
-    }
-    return s;
+    return getWidgetType();
+  }
+
+  /**
+   * Create a {@link WidgetType} for a program and a widget key
+   */
+  public static WidgetType of(@Nonnull String programId, @Nonnull String widgetKey) {
+    return new GAWidgetType(requireNotBlank(programId, "programId"),
+        requireNotBlank(widgetKey, "widgetKey"));
   }
 
 }

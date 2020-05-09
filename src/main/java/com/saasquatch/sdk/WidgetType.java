@@ -1,8 +1,5 @@
 package com.saasquatch.sdk;
 
-import static com.saasquatch.sdk.InternalUtils.requireNotBlank;
-import javax.annotation.Nonnull;
-
 /**
  * A SaaSquatch widget type
  *
@@ -12,12 +9,6 @@ import javax.annotation.Nonnull;
  */
 public interface WidgetType {
 
-  /**
-   * Create a {@link WidgetType} for a program and a widget key
-   */
-  public static WidgetType of(@Nonnull String programId, @Nonnull String widgetKey) {
-    return new GAWidgetType(requireNotBlank(programId, "programId"),
-        requireNotBlank(widgetKey, "widgetKey"));
-  }
+  String getWidgetType();
 
 }

@@ -10,4 +10,10 @@ import com.saasquatch.sdk.annotations.ClassicOnly;
 @ClassicOnly
 public enum ClassicWidgetType implements WidgetType {
   REFERRER_WIDGET, CONVERSION_WIDGET,;
+
+  @Override
+  public String getWidgetType() {
+    return name();
+  }
+
 }
