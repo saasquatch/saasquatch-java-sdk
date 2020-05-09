@@ -15,7 +15,7 @@ public final class GAWidgetType implements WidgetType {
   // Lazy init
   private String _widgetType;
 
-  public GAWidgetType(String programId, String widgetKey) {
+  private GAWidgetType(String programId, String widgetKey) {
     this.programId = programId;
     this.widgetKey = widgetKey;
   }

@@ -1,12 +1,13 @@
-package com.saasquatch.sdk;
+package com.saasquatch.sdk.response;
 
-import static com.saasquatch.sdk.InternalGsonHolder.gson;
+import static com.saasquatch.sdk.internal.InternalGsonHolder.gson;
 import static com.saasquatch.sdk.internal.InternalUtils.format;
 import java.util.Map;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import org.apache.hc.client5.http.async.methods.SimpleHttpResponse;
 import com.google.gson.reflect.TypeToken;
+import com.saasquatch.sdk.annotations.Internal;
 import com.saasquatch.sdk.models.Model;
 
 /**
@@ -15,9 +16,10 @@ import com.saasquatch.sdk.models.Model;
  *
  * @author sli
  */
-public class MapApiResponse extends ApiResponse<Map<String, Object>> {
+public final class MapApiResponse extends ApiResponse<Map<String, Object>> {
 
-  MapApiResponse(SimpleHttpResponse response) {
+  @Internal
+  public MapApiResponse(SimpleHttpResponse response) {
     super(response);
   }
 

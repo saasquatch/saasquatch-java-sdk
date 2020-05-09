@@ -1,4 +1,4 @@
-package com.saasquatch.sdk;
+package com.saasquatch.sdk.internal;
 
 import java.lang.reflect.Type;
 import java.util.Date;
@@ -11,12 +11,16 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
+import com.saasquatch.sdk.annotations.Internal;
 
-class InternalGsonHolder {
 
-  public static final Gson gson = new GsonBuilder()
-      .registerTypeAdapter(Date.class, DateMillisAdapter.INSTANCE)
-      .create();
+@Internal
+public final class InternalGsonHolder {
+
+  private InternalGsonHolder() {}
+
+  public static final Gson gson =
+      new GsonBuilder().registerTypeAdapter(Date.class, DateMillisAdapter.INSTANCE).create();
 
   private static enum DateMillisAdapter implements JsonSerializer<Date>, JsonDeserializer<Date> {
 

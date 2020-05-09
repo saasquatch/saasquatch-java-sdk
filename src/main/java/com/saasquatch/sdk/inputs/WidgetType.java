@@ -1,5 +1,7 @@
 package com.saasquatch.sdk.inputs;
 
+import com.saasquatch.sdk.annotations.Internal;
+
 /**
  * A SaaSquatch widget type
  *
@@ -9,6 +11,7 @@ package com.saasquatch.sdk.inputs;
  */
 public interface WidgetType {
 
+  @Internal
   String getWidgetType();
 
 }

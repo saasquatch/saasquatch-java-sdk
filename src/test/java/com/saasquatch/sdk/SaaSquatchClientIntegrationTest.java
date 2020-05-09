@@ -1,6 +1,6 @@
 package com.saasquatch.sdk;
 
-import static com.saasquatch.sdk.InternalGsonHolder.gson;
+import static com.saasquatch.sdk.internal.InternalGsonHolder.gson;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -21,6 +21,11 @@ import com.saasquatch.sdk.inputs.ClassicWidgetType;
 import com.saasquatch.sdk.models.User;
 import com.saasquatch.sdk.models.UserEventData;
 import com.saasquatch.sdk.models.UserEventResult;
+import com.saasquatch.sdk.response.ApiError;
+import com.saasquatch.sdk.response.GraphQLApiResponse;
+import com.saasquatch.sdk.response.GraphQLResult;
+import com.saasquatch.sdk.response.MapApiResponse;
+import com.saasquatch.sdk.response.TextApiResponse;
 import com.saasquatch.sdk.test.IntegrationTestUtils;
 import io.reactivex.rxjava3.core.Flowable;
 

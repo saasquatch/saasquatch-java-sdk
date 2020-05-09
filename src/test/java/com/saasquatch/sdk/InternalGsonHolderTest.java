@@ -1,6 +1,6 @@
 package com.saasquatch.sdk;
 
-import static com.saasquatch.sdk.InternalGsonHolder.gson;
+import static com.saasquatch.sdk.internal.InternalGsonHolder.gson;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.util.Collections;
 import java.util.Date;

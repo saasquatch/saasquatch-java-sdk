@@ -21,9 +21,11 @@ import org.apache.hc.client5.http.async.methods.SimpleHttpResponse;
 import org.apache.hc.client5.http.impl.async.CloseableHttpAsyncClient;
 import org.apache.hc.core5.concurrent.FutureCallback;
 import org.reactivestreams.Publisher;
+import com.saasquatch.sdk.annotations.Internal;
 import io.reactivex.rxjava3.core.Flowable;
 import io.reactivex.rxjava3.core.Single;
 
+@Internal
 public final class InternalUtils {
 
   private InternalUtils() {}

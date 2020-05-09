@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.Set;
 import com.saasquatch.sdk.annotations.ClassicOnly;
 
-public class User implements Model {
+public final class User implements Model {
 
   private final String id;
   private final String accountId;
@@ -29,7 +29,7 @@ public class User implements Model {
   private final Map<String, Object> customFields;
   private final Set<String> segments;
 
-  User(String id, String accountId, String firstName, String lastName, String email,
+  private User(String id, String accountId, String firstName, String lastName, String email,
       String emailHash, String cookieId, String paymentProviderId, String referralCode,
       Map<String, String> referralCodes, String locale, Boolean referable, String firstSeenIP,
       String lastSeenIP, Date dateCreated, Date dateBlocked, Set<String> referredByCodes,

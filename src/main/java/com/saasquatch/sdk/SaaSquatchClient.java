@@ -1,6 +1,6 @@
 package com.saasquatch.sdk;
 
-import static com.saasquatch.sdk.InternalGsonHolder.gson;
+import static com.saasquatch.sdk.internal.InternalGsonHolder.gson;
 import static com.saasquatch.sdk.internal.InternalUtils.requireNotBlank;
 import static com.saasquatch.sdk.internal.InternalUtils.urlEncode;
 import java.io.Closeable;
@@ -28,6 +28,9 @@ import com.saasquatch.sdk.internal.InternalUtils;
 import com.saasquatch.sdk.models.User;
 import com.saasquatch.sdk.models.UserEventResult;
 import com.saasquatch.sdk.models.WidgetUpsertResult;
+import com.saasquatch.sdk.response.GraphQLApiResponse;
+import com.saasquatch.sdk.response.MapApiResponse;
+import com.saasquatch.sdk.response.TextApiResponse;
 import io.reactivex.rxjava3.core.Flowable;
 
 /**

@@ -1,6 +1,6 @@
-package com.saasquatch.sdk;
+package com.saasquatch.sdk.response;
 
-import static com.saasquatch.sdk.InternalGsonHolder.gson;
+import static com.saasquatch.sdk.internal.InternalGsonHolder.gson;
 import static com.saasquatch.sdk.internal.InternalUtils.format;
 import java.util.Collections;
 import java.util.List;
@@ -16,9 +16,9 @@ import com.saasquatch.sdk.models.Model;
  *
  * @author sli
  */
-public class ListApiResponse extends ApiResponse<List<Object>> {
+public final class ListApiResponse extends ApiResponse<List<Object>> {
 
-  ListApiResponse(SimpleHttpResponse response) {
+  private ListApiResponse(SimpleHttpResponse response) {
     super(response);
   }
 

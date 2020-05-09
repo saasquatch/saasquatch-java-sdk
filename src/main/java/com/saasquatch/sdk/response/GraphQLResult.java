@@ -1,6 +1,6 @@
-package com.saasquatch.sdk;
+package com.saasquatch.sdk.response;
 
-import static com.saasquatch.sdk.InternalGsonHolder.gson;
+import static com.saasquatch.sdk.internal.InternalGsonHolder.gson;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Nullable;
@@ -11,14 +11,14 @@ import org.apache.hc.client5.http.async.methods.SimpleHttpResponse;
  *
  * @author sli
  */
-public class GraphQLResult {
+public final class GraphQLResult {
 
   private final Map<String, Object> data;
   private final List<Object> errors;
   private final Map<String, Object> extensions;
 
-  GraphQLResult(@Nullable Map<String, Object> data, @Nullable List<Object> errors,
-      @Nullable Map<String, Object> extensions) {
+  private GraphQLResult(Map<String, Object> data, List<Object> errors,
+      Map<String, Object> extensions) {
     this.data = data;
     this.errors = errors;
     this.extensions = extensions;
