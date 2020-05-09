@@ -8,7 +8,7 @@ public class AuthMethodTest {
 
   @Test
   public void testNull() {
-    assertThrows(NullPointerException.class, () -> AuthMethod.ofApiKey(null));
+    assertThrows(NullPointerException.class, () -> AuthMethod.ofTenantApiKey(null));
     assertThrows(NullPointerException.class, () -> AuthMethod.ofJwt(null));
   }
 

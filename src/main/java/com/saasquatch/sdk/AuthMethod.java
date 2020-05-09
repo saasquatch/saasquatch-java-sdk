@@ -11,7 +11,7 @@ import com.saasquatch.sdk.internal.OkioBase64;
  * Method to authenticate with SaaSquatch
  *
  * @author sli
- * @see #ofApiKey(String)
+ * @see #ofTenantApiKey(String)
  * @see #ofJwt(String)
  */
 @Immutable
@@ -39,8 +39,8 @@ public abstract class AuthMethod {
   /**
    * Authenticate with the given apiKey
    */
-  public static AuthMethod ofApiKey(@Nonnull String apiKey) {
-    return new ApiKeyAuth(requireNotBlank(apiKey, "apiKey"));
+  public static AuthMethod ofTenantApiKey(@Nonnull String apiKey) {
+    return new TenantApiKeyAuth(requireNotBlank(apiKey, "apiKey"));
   }
 
   /**
@@ -63,11 +63,11 @@ public abstract class AuthMethod {
 
   }
 
-  private static class ApiKeyAuth extends AuthMethod {
+  private static class TenantApiKeyAuth extends AuthMethod {
 
     private final String apiKey;
 
-    ApiKeyAuth(String apiKey) {
+    TenantApiKeyAuth(String apiKey) {
       super(true);
       this.apiKey = apiKey;
     }

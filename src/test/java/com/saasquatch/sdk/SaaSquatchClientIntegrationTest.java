@@ -72,7 +72,7 @@ public class SaaSquatchClientIntegrationTest {
     {
       final MapApiResponse response = Flowable.fromPublisher(
           saasquatchClient.userUpsert(userInput,
-              RequestOptions.newBuilder().setAuthMethod(AuthMethod.ofApiKey("fake")).build()))
+              RequestOptions.newBuilder().setAuthMethod(AuthMethod.ofTenantApiKey("fake")).build()))
           .blockingSingle();
       assertEquals(401, response.getStatusCode());
       final ApiError apiError = response.getApiError();
