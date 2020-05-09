@@ -21,6 +21,7 @@ import org.apache.hc.client5.http.impl.nio.PoolingAsyncClientConnectionManagerBu
 import org.apache.hc.core5.http.ContentType;
 import org.apache.hc.core5.net.URIBuilder;
 import org.reactivestreams.Publisher;
+import com.saasquatch.sdk.annotations.Beta;
 import com.saasquatch.sdk.auth.AuthMethod;
 import com.saasquatch.sdk.input.GraphQLInput;
 import com.saasquatch.sdk.input.WidgetType;
@@ -105,6 +106,7 @@ public final class SaaSquatchClient implements Closeable {
    * make an API call, the configured {@link AuthMethod} and HTTP headers are ignored.<br>
    * <a href="https://docs.referralsaasquatch.com/features/message-links/">Link to official docs</a>
    */
+  @Beta
   public String buildUserMessageLink(@Nonnull String accountId, @Nonnull String userId,
       @Nullable String programId, @Nonnull String shareMedium, @Nullable String engagementMedium,
       @Nullable RequestOptions requestOptions) {
