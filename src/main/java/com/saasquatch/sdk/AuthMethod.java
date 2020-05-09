@@ -4,7 +4,7 @@ import static com.saasquatch.sdk.InternalUtils.requireNotBlank;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
-import okhttp3.Request;
+import org.apache.hc.client5.http.async.methods.SimpleHttpRequest;
 
 /**
  * Method to authenticate with SaaSquatch
@@ -22,7 +22,7 @@ public abstract class AuthMethod {
     this.canBeClientDefault = canBeClientDefault;
   }
 
-  protected abstract void mutateRequest(Request.Builder requestBuilder);
+  protected abstract void mutateRequest(SimpleHttpRequest request);
 
   final boolean canBeClientDefault() {
     return canBeClientDefault;
@@ -58,7 +58,7 @@ public abstract class AuthMethod {
     }
 
     @Override
-    protected void mutateRequest(Request.Builder requestBuilder) {}
+    protected void mutateRequest(SimpleHttpRequest request) {}
 
   }
 
@@ -72,8 +72,8 @@ public abstract class AuthMethod {
     }
 
     @Override
-    protected void mutateRequest(Request.Builder requestBuilder) {
-      requestBuilder.header("Authorization",
+    protected void mutateRequest(SimpleHttpRequest request) {
+      request.setHeader("Authorization",
           "Basic " + OkioBase64.encode((":" + apiKey).getBytes(UTF_8)));
     }
 
@@ -89,8 +89,8 @@ public abstract class AuthMethod {
     }
 
     @Override
-    protected void mutateRequest(Request.Builder requestBuilder) {
-      requestBuilder.header("Authorization", "Bearer " + jwt);
+    protected void mutateRequest(SimpleHttpRequest request) {
+      request.setHeader("Authorization", "Bearer " + jwt);
     }
 
   }

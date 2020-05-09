@@ -1,10 +1,9 @@
 package com.saasquatch.sdk;
 
 import static com.saasquatch.sdk.InternalGsonHolder.gson;
-import java.io.IOException;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import okhttp3.Response;
+import org.apache.hc.client5.http.async.methods.SimpleHttpResponse;
 
 /**
  * Represents an API error from SaaSquatch
@@ -45,13 +44,8 @@ public class ApiError {
     return rsCode;
   }
 
-  static ApiError fromResponse(Response response) {
-    try {
-      return gson.fromJson(response.body().string(), ApiError.class);
-    } catch (IOException e) {
-      // Ignore on purpose
-    }
-    return null;
+  static ApiError fromResponse(SimpleHttpResponse response) {
+    return gson.fromJson(response.getBodyText(), ApiError.class);
   }
 
 }

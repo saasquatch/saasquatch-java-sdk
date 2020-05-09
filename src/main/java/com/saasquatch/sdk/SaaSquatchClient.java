@@ -1,31 +1,31 @@
 package com.saasquatch.sdk;
 
+import static com.saasquatch.sdk.InternalGsonHolder.gson;
 import static com.saasquatch.sdk.InternalUtils.requireNotBlank;
 import static com.saasquatch.sdk.InternalUtils.urlEncode;
 import java.io.Closeable;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import org.apache.hc.client5.http.async.methods.SimpleHttpRequest;
+import org.apache.hc.client5.http.async.methods.SimpleHttpRequests;
+import org.apache.hc.client5.http.async.methods.SimpleHttpResponse;
 import org.apache.hc.client5.http.config.RequestConfig;
 import org.apache.hc.client5.http.impl.async.CloseableHttpAsyncClient;
 import org.apache.hc.client5.http.impl.async.HttpAsyncClients;
 import org.apache.hc.client5.http.impl.nio.PoolingAsyncClientConnectionManagerBuilder;
-import org.apache.hc.core5.concurrent.DefaultThreadFactory;
+import org.apache.hc.core5.http.ContentType;
+import org.apache.hc.core5.net.URIBuilder;
 import org.reactivestreams.Publisher;
 import com.saasquatch.sdk.models.User;
 import com.saasquatch.sdk.models.UserEventResult;
 import com.saasquatch.sdk.models.WidgetUpsertResult;
 import io.reactivex.rxjava3.core.Flowable;
-import okhttp3.HttpUrl;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 
 /**
  * Main entry point for SaaSquatch APIs
@@ -38,8 +38,6 @@ public final class SaaSquatchClient implements Closeable {
   private final ClientOptions clientOptions;
   private final String protocol;
   private final String clientId;
-  private final ExecutorService executor;
-  private final OkHttpClient okHttpClient;
   private final CloseableHttpAsyncClient httpAsyncClient;
   private final String userAgent;
 
@@ -47,15 +45,6 @@ public final class SaaSquatchClient implements Closeable {
     this.clientOptions = clientOptions;
     this.protocol = clientOptions.getAppDomain().startsWith("localhost:") ? "http" : "https";
     this.clientId = InternalUtils.randomHexString(8);
-    this.executor = Executors.newCachedThreadPool(new InternalThreadFactory(this.clientId));
-    final okhttp3.Dispatcher dispatcher = new okhttp3.Dispatcher(this.executor);
-    dispatcher.setMaxRequestsPerHost(clientOptions.getMaxConcurrentRequests());
-    dispatcher.setMaxRequests(clientOptions.getMaxConcurrentRequests() * 2);
-    this.okHttpClient = new OkHttpClient.Builder()
-        .dispatcher(dispatcher)
-        .callTimeout(clientOptions.getRequestTimeoutMillis(), TimeUnit.MILLISECONDS)
-        .connectTimeout(clientOptions.getConnectTimeoutMillis(), TimeUnit.MILLISECONDS)
-        .build();
     this.httpAsyncClient = HttpAsyncClients.custom().disableCookieManagement()
         .setDefaultRequestConfig(RequestConfig.custom()
             .setConnectTimeout(clientOptions.getConnectTimeoutMillis(), TimeUnit.MILLISECONDS)
@@ -64,8 +53,7 @@ public final class SaaSquatchClient implements Closeable {
         .setConnectionManager(PoolingAsyncClientConnectionManagerBuilder.create()
             .setMaxConnPerRoute(clientOptions.getMaxConcurrentRequests())
             .setMaxConnTotal(clientOptions.getMaxConcurrentRequests() * 2).build())
-        .setThreadFactory(new DefaultThreadFactory("", true))
-        .build();
+        .setThreadFactory(new InternalThreadFactory(this.clientId)).build();
     this.userAgent = InternalUtils.buildUserAgent(this.clientId);
   }
 
@@ -94,7 +82,6 @@ public final class SaaSquatchClient implements Closeable {
 
   @Override
   public void close() {
-    this.executor.shutdown();
     try {
       this.httpAsyncClient.close();
     } catch (IOException e) {
@@ -115,18 +102,21 @@ public final class SaaSquatchClient implements Closeable {
     requireNotBlank(accountId, "accountId");
     requireNotBlank(userId, "userId");
     requireNotBlank(shareMedium, "shareMedium");
-    final HttpUrl.Builder urlBuilder = HttpUrl.parse(baseTenantAUrl(requestOptions)
-        .append("/message/redirect/").append(urlEncode(shareMedium)).toString())
-        .newBuilder();
-    urlBuilder.addQueryParameter("accountId", accountId);
-    urlBuilder.addQueryParameter("userId", userId);
-    if (programId != null) {
-      urlBuilder.addQueryParameter("programId", programId);
+    try {
+      final URIBuilder urlBuilder = new URIBuilder(baseTenantAUrl(requestOptions)
+          .append("/message/redirect/").append(urlEncode(shareMedium)).toString());
+      urlBuilder.addParameter("accountId", accountId);
+      urlBuilder.addParameter("userId", userId);
+      if (programId != null) {
+        urlBuilder.addParameter("programId", programId);
+      }
+      if (engagementMedium != null) {
+        urlBuilder.addParameter("engagementMedium", engagementMedium);
+      }
+      return urlBuilder.build().toString();
+    } catch (URISyntaxException e) {
+      throw new RuntimeException(e);
     }
-    if (engagementMedium != null) {
-      urlBuilder.addQueryParameter("engagementMedium", engagementMedium);
-    }
-    return urlBuilder.build().toString();
   }
 
   public Publisher<GraphQLApiResponse> graphQL(@Nonnull String query,
@@ -140,13 +130,16 @@ public final class SaaSquatchClient implements Closeable {
     if (variables != null) {
       body.put("variables", variables);
     }
-    final HttpUrl.Builder urlBuilder =
-        HttpUrl.parse(baseTenantApiUrl(requestOptions) + "/graphql").newBuilder();
-    mutateUrl(urlBuilder, requestOptions);
-    final Request.Builder request = new Request.Builder().url(urlBuilder.build());
-    mutateRequest(request, requestOptions);
-    request.post(InternalRequestBodies.jsonPojo(body));
-    return executeRequest(request).map(GraphQLApiResponse::new);
+    try {
+      final URIBuilder urlBuilder = new URIBuilder(baseTenantApiUrl(requestOptions) + "/graphql");
+      mutateUrl(urlBuilder, requestOptions);
+      final SimpleHttpRequest request = SimpleHttpRequests.post(urlBuilder.build());
+      mutateRequest(request, requestOptions);
+      request.setBody(gson.toJson(body), ContentType.APPLICATION_JSON);
+      return executeRequest(request).map(GraphQLApiResponse::new);
+    } catch (URISyntaxException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   /**
@@ -169,27 +162,29 @@ public final class SaaSquatchClient implements Closeable {
     return _getUser(accountId, userId, widgetType, requestOptions, true).map(TextApiResponse::new);
   }
 
-  private Flowable<Response> _getUser(@Nonnull String accountId, @Nonnull String userId,
+  private Flowable<SimpleHttpResponse> _getUser(@Nonnull String accountId, @Nonnull String userId,
       @Nullable WidgetType widgetType, @Nullable RequestOptions requestOptions,
       boolean widgetRequest) {
     requireNotBlank(accountId, "accountId");
     requireNotBlank(userId, "userId");
     final StringBuilder urlStrBuilder = baseTenantApiUrl(requestOptions)
-        .append(widgetRequest ? "/widget" : "/open")
-        .append("/account/").append(urlEncode(accountId))
-        .append("/user/").append(urlEncode(userId));
+        .append(widgetRequest ? "/widget" : "/open").append("/account/")
+        .append(urlEncode(accountId)).append("/user/").append(urlEncode(userId));
     if (widgetRequest) {
       urlStrBuilder.append("/render");
     }
-    final HttpUrl.Builder urlBuilder = HttpUrl.parse(urlStrBuilder.toString()).newBuilder();
-    mutateUrl(urlBuilder, requestOptions);
-    if (widgetType != null) {
-      urlBuilder.addQueryParameter("widgetType", widgetType.toString());
+    try {
+      final URIBuilder urlBuilder = new URIBuilder(urlStrBuilder.toString());
+      mutateUrl(urlBuilder, requestOptions);
+      if (widgetType != null) {
+        urlBuilder.addParameter("widgetType", widgetType.toString());
+      }
+      final SimpleHttpRequest request = SimpleHttpRequests.get(urlBuilder.build());
+      mutateRequest(request, requestOptions);
+      return executeRequest(request);
+    } catch (URISyntaxException e) {
+      throw new RuntimeException(e);
     }
-    final Request.Builder request = new Request.Builder().url(urlBuilder.build());
-    mutateRequest(request, requestOptions);
-    request.get();
-    return executeRequest(request);
   }
 
   /**
@@ -212,28 +207,31 @@ public final class SaaSquatchClient implements Closeable {
     return _userUpsert(userInput, widgetType, requestOptions, true).map(MapApiResponse::new);
   }
 
-  private Flowable<Response> _userUpsert(@Nonnull Map<String, Object> userInput,
+  private Flowable<SimpleHttpResponse> _userUpsert(@Nonnull Map<String, Object> userInput,
       @Nullable WidgetType widgetType, @Nullable RequestOptions requestOptions,
       boolean widgetRequest) {
     final Map<String, Object> body = userInput;
     final String accountId = requireNotBlank((String) body.get("accountId"), "accountId");
     final String userId = requireNotBlank((String) body.get("id"), "id");
     final StringBuilder urlStrBuilder = baseTenantApiUrl(requestOptions)
-        .append(widgetRequest ? "/widget" : "/open")
-        .append("/account/").append(urlEncode(accountId))
-        .append("/user/").append(urlEncode(userId));
+        .append(widgetRequest ? "/widget" : "/open").append("/account/")
+        .append(urlEncode(accountId)).append("/user/").append(urlEncode(userId));
     if (widgetRequest) {
       urlStrBuilder.append("/upsert");
     }
-    final HttpUrl.Builder urlBuilder = HttpUrl.parse(urlStrBuilder.toString()).newBuilder();
-    mutateUrl(urlBuilder, requestOptions);
-    if (widgetType != null) {
-      urlBuilder.addQueryParameter("widgetType", widgetType.toString());
+    try {
+      final URIBuilder urlBuilder = new URIBuilder(urlStrBuilder.toString());
+      mutateUrl(urlBuilder, requestOptions);
+      if (widgetType != null) {
+        urlBuilder.addParameter("widgetType", widgetType.toString());
+      }
+      final SimpleHttpRequest request = SimpleHttpRequests.put(urlBuilder.build());
+      mutateRequest(request, requestOptions);
+      request.setBody(gson.toJson(body), ContentType.APPLICATION_JSON);
+      return executeRequest(request);
+    } catch (URISyntaxException e) {
+      throw new RuntimeException(e);
     }
-    final Request.Builder request = new Request.Builder().url(urlBuilder.build());
-    mutateRequest(request, requestOptions);
-    request.put(InternalRequestBodies.jsonPojo(body));
-    return executeRequest(request);
   }
 
   /**
@@ -247,21 +245,23 @@ public final class SaaSquatchClient implements Closeable {
     // api/v1/:tenantAlias/account/:accountId/user/:userId/shareurls
     requireNotBlank(accountId, "accountId");
     requireNotBlank(userId, "usreId");
-    final HttpUrl.Builder urlBuilder = HttpUrl.parse(baseTenantApiUrl(requestOptions)
-        .append("/account/").append(urlEncode(accountId))
-        .append("/user/").append(urlEncode(userId)).append("/shareurls").toString())
-        .newBuilder();
-    mutateUrl(urlBuilder, requestOptions);
-    if (shareMedium != null) {
-      urlBuilder.addQueryParameter("shareMedium", shareMedium);
+    try {
+      final URIBuilder urlBuilder = new URIBuilder(
+          baseTenantApiUrl(requestOptions).append("/account/").append(urlEncode(accountId))
+              .append("/user/").append(urlEncode(userId)).append("/shareurls").toString());
+      mutateUrl(urlBuilder, requestOptions);
+      if (shareMedium != null) {
+        urlBuilder.addParameter("shareMedium", shareMedium);
+      }
+      if (engagementMedium != null) {
+        urlBuilder.addParameter("engagementMedium", engagementMedium);
+      }
+      final SimpleHttpRequest request = SimpleHttpRequests.get(urlBuilder.build());
+      mutateRequest(request, requestOptions);
+      return executeRequest(request).map(MapApiResponse::new);
+    } catch (URISyntaxException e) {
+      throw new RuntimeException(e);
     }
-    if (engagementMedium != null) {
-      urlBuilder.addQueryParameter("engagementMedium", engagementMedium);
-    }
-    final Request.Builder request = new Request.Builder().url(urlBuilder.build());
-    mutateRequest(request, requestOptions);
-    request.get();
-    return executeRequest(request).map(MapApiResponse::new);
   }
 
   /**
@@ -274,15 +274,18 @@ public final class SaaSquatchClient implements Closeable {
     final Map<String, Object> body = userEventInput;
     final String accountId = requireNotBlank((String) body.get("accountId"), "accountId");
     final String userId = requireNotBlank((String) body.get("userId"), "userId");
-    final HttpUrl.Builder urlBuilder = HttpUrl.parse(baseTenantApiUrl(requestOptions)
-        .append("/open/account/").append(urlEncode(accountId))
-        .append("/user/").append(urlEncode(userId)).append("/events").toString())
-        .newBuilder();
-    mutateUrl(urlBuilder, requestOptions);
-    final Request.Builder request = new Request.Builder().url(urlBuilder.build());
-    mutateRequest(request, requestOptions);
-    request.post(InternalRequestBodies.jsonPojo(body));
-    return executeRequest(request).map(MapApiResponse::new);
+    try {
+      final URIBuilder urlBuilder = new URIBuilder(
+          baseTenantApiUrl(requestOptions).append("/open/account/").append(urlEncode(accountId))
+              .append("/user/").append(urlEncode(userId)).append("/events").toString());
+      mutateUrl(urlBuilder, requestOptions);
+      final SimpleHttpRequest request = SimpleHttpRequests.post(urlBuilder.build());
+      mutateRequest(request, requestOptions);
+      request.setBody(gson.toJson(body), ContentType.APPLICATION_JSON);
+      return executeRequest(request).map(MapApiResponse::new);
+    } catch (URISyntaxException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   /**
@@ -296,23 +299,24 @@ public final class SaaSquatchClient implements Closeable {
     requireNotBlank(accountId, "accountId");
     requireNotBlank(userId, "userId");
     requireNotBlank(referralCode, "referralCode");
-    final HttpUrl.Builder urlBuilder = HttpUrl.parse(baseTenantApiUrl(requestOptions)
-        .append("/open/code/").append(urlEncode(referralCode))
-        .append("/account/").append(urlEncode(accountId))
-        .append("/user/").append(urlEncode(userId)).toString())
-        .newBuilder();
-    mutateUrl(urlBuilder, requestOptions);
-    final Request.Builder request = new Request.Builder().url(urlBuilder.build());
-    mutateRequest(request, requestOptions);
-    request.post(InternalRequestBodies.jsonString("{}"));
-    return executeRequest(request).map(MapApiResponse::new);
+    try {
+      final URIBuilder urlBuilder = new URIBuilder(baseTenantApiUrl(requestOptions)
+          .append("/open/code/").append(urlEncode(referralCode)).append("/account/")
+          .append(urlEncode(accountId)).append("/user/").append(urlEncode(userId)).toString());
+      mutateUrl(urlBuilder, requestOptions);
+      final SimpleHttpRequest request = SimpleHttpRequests.post(urlBuilder.build());
+      mutateRequest(request, requestOptions);
+      request.setBody("{}", ContentType.APPLICATION_JSON);
+      return executeRequest(request).map(MapApiResponse::new);
+    } catch (URISyntaxException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   /**
    * All the common url mutations happen here
    */
-  private void mutateUrl(@Nonnull HttpUrl.Builder urlBuilder,
-      @Nullable RequestOptions requestOptions) {
+  private void mutateUrl(@Nonnull URIBuilder urlBuilder, @Nullable RequestOptions requestOptions) {
     if (requestOptions != null) {
       requestOptions.mutateUrl(urlBuilder);
     }
@@ -321,13 +325,13 @@ public final class SaaSquatchClient implements Closeable {
   /**
    * All the common request mutations happen here
    */
-  private void mutateRequest(@Nonnull Request.Builder request,
+  private void mutateRequest(@Nonnull SimpleHttpRequest request,
       @Nullable RequestOptions requestOptions) {
     if (requestOptions != null) {
       requestOptions.mutateRequest(request);
     }
     getAuthMethod(requestOptions).mutateRequest(request);
-    request.header("User-Agent", userAgent);
+    request.setHeader("User-Agent", userAgent);
   }
 
   @Nonnull
@@ -366,8 +370,8 @@ public final class SaaSquatchClient implements Closeable {
    */
   private StringBuilder baseTenantApiUrl(@Nullable RequestOptions requestOptions) {
     /*
-     * Not using okhttp HttpUrl.Builder here because Apache's URIBuilder cannot do append path
-     * segment, and we don't want to depend on okhttp too much.
+     * Not using okhttp URIBuilder here because Apache's URIBuilder cannot do append path segment,
+     * and we don't want to depend on okhttp too much.
      */
     final String tenantAlias = getTenantAlias(requestOptions);
     return baseUrl(requestOptions).append("/api/v1/").append(urlEncode(tenantAlias));
@@ -377,13 +381,13 @@ public final class SaaSquatchClient implements Closeable {
    * Get the base /a/tenantAlias url
    */
   private StringBuilder baseTenantAUrl(@Nullable RequestOptions requestOptions) {
-    // Not using okhttp HttpUrl.Builder intentionally
+    // Not using okhttp URIBuilder intentionally
     final String tenantAlias = getTenantAlias(requestOptions);
     return baseUrl(requestOptions).append("/a/").append(urlEncode(tenantAlias));
   }
 
-  private Flowable<Response> executeRequest(@Nonnull Request.Builder request) {
-    return InternalUtils.executeRequest(okHttpClient, request.build());
+  private Flowable<SimpleHttpResponse> executeRequest(@Nonnull SimpleHttpRequest request) {
+    return InternalUtils.executeRequest(httpAsyncClient, request);
   }
 
 }

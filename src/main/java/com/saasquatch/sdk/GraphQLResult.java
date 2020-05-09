@@ -1,11 +1,10 @@
 package com.saasquatch.sdk;
 
 import static com.saasquatch.sdk.InternalGsonHolder.gson;
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Nullable;
-import okhttp3.Response;
+import org.apache.hc.client5.http.async.methods.SimpleHttpResponse;
 
 /**
  * The result of a standard GraphQL request
@@ -40,14 +39,8 @@ public class GraphQLResult {
     return extensions;
   }
 
-  static GraphQLResult fromResponse(Response response) {
-    try {
-      return gson.fromJson(response.body().string(), GraphQLResult.class);
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-      // TODO switch to UncheckedIOException when Android fully supports Java 8
-      // throw new UncheckedIOException(e);
-    }
+  static GraphQLResult fromResponse(SimpleHttpResponse response) {
+    return gson.fromJson(response.getBodyText(), GraphQLResult.class);
   }
 
 }

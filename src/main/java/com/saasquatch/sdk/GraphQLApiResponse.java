@@ -1,6 +1,6 @@
 package com.saasquatch.sdk;
 
-import okhttp3.Response;
+import org.apache.hc.client5.http.async.methods.SimpleHttpResponse;
 
 /**
  * Response from a GraphQL request. Note that this class differs from other
@@ -14,7 +14,7 @@ import okhttp3.Response;
  */
 public class GraphQLApiResponse extends ApiResponse<GraphQLResult> {
 
-  GraphQLApiResponse(Response response) {
+  GraphQLApiResponse(SimpleHttpResponse response) {
     super(response);
   }
 

@@ -1,7 +1,8 @@
 package com.saasquatch.sdk;
 
 import javax.annotation.Nullable;
-import okhttp3.Response;
+import org.apache.hc.client5.http.async.methods.SimpleHttpResponse;
+import org.apache.hc.core5.http.Header;
 
 /**
  * Represents an API response from SaaSquatch. If the request has {@link #succeeded()}, then you
@@ -17,14 +18,14 @@ public abstract class ApiResponse<T> {
   private T data;
   // Lazy init
   private ApiError apiError;
-  protected final Response response;
+  protected final SimpleHttpResponse response;
 
-  ApiResponse(Response response) {
+  ApiResponse(SimpleHttpResponse response) {
     this.response = response;
   }
 
   public int getStatusCode() {
-    return response.code();
+    return response.getCode();
   }
 
   public boolean succeeded() {
@@ -38,7 +39,11 @@ public abstract class ApiResponse<T> {
 
   @Nullable
   public String getHeader(String headerName) {
-    return response.header(headerName);
+    final Header firstHeader = response.getFirstHeader(headerName);
+    if (firstHeader == null) {
+      return null;
+    }
+    return firstHeader.getValue();
   }
 
   @Nullable

@@ -14,8 +14,8 @@ import java.util.TreeSet;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
-import okhttp3.HttpUrl;
-import okhttp3.Request;
+import org.apache.hc.client5.http.async.methods.SimpleHttpRequest;
+import org.apache.hc.core5.net.URIBuilder;
 
 /**
  * Request options override, e.g. HTTP headers and query parameters.
@@ -59,15 +59,15 @@ public final class RequestOptions {
     return authMethod;
   }
 
-  void mutateUrl(@Nonnull HttpUrl.Builder urlBuilder) {
+  void mutateUrl(@Nonnull URIBuilder urlBuilder) {
     for (final Map.Entry<String, String> e : queryParams) {
-      urlBuilder.addQueryParameter(e.getKey(), e.getValue());
+      urlBuilder.addParameter(e.getKey(), e.getValue());
     }
   }
 
-  void mutateRequest(@Nonnull Request.Builder requestBuilder) {
+  void mutateRequest(@Nonnull SimpleHttpRequest request) {
     for (final Map.Entry<String, String> e : headers) {
-      requestBuilder.addHeader(e.getKey(), e.getValue());
+      request.addHeader(e.getKey(), e.getValue());
     }
   }
 

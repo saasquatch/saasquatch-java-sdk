@@ -2,13 +2,12 @@ package com.saasquatch.sdk;
 
 import static com.saasquatch.sdk.InternalGsonHolder.gson;
 import static com.saasquatch.sdk.InternalUtils.format;
-import java.io.IOException;
 import java.util.Map;
 import java.util.Objects;
 import javax.annotation.Nonnull;
+import org.apache.hc.client5.http.async.methods.SimpleHttpResponse;
 import com.google.gson.reflect.TypeToken;
 import com.saasquatch.sdk.models.Model;
-import okhttp3.Response;
 
 /**
  * {@link ApiResponse} that has a JSON object. The JSON object will be represented as a {@link Map}
@@ -18,20 +17,13 @@ import okhttp3.Response;
  */
 public class MapApiResponse extends ApiResponse<Map<String, Object>> {
 
-  MapApiResponse(Response response) {
+  MapApiResponse(SimpleHttpResponse response) {
     super(response);
   }
 
   @Override
   protected Map<String, Object> buildData() {
-    try {
-      return gson.fromJson(response.body().string(),
-          new TypeToken<Map<String, Object>>() {}.getType());
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-      // TODO switch to UncheckedIOException when Android fully supports Java 8
-      // throw new UncheckedIOException(e);
-    }
+    return gson.fromJson(response.getBodyText(), new TypeToken<Map<String, Object>>() {}.getType());
   }
 
   /**

@@ -1,6 +1,6 @@
 package com.saasquatch.sdk;
 
-import okhttp3.Response;
+import org.apache.hc.client5.http.async.methods.SimpleHttpResponse;
 
 /**
  * {@link ApiResponse} that does not have a body but may still have a
@@ -10,7 +10,7 @@ import okhttp3.Response;
  */
 public class StatusOnlyApiResponse extends ApiResponse<Void> {
 
-  StatusOnlyApiResponse(Response response) {
+  StatusOnlyApiResponse(SimpleHttpResponse response) {
     super(response);
   }
 
