@@ -1,6 +1,8 @@
 package com.saasquatch.sdk;
 
 import static com.saasquatch.sdk.internal.InternalUtils.requireNotBlank;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import javax.annotation.Nonnull;
@@ -121,8 +123,11 @@ public class ClientOptions {
       if (appDomain.startsWith("/") || appDomain.endsWith("/")) {
         throw new IllegalArgumentException("appDomain should not start or end with a slash");
       }
-      if (!appDomain.matches("[a-zA-Z0-9\\.\\/:]+")) {
-        throw new IllegalArgumentException("appDomain contains invalid characters");
+      try {
+        // Objects.isNull is here to silence a warning
+        Objects.isNull(new URL("https://" + appDomain));
+      } catch (MalformedURLException e) {
+        throw new IllegalArgumentException("Invalid appDomain", e);
       }
       this.appDomain = appDomain;
       return this;
