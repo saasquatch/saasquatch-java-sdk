@@ -1,23 +1,30 @@
 package com.saasquatch.sdk;
 
 import static com.saasquatch.sdk.InternalGsonHolder.gson;
-import static com.saasquatch.sdk.InternalUtils.requireNotBlank;
-import static com.saasquatch.sdk.InternalUtils.urlEncode;
+import static com.saasquatch.sdk.internal.InternalUtils.requireNotBlank;
+import static com.saasquatch.sdk.internal.InternalUtils.urlEncode;
 import java.io.Closeable;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.apache.hc.client5.http.async.methods.SimpleHttpRequest;
 import org.apache.hc.client5.http.async.methods.SimpleHttpRequests;
 import org.apache.hc.client5.http.async.methods.SimpleHttpResponse;
+import org.apache.hc.client5.http.config.RequestConfig;
 import org.apache.hc.client5.http.impl.async.CloseableHttpAsyncClient;
+import org.apache.hc.client5.http.impl.async.HttpAsyncClients;
+import org.apache.hc.client5.http.impl.nio.PoolingAsyncClientConnectionManagerBuilder;
 import org.apache.hc.core5.http.ContentType;
 import org.apache.hc.core5.net.URIBuilder;
 import org.reactivestreams.Publisher;
+import com.saasquatch.sdk.inputs.WidgetType;
+import com.saasquatch.sdk.internal.InternalThreadFactory;
+import com.saasquatch.sdk.internal.InternalUtils;
 import com.saasquatch.sdk.models.User;
 import com.saasquatch.sdk.models.UserEventResult;
 import com.saasquatch.sdk.models.WidgetUpsertResult;
@@ -41,7 +48,16 @@ public final class SaaSquatchClient implements Closeable {
     this.clientOptions = clientOptions;
     this.protocol = clientOptions.getAppDomain().startsWith("localhost:") ? "http" : "https";
     this.clientId = InternalUtils.randomHexString(8);
-    this.httpAsyncClient = InternalUtils.buildHttpAsyncClient(clientOptions, clientId);
+    this.httpAsyncClient = HttpAsyncClients.custom().disableCookieManagement()
+        .setDefaultRequestConfig(RequestConfig.custom()
+            .setConnectTimeout(clientOptions.getConnectTimeoutMillis(), TimeUnit.MILLISECONDS)
+            .setResponseTimeout(clientOptions.getRequestTimeoutMillis(), TimeUnit.MILLISECONDS)
+            .build())
+        .setConnectionManager(PoolingAsyncClientConnectionManagerBuilder.create()
+            .setMaxConnPerRoute(clientOptions.getMaxConcurrentRequests())
+            .setMaxConnTotal(clientOptions.getMaxConcurrentRequests() * 2).build())
+        .setThreadFactory(new InternalThreadFactory(clientId)).build();
+    httpAsyncClient.start();
     this.userAgent = InternalUtils.buildUserAgent(this.clientId);
   }
 

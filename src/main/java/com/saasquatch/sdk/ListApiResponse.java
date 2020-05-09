@@ -1,7 +1,7 @@
 package com.saasquatch.sdk;
 
 import static com.saasquatch.sdk.InternalGsonHolder.gson;
-import static com.saasquatch.sdk.InternalUtils.format;
+import static com.saasquatch.sdk.internal.InternalUtils.format;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;

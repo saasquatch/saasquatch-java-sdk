@@ -1,8 +1,8 @@
 package com.saasquatch.sdk;
 
-import static com.saasquatch.sdk.InternalUtils.entryOf;
-import static com.saasquatch.sdk.InternalUtils.requireNotBlank;
-import static com.saasquatch.sdk.InternalUtils.unmodifiableList;
+import static com.saasquatch.sdk.internal.InternalUtils.entryOf;
+import static com.saasquatch.sdk.internal.InternalUtils.requireNotBlank;
+import static com.saasquatch.sdk.internal.InternalUtils.unmodifiableList;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;

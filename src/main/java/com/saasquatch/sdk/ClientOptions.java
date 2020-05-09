@@ -1,6 +1,6 @@
 package com.saasquatch.sdk;
 
-import static com.saasquatch.sdk.InternalUtils.requireNotBlank;
+import static com.saasquatch.sdk.internal.InternalUtils.requireNotBlank;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import javax.annotation.Nonnull;

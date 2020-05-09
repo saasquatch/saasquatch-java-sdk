@@ -1,8 +1,8 @@
 package com.saasquatch.sdk;
 
-import static com.saasquatch.sdk.InternalUtils.entryOf;
-import static com.saasquatch.sdk.InternalUtils.requireNotBlank;
-import static com.saasquatch.sdk.InternalUtils.unmodifiableList;
+import static com.saasquatch.sdk.internal.InternalUtils.entryOf;
+import static com.saasquatch.sdk.internal.InternalUtils.requireNotBlank;
+import static com.saasquatch.sdk.internal.InternalUtils.unmodifiableList;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
@@ -23,6 +23,8 @@ import org.apache.hc.client5.http.async.methods.SimpleHttpResponse;
 import org.apache.hc.client5.http.impl.async.CloseableHttpAsyncClient;
 import org.apache.hc.client5.http.impl.async.HttpAsyncClients;
 import org.junit.jupiter.api.Test;
+import com.saasquatch.sdk.internal.InternalThreadFactory;
+import com.saasquatch.sdk.internal.InternalUtils;
 import io.reactivex.rxjava3.annotations.NonNull;
 import io.reactivex.rxjava3.core.Flowable;
 import reactor.core.publisher.Mono;

@@ -1,7 +1,7 @@
 package com.saasquatch.sdk;
 
 import static com.saasquatch.sdk.InternalGsonHolder.gson;
-import static com.saasquatch.sdk.InternalUtils.format;
+import static com.saasquatch.sdk.internal.InternalUtils.format;
 import java.util.Map;
 import java.util.Objects;
 import javax.annotation.Nonnull;

@@ -1,9 +1,9 @@
-package com.saasquatch.sdk;
+package com.saasquatch.sdk.internal;
 
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicLong;
 
-class InternalThreadFactory implements ThreadFactory {
+public final class InternalThreadFactory implements ThreadFactory {
 
   private final AtomicLong idx = new AtomicLong();
   private final String baseName;

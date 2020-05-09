@@ -1,6 +1,6 @@
 package com.saasquatch.sdk;
 
-import static com.saasquatch.sdk.InternalUtils.requireNotBlank;
+import static com.saasquatch.sdk.internal.InternalUtils.requireNotBlank;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;

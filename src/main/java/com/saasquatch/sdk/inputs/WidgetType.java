@@ -1,4 +1,4 @@
-package com.saasquatch.sdk;
+package com.saasquatch.sdk.inputs;
 
 /**
  * A SaaSquatch widget type

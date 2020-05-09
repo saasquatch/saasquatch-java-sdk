@@ -1,8 +1,8 @@
-package com.saasquatch.sdk;
+package com.saasquatch.sdk.inputs;
 
-import static com.saasquatch.sdk.InternalUtils.format;
-import static com.saasquatch.sdk.InternalUtils.requireNotBlank;
-import static com.saasquatch.sdk.InternalUtils.urlEncode;
+import static com.saasquatch.sdk.internal.InternalUtils.format;
+import static com.saasquatch.sdk.internal.InternalUtils.requireNotBlank;
+import static com.saasquatch.sdk.internal.InternalUtils.urlEncode;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
