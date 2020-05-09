@@ -3,6 +3,7 @@ package com.saasquatch.sdk;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
+import com.saasquatch.sdk.auth.AuthMethod;
 
 public class AuthMethodTest {
 

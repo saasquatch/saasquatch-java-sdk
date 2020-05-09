@@ -16,6 +16,7 @@ import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 import org.apache.hc.client5.http.async.methods.SimpleHttpRequest;
 import org.apache.hc.core5.net.URIBuilder;
+import com.saasquatch.sdk.auth.AuthMethod;
 
 /**
  * Request options override, e.g. HTTP headers and query parameters.

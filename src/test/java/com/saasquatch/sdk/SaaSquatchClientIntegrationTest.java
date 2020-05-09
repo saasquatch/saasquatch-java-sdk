@@ -17,6 +17,7 @@ import org.junit.jupiter.api.Test;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.saasquatch.sdk.auth.AuthMethod;
 import com.saasquatch.sdk.inputs.ClassicWidgetType;
 import com.saasquatch.sdk.models.User;
 import com.saasquatch.sdk.models.UserEventData;

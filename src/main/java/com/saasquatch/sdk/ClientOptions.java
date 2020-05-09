@@ -6,6 +6,7 @@ import java.util.concurrent.TimeUnit;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
+import com.saasquatch.sdk.auth.AuthMethod;
 
 /**
  * Options for a {@link SaaSquatchClient}
@@ -100,7 +101,7 @@ public class ClientOptions {
       Objects.requireNonNull(authMethod, "authMethod");
       if (!authMethod.canBeClientDefault()) {
         throw new IllegalArgumentException(
-            "The authMethod you have specified cannot be used as the client default");
+            "The AuthMethod you have specified cannot be used as the client default");
       }
       this.authMethod = authMethod;
       return this;
