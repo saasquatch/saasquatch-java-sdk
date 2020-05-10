@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import javax.annotation.Nonnull;
+import com.saasquatch.sdk.SaaSquatchClient;
 import com.saasquatch.sdk.annotations.ClassicOnly;
 
 /**
@@ -15,6 +16,8 @@ import com.saasquatch.sdk.annotations.ClassicOnly;
  *
  * @author sli
  * @see #newBuilder()
+ * @see SaaSquatchClient#userUpsert(UserInput, com.saasquatch.sdk.RequestOptions)
+ * @see SaaSquatchClient#widgetUpsert(UserInput, WidgetType, com.saasquatch.sdk.RequestOptions)
  */
 public final class UserInput {
 
