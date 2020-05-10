@@ -24,6 +24,7 @@ import org.reactivestreams.Publisher;
 import com.saasquatch.sdk.auth.AuthMethod;
 import com.saasquatch.sdk.input.GraphQLInput;
 import com.saasquatch.sdk.input.UserEventInput;
+import com.saasquatch.sdk.input.UserInput;
 import com.saasquatch.sdk.input.UserLinkInput;
 import com.saasquatch.sdk.input.WidgetType;
 import com.saasquatch.sdk.internal.InternalThreadFactory;
@@ -195,10 +196,32 @@ public final class SaaSquatchClient implements Closeable {
    * <a href="https://docs.referralsaasquatch.com/api/methods/#open_user_upsert">Link to official
    * docs</a>
    */
+  public Publisher<MapApiResponse> userUpsert(@Nonnull UserInput userInput,
+      @Nullable RequestOptions requestOptions) {
+    return _userUpsert(userInput.getAccountId(), userInput.getId(), userInput,
+        null, requestOptions, false).map(MapApiResponse::new);
+  }
+
+  /**
+   * Create or update a user.<br>
+   * By default, the result of the response can be unmarshalled to {@link User}.<br>
+   * <a href="https://docs.referralsaasquatch.com/api/methods/#open_user_upsert">Link to official
+   * docs</a>
+   */
   public Publisher<MapApiResponse> userUpsert(@Nonnull Map<String, Object> userInput,
       @Nullable RequestOptions requestOptions) {
     return _userUpsert((String) userInput.get("accountId"), (String) userInput.get("id"), userInput,
         null, requestOptions, false).map(MapApiResponse::new);
+  }
+
+  /**
+   * Create or update a user and render the widget.<br>
+   * By default, the result of the response can be unmarshalled to {@link WidgetUpsertResult}.
+   */
+  public Publisher<MapApiResponse> widgetUpsert(@Nonnull UserInput userInput,
+      @Nullable WidgetType widgetType, @Nullable RequestOptions requestOptions) {
+    return _userUpsert(userInput.getAccountId(), userInput.getId(), userInput,
+        widgetType, requestOptions, true).map(MapApiResponse::new);
   }
 
   /**
