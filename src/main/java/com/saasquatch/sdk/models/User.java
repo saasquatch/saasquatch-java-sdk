@@ -7,8 +7,8 @@ import com.saasquatch.sdk.annotations.ClassicOnly;
 
 public final class User implements Model {
 
-  private final String id;
   private final String accountId;
+  private final String id;
   private final String firstName;
   private final String lastName;
   private final String email;
@@ -30,15 +30,15 @@ public final class User implements Model {
   private final Map<String, Object> customFields;
   private final Set<String> segments;
 
-  private User(String id, String accountId, String firstName, String lastName, String email,
+  private User(String accountId, String id, String firstName, String lastName, String email,
       String emailHash, String cookieId, String paymentProviderId, String referralCode,
       Map<String, String> referralCodes, String locale, String imageUrl, Boolean referable,
       String firstSeenIP, String lastSeenIP, Date dateCreated, Date dateBlocked,
       Set<String> referredByCodes, Map<String, Object> shareLinks,
       Map<String, Map<String, Map<String, String>>> programShareLinks,
       Map<String, Object> customFields, Set<String> segments) {
-    this.id = id;
     this.accountId = accountId;
+    this.id = id;
     this.firstName = firstName;
     this.lastName = lastName;
     this.email = email;
@@ -61,12 +61,12 @@ public final class User implements Model {
     this.segments = segments;
   }
 
-  public String getId() {
-    return id;
-  }
-
   public String getAccountId() {
     return accountId;
+  }
+
+  public String getId() {
+    return id;
   }
 
   public String getFirstName() {
