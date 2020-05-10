@@ -9,10 +9,12 @@ import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ThreadLocalRandom;
 import javax.annotation.Nonnull;
@@ -119,6 +121,18 @@ public final class InternalUtils {
     @SuppressWarnings("unchecked")
     final List<T> defensiveCopy = (List<T>) Arrays.asList(list.toArray());
     return Collections.unmodifiableList(defensiveCopy);
+  }
+
+  public static <T> Set<T> unmodifiableSet(@Nonnull Set<T> set) {
+    switch (set.size()) {
+      case 0:
+        return Collections.emptySet();
+      case 1:
+        return Collections.singleton(set.iterator().next());
+      default:
+        break;
+    }
+    return Collections.unmodifiableSet(new LinkedHashSet<>(set));
   }
 
   public static <K, V> Map<K, V> unmodifiableMap(@Nonnull Map<K, V> map) {
