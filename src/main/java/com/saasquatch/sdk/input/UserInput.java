@@ -76,6 +76,7 @@ public final class UserInput {
     return email;
   }
 
+  @ClassicOnly
   public String getPaymentProviderId() {
     return paymentProviderId;
   }
@@ -160,6 +161,7 @@ public final class UserInput {
       return this;
     }
 
+    @ClassicOnly
     public Builder setPaymentProviderId(@Nonnull String paymentProviderId) {
       this.paymentProviderId = requireNotBlank(paymentProviderId, "paymentProviderId");
       return this;
