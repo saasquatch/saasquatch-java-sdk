@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.util.Collections;
 import org.junit.jupiter.api.Test;
 import com.google.common.collect.ImmutableMap;
+import com.saasquatch.sdk.input.UserInput;
 
 public class SaaSquatchClientTest {
 
@@ -22,7 +23,8 @@ public class SaaSquatchClientTest {
           () -> saasquatchClient.renderWidget(" ", null, null, null));
       assertThrows(IllegalArgumentException.class,
           () -> saasquatchClient.renderWidget(" ", " ", null, null));
-      assertThrows(NullPointerException.class, () -> saasquatchClient.userUpsert(null, null));
+      assertThrows(NullPointerException.class,
+          () -> saasquatchClient.userUpsert((UserInput) null, null));
       assertThrows(NullPointerException.class,
           () -> saasquatchClient.userUpsert(Collections.emptyMap(), null));
       assertThrows(IllegalArgumentException.class,
