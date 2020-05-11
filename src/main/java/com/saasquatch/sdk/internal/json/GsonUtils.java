@@ -29,8 +29,7 @@ public final class GsonUtils {
    * object is to be serialized into a JSON object.
    */
   public static String toJsonExcludingNullRootLevalFields(Object src) {
-    final JsonElement jsonTree = gson.toJsonTree(src);
-    final JsonObject jsonObject = (JsonObject) jsonTree;
+    final JsonObject jsonObject = (JsonObject) gson.toJsonTree(src);
     final List<String> fieldsToRemove = new ArrayList<>(jsonObject.size());
     for (Map.Entry<String, JsonElement> entry : jsonObject.entrySet()) {
       if (entry.getValue() == null || entry.getValue().isJsonNull()) {
