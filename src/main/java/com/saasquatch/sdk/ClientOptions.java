@@ -79,9 +79,8 @@ public final class ClientOptions {
       throw new IllegalArgumentException("non-positive timeout");
     }
     if (millis > MAX_REQUEST_TIMEOUT_MILLIS) {
-      throw new IllegalArgumentException(
-          format("requestTimeout cannot be greater than %d seconds",
-              TimeUnit.MILLISECONDS.toSeconds(MAX_REQUEST_TIMEOUT_MILLIS)));
+      throw new IllegalArgumentException(format("requestTimeout cannot be greater than %d seconds",
+          TimeUnit.MILLISECONDS.toSeconds(MAX_REQUEST_TIMEOUT_MILLIS)));
     }
     return millis;
   }
@@ -92,9 +91,8 @@ public final class ClientOptions {
       throw new IllegalArgumentException("non-positive timeout");
     }
     if (millis > MAX_CONNECT_TIMEOUT_MILLIS) {
-      throw new IllegalArgumentException(
-          format("connectTimeout cannot be greater than %d seconds",
-              TimeUnit.MILLISECONDS.toSeconds(MAX_CONNECT_TIMEOUT_MILLIS)));
+      throw new IllegalArgumentException(format("connectTimeout cannot be greater than %d seconds",
+          TimeUnit.MILLISECONDS.toSeconds(MAX_CONNECT_TIMEOUT_MILLIS)));
     }
     return millis;
   }
@@ -124,10 +122,6 @@ public final class ClientOptions {
      */
     public Builder setAuthMethod(@Nonnull AuthMethod authMethod) {
       Objects.requireNonNull(authMethod, "authMethod");
-      if (!authMethod.canBeClientDefault()) {
-        throw new IllegalArgumentException(
-            "The AuthMethod you have specified cannot be used as the client default");
-      }
       this.authMethod = authMethod;
       return this;
     }

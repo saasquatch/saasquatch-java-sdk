@@ -5,19 +5,20 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.hc.client5.http.async.methods.SimpleHttpRequest;
 import org.apache.hc.core5.http.HttpHeaders;
 
-class TenantApiKeyAuth extends AuthMethod {
+final class BasicAuth extends AuthMethod {
 
-  private final String apiKey;
+  private final String username;
+  private final String password;
 
-  TenantApiKeyAuth(String apiKey) {
-    super(true);
-    this.apiKey = apiKey;
+  BasicAuth(String username, String password) {
+    this.username = username;
+    this.password = password;
   }
 
   @Override
   public void mutateRequest(SimpleHttpRequest request) {
     request.setHeader(HttpHeaders.AUTHORIZATION,
-        "Basic " + Base64.encodeBase64String((":" + apiKey).getBytes(UTF_8)));
+        Base64.encodeBase64String((username + ':' + password).getBytes(UTF_8)));
   }
 
 }

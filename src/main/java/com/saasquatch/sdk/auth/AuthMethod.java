@@ -14,19 +14,10 @@ import com.saasquatch.sdk.annotations.Internal;
  */
 public abstract class AuthMethod {
 
-  private final boolean canBeClientDefault;
-
-  AuthMethod(boolean canBeClientDefault) {
-    this.canBeClientDefault = canBeClientDefault;
-  }
+  AuthMethod() {}
 
   @Internal
   public abstract void mutateRequest(SimpleHttpRequest request);
-
-  @Internal
-  public final boolean canBeClientDefault() {
-    return canBeClientDefault;
-  }
 
   /**
    * No auth
@@ -39,14 +30,14 @@ public abstract class AuthMethod {
    * Authenticate with the given apiKey
    */
   public static AuthMethod ofTenantApiKey(@Nonnull String apiKey) {
-    return new TenantApiKeyAuth(requireNotBlank(apiKey, "apiKey"));
+    return new BasicAuth("", requireNotBlank(apiKey, "apiKey"));
   }
 
   /**
    * Authenticate with the given JWT
    */
   public static AuthMethod ofJwt(@Nonnull String jwt) {
-    return new JwtAuth(requireNotBlank(jwt, "jwt"));
+    return new BearerAuth(requireNotBlank(jwt, "jwt"));
   }
 
 }
