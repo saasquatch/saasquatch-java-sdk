@@ -118,6 +118,10 @@ Flowable.fromPublisher(responsePublisher)
 
 TODO
 
+## Unstable APIs
+
+Anything marked with the `@Beta` or `@Internal` annotations, as well as anything under the package `com.saasquatch.sdk.internal`, are either experimental or considered private API, and can be modified or removed without warning.
+
 ## Development
 
 This project uses a simple Maven build. Compile wilth `mvn compile` and run tests with `mvn test`.
