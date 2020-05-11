@@ -1,5 +1,6 @@
 package com.saasquatch.sdk;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.Test;
@@ -20,6 +21,7 @@ public class ClientOptionsTest {
         () -> builder.setAppDomain("app.referralsaasquatch.com/"));
     assertThrows(IllegalArgumentException.class,
         () -> builder.setAppDomain("/app.referralsaasquatch.com"));
+    assertDoesNotThrow(() -> builder.setAppDomain("localhost:80"));
     assertThrows(NullPointerException.class, () -> builder.setRequestTimeout(1, null));
     assertThrows(IllegalArgumentException.class,
         () -> builder.setRequestTimeout(0, TimeUnit.SECONDS));
