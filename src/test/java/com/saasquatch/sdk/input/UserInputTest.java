@@ -6,7 +6,7 @@ import java.util.Collections;
 import org.junit.jupiter.api.Test;
 import com.saasquatch.sdk.internal.json.GsonUtils;
 
-public class UserInputTests {
+public class UserInputTest {
 
   @Test
   public void testCustomJson() {

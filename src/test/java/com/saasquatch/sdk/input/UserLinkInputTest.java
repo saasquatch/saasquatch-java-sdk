@@ -3,7 +3,7 @@ package com.saasquatch.sdk.input;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
 
-public class UserLinkInputTests {
+public class UserLinkInputTest {
 
   @Test
   public void testCustomJson() {
