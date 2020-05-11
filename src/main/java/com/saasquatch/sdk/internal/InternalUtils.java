@@ -29,13 +29,13 @@ import io.reactivex.rxjava3.core.Single;
 
 public final class InternalUtils {
 
-  private static final Map<String, String> RFC_3986_REPLACEMENT_MAP;
+  private static final Map<String, String> RFC_3986_REPLACEMENTS;
   static {
     final Map<String, String> m = new HashMap<>(3);
     m.put("+", "%20");
     m.put("*", "%2A");
     m.put("%7E", "~");
-    RFC_3986_REPLACEMENT_MAP = Collections.unmodifiableMap(m);
+    RFC_3986_REPLACEMENTS = Collections.unmodifiableMap(m);
   }
 
   private InternalUtils() {}
@@ -165,7 +165,7 @@ public final class InternalUtils {
   @Nonnull
   public static String urlEncode(@Nonnull String s) {
     try {
-      return stringReplace(URLEncoder.encode(s, UTF_8.name()), RFC_3986_REPLACEMENT_MAP);
+      return stringReplace(URLEncoder.encode(s, UTF_8.name()), RFC_3986_REPLACEMENTS);
     } catch (UnsupportedEncodingException e) {
       throw new RuntimeException(e); // Seriously Java?
     }
