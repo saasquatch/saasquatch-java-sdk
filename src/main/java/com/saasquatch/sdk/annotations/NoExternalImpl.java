@@ -5,14 +5,14 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
- * Marker for things that are considered internal and are subject to change without warning, even if
- * they are public in Java.
+ * Marker for interfaces and abstract classes that are considered public API, but should not be
+ * implemented externally.
  *
  * @author sli
  */
 @Documented
 // This annotation is for documentation purposes only, at least for now.
 @Retention(RetentionPolicy.SOURCE)
-public @interface Internal {
+public @interface NoExternalImpl {
 
 }
