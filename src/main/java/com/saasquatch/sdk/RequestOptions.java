@@ -4,7 +4,6 @@ import static com.saasquatch.sdk.internal.InternalUtils.entryOf;
 import static com.saasquatch.sdk.internal.InternalUtils.requireNotBlank;
 import static com.saasquatch.sdk.internal.InternalUtils.unmodifiableList;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +13,7 @@ import java.util.TreeSet;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.apache.hc.client5.http.async.methods.SimpleHttpRequest;
+import org.apache.hc.core5.http.HttpHeaders;
 import org.apache.hc.core5.net.URIBuilder;
 import com.saasquatch.sdk.auth.AuthMethod;
 
@@ -28,9 +28,11 @@ public final class RequestOptions {
   private static final Set<String> BLOCKED_HEADERS;
   static {
     final Set<String> blockedHeaders = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
-    blockedHeaders.addAll(Arrays.asList("Authorization", "Accept-Encoding", "Content-Encoding",
-        "Content-Length", "Content-Type", "Accept", "Accept-Charset", "Cookie", "Set-Cookie",
-        "Set-Cookie2", "Cache-Control", "Host", "X-SaaSquatch-User-Token", "User-Agent"));
+    Collections.addAll(blockedHeaders, HttpHeaders.AUTHORIZATION, HttpHeaders.ACCEPT_ENCODING,
+        HttpHeaders.CONTENT_ENCODING, HttpHeaders.CONTENT_LENGTH, HttpHeaders.CONTENT_TYPE,
+        HttpHeaders.ACCEPT, HttpHeaders.ACCEPT_CHARSET, "Cookie", "Set-Cookie", "Set-Cookie2",
+        HttpHeaders.HOST, HttpHeaders.CACHE_CONTROL, HttpHeaders.USER_AGENT,
+        "X-SaaSquatch-User-Token");
     BLOCKED_HEADERS = Collections.unmodifiableSet(blockedHeaders);
   }
 
