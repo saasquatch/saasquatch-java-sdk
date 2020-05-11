@@ -23,7 +23,7 @@ public final class ClientOptions {
   private static final int DEFAULT_CONNECT_TIMOEUT_MILLIS = 2500;
   private static final int MAX_CONNECT_TIMEOUT_MILLIS = 15000;
   private static final int DEFAULT_MAX_CONCURRENT_REQUESTS = 2;
-  private static final int MAX_MAX_CONCURRENT_REQUESTS = 20;
+  private static final int MAX_MAX_CONCURRENT_REQUESTS = 32;
 
   private final String tenantAlias;
   private final AuthMethod authMethod;
@@ -136,7 +136,8 @@ public final class ClientOptions {
         throw new IllegalArgumentException("non-positive maxConcurrentRequests");
       }
       if (maxConcurrentRequests > MAX_MAX_CONCURRENT_REQUESTS) {
-        throw new IllegalArgumentException("maxConcurrentRequests too large");
+        throw new IllegalArgumentException(
+            "maxConcurrentRequests cannot be greater than " + MAX_MAX_CONCURRENT_REQUESTS);
       }
       this.maxConcurrentRequests = maxConcurrentRequests;
       return this;
