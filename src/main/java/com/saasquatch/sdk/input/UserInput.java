@@ -213,11 +213,10 @@ public final class UserInput {
     }
 
     public UserInput build() {
-      requireNotBlank(accountId, "accountId");
-      requireNotBlank(id, "id");
-      return new UserInput(accountId, id, firstName, lastName, email, paymentProviderId,
-          referralCode, referralCodes == null ? null : unmodifiableMap(referralCodes), locale,
-          imageUrl, referable, referredByCodes == null ? null : unmodifiableSet(referredByCodes),
+      return new UserInput(requireNotBlank(accountId, "accountId"), requireNotBlank(id, "id"),
+          firstName, lastName, email, paymentProviderId, referralCode,
+          referralCodes == null ? null : unmodifiableMap(referralCodes), locale, imageUrl,
+          referable, referredByCodes == null ? null : unmodifiableSet(referredByCodes),
           customFields == null ? null : unmodifiableMap(customFields),
           segments == null ? null : unmodifiableSet(segments));
     }
