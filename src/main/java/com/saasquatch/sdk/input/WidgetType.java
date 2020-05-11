@@ -9,6 +9,7 @@ import com.saasquatch.sdk.annotations.NoExternalImpl;
  * @author sli
  * @see SaaSquatchClient#renderWidget(String, String, WidgetType, com.saasquatch.sdk.RequestOptions)
  * @see SaaSquatchClient#widgetUpsert(UserInput, WidgetType, com.saasquatch.sdk.RequestOptions)
+ * @see WidgetTypes
  */
 @NoExternalImpl
 public interface WidgetType {
