@@ -207,7 +207,7 @@ public final class UserInput implements HasCustomJsonSerialization {
     }
 
     public Builder setReferredByCodes(@Nonnull Set<String> referredByCodes) {
-      this.referredByCodes = Objects.requireNonNull(referredByCodes);
+      this.referredByCodes = Objects.requireNonNull(referredByCodes, "referredByCodes");
       return this;
     }
 
