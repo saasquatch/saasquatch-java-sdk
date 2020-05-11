@@ -14,6 +14,7 @@ import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
@@ -160,7 +161,7 @@ public final class InternalUtils {
         return Collections.singletonMap(singleEntry.getKey(), singleEntry.getValue());
       }
       default:
-        return Collections.unmodifiableMap(new HashMap<>(map));
+        return Collections.unmodifiableMap(new LinkedHashMap<>(map));
     }
   }
 

@@ -3,8 +3,9 @@ package com.saasquatch.sdk.input;
 import static com.saasquatch.sdk.internal.InternalUtils.requireNotBlank;
 import static com.saasquatch.sdk.internal.InternalUtils.unmodifiableList;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
 import javax.annotation.Nonnull;
 import com.saasquatch.sdk.SaaSquatchClient;
 
@@ -47,7 +48,7 @@ public final class UserEventInput {
 
     private String accountId;
     private String userId;
-    private final List<UserEventDataInput> events = new ArrayList<>();
+    private List<UserEventDataInput> events;
 
     private Builder() {}
 
@@ -61,15 +62,26 @@ public final class UserEventInput {
       return this;
     }
 
-    public Builder addEvents(@Nonnull UserEventDataInput... events) {
-      for (UserEventDataInput event : events) {
-        this.events.add(Objects.requireNonNull(event, "event"));
+    public Builder setEvents(@Nonnull List<UserEventDataInput> events) {
+      // Ensure mutability
+      if (events instanceof ArrayList || events instanceof LinkedList) {
+        this.events = events;
+      } else {
+        this.events = new ArrayList<>(events);
       }
       return this;
     }
 
+    public Builder addEvents(@Nonnull UserEventDataInput... events) {
+      if (this.events == null) {
+        this.events = new ArrayList<>();
+      }
+      Collections.addAll(this.events, events);
+      return this;
+    }
+
     public UserEventInput build() {
-      if (events.isEmpty()) {
+      if (events == null || events.isEmpty()) {
         throw new IllegalArgumentException("Empty events");
       }
       return new UserEventInput(requireNotBlank(accountId, "accountId"),

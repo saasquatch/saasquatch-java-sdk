@@ -3,10 +3,13 @@ package com.saasquatch.sdk.input;
 import static com.saasquatch.sdk.internal.InternalUtils.requireNotBlank;
 import static com.saasquatch.sdk.internal.InternalUtils.unmodifiableMap;
 import static com.saasquatch.sdk.internal.InternalUtils.unmodifiableSet;
+import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.TreeSet;
 import javax.annotation.Nonnull;
 import com.saasquatch.sdk.SaaSquatchClient;
 import com.saasquatch.sdk.annotations.ClassicOnly;
@@ -231,7 +234,30 @@ public final class UserInput implements HasCustomJsonSerialization {
     }
 
     public Builder setSegments(@Nonnull Set<String> segments) {
-      this.segments = Objects.requireNonNull(segments, "segments");
+      // Ensure mutability and ordering
+      if (segments instanceof LinkedHashSet || segments instanceof TreeSet) {
+        this.segments = segments;
+      } else {
+        this.segments = new LinkedHashSet<>(segments);
+      }
+      return this;
+    }
+
+    public Builder addToSegments(@Nonnull String... segments) {
+      if (this.segments == null) {
+        this.segments = new LinkedHashSet<>();
+      }
+      Collections.addAll(this.segments, segments);
+      return this;
+    }
+
+    public Builder removeFromSegments(@Nonnull String... segments) {
+      if (this.segments == null) {
+        this.segments = new LinkedHashSet<>();
+      }
+      for (String segment : segments) {
+        this.segments.add('~' + segment);
+      }
       return this;
     }
 
