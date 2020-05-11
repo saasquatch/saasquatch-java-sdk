@@ -2,6 +2,8 @@ package com.saasquatch.sdk.internal;
 
 import java.lang.reflect.Type;
 import java.util.Date;
+import com.google.gson.ExclusionStrategy;
+import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
@@ -17,7 +19,8 @@ public final class InternalGsonHolder {
   private InternalGsonHolder() {}
 
   public static final Gson gson =
-      new GsonBuilder().registerTypeAdapter(Date.class, DateMillisAdapter.INSTANCE).create();
+      new GsonBuilder().serializeNulls().registerTypeAdapter(Date.class, DateMillisAdapter.INSTANCE)
+          .addSerializationExclusionStrategy(GsonIgnoreExlusionStrategy.INSTANCE).create();
 
   private static enum DateMillisAdapter implements JsonSerializer<Date>, JsonDeserializer<Date> {
 
@@ -32,6 +35,22 @@ public final class InternalGsonHolder {
     public Date deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
         throws JsonParseException {
       return new Date(json.getAsLong());
+    }
+
+  }
+
+  private static enum GsonIgnoreExlusionStrategy implements ExclusionStrategy {
+
+    INSTANCE;
+
+    @Override
+    public boolean shouldSkipField(FieldAttributes f) {
+      return f.getAnnotation(GsonIgnore.class) != null;
+    }
+
+    @Override
+    public boolean shouldSkipClass(Class<?> clazz) {
+      return clazz.getAnnotation(GsonIgnore.class) != null;
     }
 
   }
