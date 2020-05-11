@@ -2,6 +2,7 @@ package com.saasquatch.sdk;
 
 import static com.saasquatch.sdk.internal.InternalGsonHolder.gson;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Map;
@@ -19,6 +20,12 @@ public class InternalGsonHolderTest {
   public void testDateDeserialization() {
     final FooDateDto dto = gson.fromJson("{\"foo\":123}", FooDateDto.class);
     assertEquals(new Date(123), dto.foo);
+  }
+
+  @Test
+  public void testNullDateDeserialization() {
+    final FooDateDto dto = gson.fromJson("{\"foo\":null}", FooDateDto.class);
+    assertNull(dto.foo);
   }
 
   static class FooDateDto {
