@@ -11,9 +11,7 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
-import com.saasquatch.sdk.annotations.Internal;
 
-@Internal
 public final class InternalGsonHolder {
 
   private InternalGsonHolder() {}

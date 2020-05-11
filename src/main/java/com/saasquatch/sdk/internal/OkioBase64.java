@@ -21,9 +21,7 @@
 package com.saasquatch.sdk.internal;
 
 import static java.nio.charset.StandardCharsets.US_ASCII;
-import com.saasquatch.sdk.annotations.Internal;
 
-@Internal
 public final class OkioBase64 {
 
   private OkioBase64() {}
