@@ -202,6 +202,22 @@ public final class InternalUtils {
     }
   }
 
+  public static boolean isBlank(@Nonnull CharSequence s) {
+    if (s == null) {
+      return true;
+    }
+    final int len = s.length();
+    if (len == 0) {
+      return true;
+    }
+    for (int i = 0; i < len; i++) {
+      if (!Character.isWhitespace(s.charAt(i))) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   @Nonnull
   public static String requireNotBlank(@Nullable String s, @Nullable String msg) {
     if (msg == null) {
@@ -209,7 +225,7 @@ public final class InternalUtils {
     } else {
       Objects.requireNonNull(s, msg);
     }
-    if (s.trim().isEmpty()) {
+    if (isBlank(s)) {
       if (msg == null) {
         throw new IllegalArgumentException();
       } else {
