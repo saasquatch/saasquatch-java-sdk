@@ -29,6 +29,15 @@ import io.reactivex.rxjava3.core.Single;
 
 public final class InternalUtils {
 
+  private static final Map<String, String> RFC_3986_REPLACEMENT_MAP;
+  static {
+    final Map<String, String> m = new HashMap<>(3);
+    m.put("+", "%20");
+    m.put("*", "%2A");
+    m.put("%7E", "~");
+    RFC_3986_REPLACEMENT_MAP = Collections.unmodifiableMap(m);
+  }
+
   private InternalUtils() {}
 
   /**
@@ -156,11 +165,29 @@ public final class InternalUtils {
   @Nonnull
   public static String urlEncode(@Nonnull String s) {
     try {
-      return URLEncoder.encode(s, UTF_8.name()).replace("+", "%20").replace("*", "%2A")
-          .replace("%7E", "~");
+      return stringReplace(URLEncoder.encode(s, UTF_8.name()), RFC_3986_REPLACEMENT_MAP);
     } catch (UnsupportedEncodingException e) {
       throw new RuntimeException(e); // Seriously Java?
     }
+  }
+
+  /**
+   * More efficient String replace without regex.
+   */
+  public static String stringReplace(String string, Map<String, String> replacementMap) {
+    final StringBuilder sb = new StringBuilder(string);
+    for (Map.Entry<String, String> entry : replacementMap.entrySet()) {
+      final String key = entry.getKey();
+      final String value = entry.getValue();
+      int start = sb.indexOf(key, 0);
+      while (start > -1) {
+        final int end = start + key.length();
+        final int nextSearchStart = start + value.length();
+        sb.replace(start, end, value);
+        start = sb.indexOf(key, nextSearchStart);
+      }
+    }
+    return sb.toString();
   }
 
   /**
