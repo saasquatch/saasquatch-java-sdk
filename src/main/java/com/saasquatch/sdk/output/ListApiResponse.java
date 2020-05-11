@@ -8,6 +8,7 @@ import java.util.Objects;
 import javax.annotation.Nonnull;
 import org.apache.hc.client5.http.async.methods.SimpleHttpResponse;
 import com.google.gson.reflect.TypeToken;
+import com.saasquatch.sdk.annotations.Beta;
 import com.saasquatch.sdk.models.Model;
 
 /**
@@ -16,6 +17,7 @@ import com.saasquatch.sdk.models.Model;
  *
  * @author sli
  */
+@Beta
 public final class ListApiResponse extends ApiResponse<List<Object>> {
 
   private ListApiResponse(SimpleHttpResponse response) {
