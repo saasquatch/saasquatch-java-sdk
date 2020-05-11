@@ -33,6 +33,9 @@ public class ClientOptionsTest {
     assertThrows(NullPointerException.class, () -> builder.setAuthMethod(null));
     assertThrows(IllegalArgumentException.class,
         () -> builder.setAuthMethod(AuthMethod.ofJwt("abc")));
+    assertThrows(IllegalArgumentException.class, () -> builder.setMaxConcurrentRequests(100));
+    assertThrows(IllegalArgumentException.class,
+        () -> ClientOptions.newBuilder().setAuthMethod(AuthMethod.ofTenantApiKey("foo")).build());
   }
 
 }
