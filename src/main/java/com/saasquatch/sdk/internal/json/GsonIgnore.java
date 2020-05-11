@@ -1,4 +1,4 @@
-package com.saasquatch.sdk.internal;
+package com.saasquatch.sdk.internal.json;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

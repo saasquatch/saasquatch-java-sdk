@@ -10,6 +10,9 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import com.saasquatch.sdk.SaaSquatchClient;
 import com.saasquatch.sdk.annotations.ClassicOnly;
+import com.saasquatch.sdk.annotations.Internal;
+import com.saasquatch.sdk.internal.json.GsonUtil;
+import com.saasquatch.sdk.internal.json.HasCustomJsonSerialization;
 
 /**
  * Input for a user
@@ -19,7 +22,7 @@ import com.saasquatch.sdk.annotations.ClassicOnly;
  * @see SaaSquatchClient#userUpsert(UserInput, com.saasquatch.sdk.RequestOptions)
  * @see SaaSquatchClient#widgetUpsert(UserInput, WidgetType, com.saasquatch.sdk.RequestOptions)
  */
-public final class UserInput {
+public final class UserInput implements HasCustomJsonSerialization {
 
   private final String accountId;
   private final String id;
@@ -115,6 +118,12 @@ public final class UserInput {
 
   public static Builder newBuilder() {
     return new Builder();
+  }
+
+  @Internal
+  @Override
+  public String toJsonString() {
+    return GsonUtil.toJsonExcludingNullRootLevalFields(this);
   }
 
   public static final class Builder {

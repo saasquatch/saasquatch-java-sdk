@@ -1,6 +1,5 @@
 package com.saasquatch.sdk;
 
-import static com.saasquatch.sdk.internal.InternalGsonHolder.gson;
 import static com.saasquatch.sdk.internal.InternalUtils.requireNotBlank;
 import static com.saasquatch.sdk.internal.InternalUtils.unmodifiableList;
 import static com.saasquatch.sdk.internal.InternalUtils.urlEncode;
@@ -33,6 +32,7 @@ import com.saasquatch.sdk.input.UserLinkInput;
 import com.saasquatch.sdk.input.WidgetType;
 import com.saasquatch.sdk.internal.InternalThreadFactory;
 import com.saasquatch.sdk.internal.InternalUtils;
+import com.saasquatch.sdk.internal.json.GsonUtil;
 import com.saasquatch.sdk.models.User;
 import com.saasquatch.sdk.models.UserEventResult;
 import com.saasquatch.sdk.models.WidgetUpsertResult;
@@ -424,7 +424,7 @@ public final class SaaSquatchClient implements Closeable {
   }
 
   private void setJsonPojoBody(@Nonnull SimpleHttpRequest request, Object body) {
-    request.setBody(gson.toJson(body), ContentType.APPLICATION_JSON);
+    request.setBody(GsonUtil.toJson(body), ContentType.APPLICATION_JSON);
   }
 
   private void setJsonStringBody(@Nonnull SimpleHttpRequest request, String jsonStr) {

@@ -1,8 +1,8 @@
 package com.saasquatch.sdk.output;
 
-import static com.saasquatch.sdk.internal.InternalGsonHolder.gson;
 import static com.saasquatch.sdk.internal.InternalUtils.format;
 import static com.saasquatch.sdk.internal.InternalUtils.getBodyText;
+import static com.saasquatch.sdk.internal.json.GsonUtil.gson;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;

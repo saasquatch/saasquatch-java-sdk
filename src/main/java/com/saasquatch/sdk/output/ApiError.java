@@ -1,7 +1,7 @@
 package com.saasquatch.sdk.output;
 
-import static com.saasquatch.sdk.internal.InternalGsonHolder.gson;
 import static com.saasquatch.sdk.internal.InternalUtils.getBodyText;
+import static com.saasquatch.sdk.internal.json.GsonUtil.gson;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.apache.hc.client5.http.async.methods.SimpleHttpResponse;
