@@ -13,7 +13,6 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import com.saasquatch.sdk.annotations.Internal;
 
-
 @Internal
 public final class InternalGsonHolder {
 
