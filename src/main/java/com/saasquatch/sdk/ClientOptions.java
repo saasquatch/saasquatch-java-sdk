@@ -1,5 +1,6 @@
 package com.saasquatch.sdk;
 
+import static com.saasquatch.sdk.internal.InternalUtils.format;
 import static com.saasquatch.sdk.internal.InternalUtils.requireNotBlank;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -19,8 +20,8 @@ public final class ClientOptions {
 
   private static final String DEFAULT_APP_DOMAIN = "app.referralsaasquatch.com";
   private static final int DEFAULT_REQUEST_TIMEOUT_MILLIS = 10000;
-  private static final int MAX_REQUEST_TIMEOUT_MILLIS = 30000;
-  private static final int DEFAULT_CONNECT_TIMOEUT_MILLIS = 2500;
+  private static final int MAX_REQUEST_TIMEOUT_MILLIS = 60000;
+  private static final int DEFAULT_CONNECT_TIMOEUT_MILLIS = 2000;
   private static final int MAX_CONNECT_TIMEOUT_MILLIS = 15000;
   private static final int DEFAULT_MAX_CONCURRENT_REQUESTS = 2;
   private static final int MAX_MAX_CONCURRENT_REQUESTS = 32;
@@ -149,7 +150,9 @@ public final class ClientOptions {
         throw new IllegalArgumentException("non-positive timeout");
       }
       if (millis > MAX_REQUEST_TIMEOUT_MILLIS) {
-        throw new IllegalArgumentException("timeout too large");
+        throw new IllegalArgumentException(
+            format("Request timeout cannot be greater than %d seconds",
+                TimeUnit.MILLISECONDS.toSeconds(MAX_REQUEST_TIMEOUT_MILLIS)));
       }
       this.requestTimeoutMillis = millis;
       return this;
@@ -161,7 +164,9 @@ public final class ClientOptions {
         throw new IllegalArgumentException("non-positive timeout");
       }
       if (millis > MAX_CONNECT_TIMEOUT_MILLIS) {
-        throw new IllegalArgumentException("timeout too large");
+        throw new IllegalArgumentException(
+            format("Connect timeout cannot be greater than %d seconds",
+                TimeUnit.MILLISECONDS.toSeconds(MAX_CONNECT_TIMEOUT_MILLIS)));
       }
       this.connectTimeoutMillis = millis;
       return this;
