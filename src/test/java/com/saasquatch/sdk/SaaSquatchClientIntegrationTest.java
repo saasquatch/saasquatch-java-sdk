@@ -19,7 +19,7 @@ import com.google.gson.JsonObject;
 import com.saasquatch.sdk.auth.AuthMethods;
 import com.saasquatch.sdk.input.GraphQLInput;
 import com.saasquatch.sdk.input.UserLinkInput;
-import com.saasquatch.sdk.input.WidgetType;
+import com.saasquatch.sdk.input.WidgetTypes;
 import com.saasquatch.sdk.internal.json.GsonUtils;
 import com.saasquatch.sdk.models.User;
 import com.saasquatch.sdk.models.UserEventData;
@@ -117,7 +117,7 @@ public class SaaSquatchClientIntegrationTest {
     {
       final TextApiResponse response = Flowable
           .fromPublisher(
-              saasquatchClient.renderWidget("asdf", "asdf", WidgetType.conversionWidget(), null))
+              saasquatchClient.renderWidget("asdf", "asdf", WidgetTypes.classicConversion(), null))
           .blockingSingle();
       assertEquals(200, response.getStatusCode());
     }
