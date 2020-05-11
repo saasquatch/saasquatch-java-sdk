@@ -36,13 +36,14 @@ public final class UserInput implements HasCustomJsonSerialization {
   private final String imageUrl;
   private final Boolean referable;
   private final Set<String> referredByCodes;
+  private final Map<String, Object> referredBy;
   private final Map<String, Object> customFields;
   private final Set<String> segments;
 
   private UserInput(String accountId, String id, String firstName, String lastName, String email,
       String paymentProviderId, String referralCode, Map<String, String> referralCodes,
       String locale, String imageUrl, Boolean referable, Set<String> referredByCodes,
-      Map<String, Object> customFields, Set<String> segments) {
+      Map<String, Object> referredBy, Map<String, Object> customFields, Set<String> segments) {
     this.accountId = accountId;
     this.id = id;
     this.firstName = firstName;
@@ -55,6 +56,7 @@ public final class UserInput implements HasCustomJsonSerialization {
     this.imageUrl = imageUrl;
     this.referable = referable;
     this.referredByCodes = referredByCodes;
+    this.referredBy = referredBy;
     this.customFields = customFields;
     this.segments = segments;
   }
@@ -108,6 +110,11 @@ public final class UserInput implements HasCustomJsonSerialization {
     return referredByCodes;
   }
 
+  @ClassicOnly
+  public Map<String, Object> getReferredBy() {
+    return referredBy;
+  }
+
   public Map<String, Object> getCustomFields() {
     return customFields;
   }
@@ -140,6 +147,7 @@ public final class UserInput implements HasCustomJsonSerialization {
     private String imageUrl;
     private Boolean referable;
     private Set<String> referredByCodes;
+    private Map<String, Object> referredBy;
     private Map<String, Object> customFields;
     private Set<String> segments;
 
@@ -211,6 +219,12 @@ public final class UserInput implements HasCustomJsonSerialization {
       return this;
     }
 
+    @ClassicOnly
+    public Builder setReferredBy(@Nonnull Map<String, Object> referredBy) {
+      this.referredBy = Objects.requireNonNull(referredBy, "referredBy");
+      return this;
+    }
+
     public Builder setCustomFields(@Nonnull Map<String, Object> customFields) {
       this.customFields = Objects.requireNonNull(customFields, "customFields");
       return this;
@@ -226,6 +240,7 @@ public final class UserInput implements HasCustomJsonSerialization {
           firstName, lastName, email, paymentProviderId, referralCode,
           referralCodes == null ? null : unmodifiableMap(referralCodes), locale, imageUrl,
           referable, referredByCodes == null ? null : unmodifiableSet(referredByCodes),
+          referredBy == null ? null : unmodifiableMap(referredBy),
           customFields == null ? null : unmodifiableMap(customFields),
           segments == null ? null : unmodifiableSet(segments));
     }

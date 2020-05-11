@@ -25,6 +25,7 @@ public final class User implements Model {
   private final Date dateCreated;
   private final Date dateBlocked;
   private final Set<String> referredByCodes;
+  private final Map<String, Object> referredBy;
   private final Map<String, Object> shareLinks;
   private final Map<String, Map<String, Map<String, String>>> programShareLinks;
   private final Map<String, Object> customFields;
@@ -34,7 +35,7 @@ public final class User implements Model {
       String emailHash, String cookieId, String paymentProviderId, String referralCode,
       Map<String, String> referralCodes, String locale, String imageUrl, Boolean referable,
       String firstSeenIP, String lastSeenIP, Date dateCreated, Date dateBlocked,
-      Set<String> referredByCodes, Map<String, Object> shareLinks,
+      Set<String> referredByCodes, Map<String, Object> referredBy, Map<String, Object> shareLinks,
       Map<String, Map<String, Map<String, String>>> programShareLinks,
       Map<String, Object> customFields, Set<String> segments) {
     this.accountId = accountId;
@@ -55,6 +56,7 @@ public final class User implements Model {
     this.dateCreated = dateCreated;
     this.dateBlocked = dateBlocked;
     this.referredByCodes = referredByCodes;
+    this.referredBy = referredBy;
     this.shareLinks = shareLinks;
     this.programShareLinks = programShareLinks;
     this.customFields = customFields;
@@ -133,6 +135,11 @@ public final class User implements Model {
 
   public Set<String> getReferredByCodes() {
     return referredByCodes;
+  }
+
+  @ClassicOnly
+  public Map<String, Object> getReferredBy() {
+    return referredBy;
   }
 
   @ClassicOnly
