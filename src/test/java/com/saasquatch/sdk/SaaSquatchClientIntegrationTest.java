@@ -18,9 +18,9 @@ import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.saasquatch.sdk.auth.AuthMethod;
-import com.saasquatch.sdk.input.ClassicWidgetType;
 import com.saasquatch.sdk.input.GraphQLInput;
 import com.saasquatch.sdk.input.UserLinkInput;
+import com.saasquatch.sdk.input.WidgetType;
 import com.saasquatch.sdk.models.User;
 import com.saasquatch.sdk.models.UserEventData;
 import com.saasquatch.sdk.models.UserEventResult;
@@ -116,8 +116,9 @@ public class SaaSquatchClientIntegrationTest {
       assertTrue(response.getData().toLowerCase(Locale.ROOT).contains("<!doctype html>"));
     }
     {
-      final TextApiResponse response = Flowable.fromPublisher(
-          saasquatchClient.renderWidget("asdf", "asdf", ClassicWidgetType.CONVERSION_WIDGET, null))
+      final TextApiResponse response = Flowable
+          .fromPublisher(
+              saasquatchClient.renderWidget("asdf", "asdf", WidgetType.conversionWidget(), null))
           .blockingSingle();
       assertEquals(200, response.getStatusCode());
     }

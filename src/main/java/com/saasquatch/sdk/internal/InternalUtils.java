@@ -147,7 +147,7 @@ public final class InternalUtils {
   }
 
   /**
-   * (Almost) RFC3986 URL encode<br>
+   * RFC3986 URL encode<br>
    * Note that this method has the same functionality as RSUrlCodec in squatch-common and it's less
    * efficient, but the difference should be negligible for our use case. For now it's probably not
    * worth bringing in squatch-common as a dependency. If/when we do, we should replace this with
@@ -156,7 +156,8 @@ public final class InternalUtils {
   @Nonnull
   public static String urlEncode(@Nonnull String s) {
     try {
-      return URLEncoder.encode(s, UTF_8.name()).replace("+", "%20").replace("*", "%2A");
+      return URLEncoder.encode(s, UTF_8.name()).replace("+", "%20").replace("*", "%2A")
+          .replace("%7E", "~");
     } catch (UnsupportedEncodingException e) {
       throw new RuntimeException(e); // Seriously Java?
     }
