@@ -1,6 +1,7 @@
 package com.saasquatch.sdk.output;
 
 import static com.saasquatch.sdk.internal.InternalGsonHolder.gson;
+import static com.saasquatch.sdk.internal.InternalUtils.getBodyText;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.apache.hc.client5.http.async.methods.SimpleHttpResponse;
@@ -45,7 +46,7 @@ public final class ApiError {
   }
 
   static ApiError fromResponse(SimpleHttpResponse response) {
-    return gson.fromJson(response.getBodyText(), ApiError.class);
+    return gson.fromJson(getBodyText(response), ApiError.class);
   }
 
 }

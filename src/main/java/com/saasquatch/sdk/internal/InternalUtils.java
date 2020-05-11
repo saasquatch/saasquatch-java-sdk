@@ -1,10 +1,15 @@
 package com.saasquatch.sdk.internal;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.CharBuffer;
+import java.nio.charset.Charset;
 import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.Arrays;
 import java.util.Collections;
@@ -17,12 +22,16 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.zip.GZIPInputStream;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.apache.hc.client5.http.async.methods.SimpleHttpRequest;
 import org.apache.hc.client5.http.async.methods.SimpleHttpResponse;
 import org.apache.hc.client5.http.impl.async.CloseableHttpAsyncClient;
 import org.apache.hc.core5.concurrent.FutureCallback;
+import org.apache.hc.core5.http.ContentType;
+import org.apache.hc.core5.http.Header;
+import org.apache.hc.core5.http.HttpHeaders;
 import org.reactivestreams.Publisher;
 import io.reactivex.rxjava3.core.Flowable;
 import io.reactivex.rxjava3.core.Single;
@@ -242,6 +251,46 @@ public final class InternalUtils {
     }
     buf.flip();
     return buf.toString();
+  }
+
+  public static byte[] toByteArray(InputStream in) throws IOException {
+    try (ByteArrayOutputStream baOut = new ByteArrayOutputStream()) {
+      final byte[] buf = new byte[8192];
+      int bytesRead;
+      while ((bytesRead = in.read(buf)) >= 0) {
+        baOut.write(buf, 0, bytesRead);
+      }
+      return baOut.toByteArray();
+    }
+  }
+
+  public static byte[] getBodyBytes(SimpleHttpResponse response) {
+    final byte[] bodyBytes = response.getBodyBytes();
+    if (bodyBytes == null) {
+      return null;
+    }
+    final Header contentEncodingHeader = response.getFirstHeader(HttpHeaders.CONTENT_ENCODING);
+    final String contentEncoding =
+        contentEncodingHeader == null ? null : contentEncodingHeader.getValue();
+    if ("gzip".equalsIgnoreCase(contentEncoding)) {
+      try (GZIPInputStream gzipIn = new GZIPInputStream(new ByteArrayInputStream(bodyBytes))) {
+        return toByteArray(gzipIn);
+      } catch (IOException e) {
+        throw new RuntimeException(e);
+      }
+    } else {
+      return bodyBytes;
+    }
+  }
+
+  public static String getBodyText(SimpleHttpResponse response) {
+    final byte[] bodyBytes = getBodyBytes(response);
+    if (bodyBytes == null) {
+      return null;
+    }
+    final ContentType contentType = response.getContentType();
+    final Charset charset = contentType == null ? null : contentType.getCharset();
+    return new String(bodyBytes, charset == null ? UTF_8 : charset);
   }
 
 }

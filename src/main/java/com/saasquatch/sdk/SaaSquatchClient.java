@@ -2,10 +2,12 @@ package com.saasquatch.sdk;
 
 import static com.saasquatch.sdk.internal.InternalGsonHolder.gson;
 import static com.saasquatch.sdk.internal.InternalUtils.requireNotBlank;
+import static com.saasquatch.sdk.internal.InternalUtils.unmodifiableList;
 import static com.saasquatch.sdk.internal.InternalUtils.urlEncode;
 import java.io.Closeable;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -19,6 +21,8 @@ import org.apache.hc.client5.http.impl.async.CloseableHttpAsyncClient;
 import org.apache.hc.client5.http.impl.async.HttpAsyncClients;
 import org.apache.hc.client5.http.impl.nio.PoolingAsyncClientConnectionManagerBuilder;
 import org.apache.hc.core5.http.ContentType;
+import org.apache.hc.core5.http.HttpHeaders;
+import org.apache.hc.core5.http.message.BasicHeader;
 import org.apache.hc.core5.net.URIBuilder;
 import org.reactivestreams.Publisher;
 import com.saasquatch.sdk.auth.AuthMethod;
@@ -63,6 +67,8 @@ public final class SaaSquatchClient implements Closeable {
             .setMaxConnPerRoute(clientOptions.getMaxConcurrentRequests())
             .setMaxConnTotal(clientOptions.getMaxConcurrentRequests() * 2).build())
         .setUserAgent(InternalUtils.buildUserAgent(this.clientId))
+        .setDefaultHeaders(
+            unmodifiableList(Arrays.asList(new BasicHeader(HttpHeaders.ACCEPT_ENCODING, "gzip"))))
         .setThreadFactory(new InternalThreadFactory(this.clientId)).build();
     this.httpAsyncClient.start();
   }

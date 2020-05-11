@@ -1,6 +1,7 @@
 package com.saasquatch.sdk.output;
 
 import static com.saasquatch.sdk.internal.InternalGsonHolder.gson;
+import static com.saasquatch.sdk.internal.InternalUtils.getBodyText;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Nullable;
@@ -40,7 +41,7 @@ public final class GraphQLResult {
   }
 
   static GraphQLResult fromResponse(SimpleHttpResponse response) {
-    return gson.fromJson(response.getBodyText(), GraphQLResult.class);
+    return gson.fromJson(getBodyText(response), GraphQLResult.class);
   }
 
 }

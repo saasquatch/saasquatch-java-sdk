@@ -1,5 +1,6 @@
 package com.saasquatch.sdk.output;
 
+import static com.saasquatch.sdk.internal.InternalUtils.getBodyText;
 import org.apache.hc.client5.http.async.methods.SimpleHttpResponse;
 import com.saasquatch.sdk.annotations.Internal;
 
@@ -17,7 +18,7 @@ public final class TextApiResponse extends ApiResponse<String> {
 
   @Override
   protected String buildData() {
-    return response.getBodyText();
+    return getBodyText(response);
   }
 
 }
