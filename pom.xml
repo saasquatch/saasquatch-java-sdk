@@ -66,13 +66,13 @@
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>28.1-jre</version>
+      <version>29.0-jre</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>io.projectreactor</groupId>
       <artifactId>reactor-core</artifactId>
-      <version>3.3.0.RELEASE</version>
+      <version>3.3.5.RELEASE</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
