@@ -6,6 +6,7 @@ import javax.annotation.Nullable;
 import org.apache.hc.client5.http.async.methods.SimpleHttpResponse;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import com.saasquatch.sdk.internal.json.GsonUtils;
 
@@ -54,7 +55,12 @@ public final class ApiError {
      * ApiError from SaaSquatch.
      */
     final String bodyText = getBodyText(response);
-    final JsonElement jsonElement = JsonParser.parseString(bodyText);
+    JsonElement jsonElement;
+    try {
+      jsonElement = JsonParser.parseString(bodyText);
+    } catch (JsonParseException e) {
+      jsonElement = null;
+    }
     /*
      * If the response is a JSON object and it has the appropriate fields, then it's probably an
      * actual ApiError.
