@@ -116,14 +116,14 @@ public final class UserInput implements HasCustomJsonSerialization {
     return segments;
   }
 
-  public static Builder newBuilder() {
-    return new Builder();
-  }
-
   @Internal
   @Override
   public String toJsonString() {
     return GsonUtils.toJsonExcludingNullRootLevalFields(this);
+  }
+
+  public static Builder newBuilder() {
+    return new Builder();
   }
 
   public static final class Builder {

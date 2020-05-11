@@ -3,6 +3,7 @@ package com.saasquatch.sdk.input;
 import static com.saasquatch.sdk.internal.InternalUtils.requireNotBlank;
 import javax.annotation.Nonnull;
 import com.saasquatch.sdk.SaaSquatchClient;
+import com.saasquatch.sdk.internal.json.HasCustomJsonSerialization;
 
 /**
  * Input for creating user message links and share links.
@@ -11,7 +12,7 @@ import com.saasquatch.sdk.SaaSquatchClient;
  * @see #newBuilder()
  * @see SaaSquatchClient#buildUserMessageLink(UserLinkInput, com.saasquatch.sdk.RequestOptions)
  */
-public final class UserLinkInput {
+public final class UserLinkInput implements HasCustomJsonSerialization {
 
   private final String accountId;
   private final String userId;
@@ -46,6 +47,11 @@ public final class UserLinkInput {
 
   public String getEngagementMedium() {
     return engagementMedium;
+  }
+
+  @Override
+  public String toJsonString() {
+    throw new UnsupportedOperationException();
   }
 
   public static Builder newBuilder() {
