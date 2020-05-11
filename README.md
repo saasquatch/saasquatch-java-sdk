@@ -134,6 +134,10 @@ mvn test -D"com.saasquatch.sdk.test.appDomain"="REPLACEME" -D"com.saasquatch.sdk
 
 ## LICENSE
 
+Unless explicitly stated otherwise all files in this repository are licensed under the Apache License 2.0.
+
+License boilerplate:
+
 ```
 Copyright 2019 ReferralSaaSquatch.com Inc.
 
