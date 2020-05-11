@@ -59,10 +59,6 @@ public final class SaaSquatchClient implements Closeable {
     this.scheme = clientOptions.getAppDomain().startsWith("localhost:") ? "http" : "https";
     this.clientId = InternalUtils.randomHexString(8);
     this.httpAsyncClient = HttpAsyncClients.custom().disableCookieManagement()
-        .setDefaultRequestConfig(RequestConfig.custom()
-            .setConnectTimeout(clientOptions.getConnectTimeoutMillis(), TimeUnit.MILLISECONDS)
-            .setResponseTimeout(clientOptions.getRequestTimeoutMillis(), TimeUnit.MILLISECONDS)
-            .build())
         .setConnectionManager(PoolingAsyncClientConnectionManagerBuilder.create()
             .setMaxConnPerRoute(clientOptions.getMaxConcurrentRequests())
             .setMaxConnTotal(clientOptions.getMaxConcurrentRequests() * 2).build())
@@ -374,6 +370,19 @@ public final class SaaSquatchClient implements Closeable {
       requestOptions.mutateRequest(request);
     }
     getAuthMethod(requestOptions).mutateRequest(request);
+    final int requestTimeoutMillis, connectTimeoutMillis;
+    if (requestOptions != null) {
+      requestTimeoutMillis =
+          requestOptions.getRequestTimeoutMillis(clientOptions.getRequestTimeoutMillis());
+      connectTimeoutMillis =
+          requestOptions.getConnectTimeoutMillis(clientOptions.getConnectTimeoutMillis());
+    } else {
+      requestTimeoutMillis = clientOptions.getRequestTimeoutMillis();
+      connectTimeoutMillis = clientOptions.getConnectTimeoutMillis();
+    }
+    request.setConfig(
+        RequestConfig.custom().setResponseTimeout(requestTimeoutMillis, TimeUnit.MILLISECONDS)
+            .setConnectTimeout(connectTimeoutMillis, TimeUnit.MILLISECONDS).build());
   }
 
   @Nonnull

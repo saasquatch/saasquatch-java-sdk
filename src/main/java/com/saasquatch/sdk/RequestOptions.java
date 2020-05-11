@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.concurrent.TimeUnit;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.apache.hc.client5.http.async.methods.SimpleHttpRequest;
@@ -38,14 +39,19 @@ public final class RequestOptions {
 
   private final String tenantAlias;
   private final AuthMethod authMethod;
+  private final Integer requestTimeoutMillis;
+  private final Integer connectTimeoutMillis;
   private final List<Map.Entry<String, String>> headers;
   private final List<Map.Entry<String, String>> queryParams;
 
   private RequestOptions(@Nullable String tenantAlias, @Nullable AuthMethod authMethod,
+      @Nullable Integer requestTimeoutMillis, @Nullable Integer connectTimeoutMillis,
       @Nonnull List<Map.Entry<String, String>> headers,
       @Nonnull List<Map.Entry<String, String>> queryParams) {
     this.tenantAlias = tenantAlias;
     this.authMethod = authMethod;
+    this.requestTimeoutMillis = requestTimeoutMillis;
+    this.connectTimeoutMillis = connectTimeoutMillis;
     this.headers = headers;
     this.queryParams = queryParams;
   }
@@ -58,6 +64,14 @@ public final class RequestOptions {
   @Nullable
   AuthMethod getAuthMethod() {
     return authMethod;
+  }
+
+  int getRequestTimeoutMillis(int defaultTimeout) {
+    return requestTimeoutMillis == null ? defaultTimeout : requestTimeoutMillis;
+  }
+
+  int getConnectTimeoutMillis(int defaultTimeout) {
+    return connectTimeoutMillis == null ? defaultTimeout : connectTimeoutMillis;
   }
 
   void mutateUrl(@Nonnull URIBuilder urlBuilder) {
@@ -80,6 +94,8 @@ public final class RequestOptions {
 
     private String tenantAlias;
     private AuthMethod authMethod;
+    private Integer requestTimeoutMillis;
+    private Integer connectTimeoutMillis;
     private List<Map.Entry<String, String>> headers = Collections.emptyList();
     private List<Map.Entry<String, String>> queryParams = Collections.emptyList();
 
@@ -98,6 +114,16 @@ public final class RequestOptions {
      */
     public Builder setAuthMethod(@Nonnull AuthMethod authMethod) {
       this.authMethod = Objects.requireNonNull(authMethod);
+      return this;
+    }
+
+    public Builder setRequestTimeout(long duration, @Nonnull TimeUnit timeUnit) {
+      this.requestTimeoutMillis = ClientOptions.validateRequestTimeout(duration, timeUnit);
+      return this;
+    }
+
+    public Builder setConnectTimeout(long duration, @Nonnull TimeUnit timeUnit) {
+      this.connectTimeoutMillis = ClientOptions.validateConnectTimeout(duration, timeUnit);
       return this;
     }
 
@@ -162,8 +188,8 @@ public final class RequestOptions {
      * Build an immutable {@link RequestOptions}
      */
     public RequestOptions build() {
-      return new RequestOptions(tenantAlias, authMethod, unmodifiableList(headers),
-          unmodifiableList(queryParams));
+      return new RequestOptions(tenantAlias, authMethod, requestTimeoutMillis, connectTimeoutMillis,
+          unmodifiableList(headers), unmodifiableList(queryParams));
     }
 
   }

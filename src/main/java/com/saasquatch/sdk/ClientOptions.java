@@ -17,12 +17,12 @@ import com.saasquatch.sdk.auth.AuthMethod;
 public final class ClientOptions {
 
   private static final String DEFAULT_APP_DOMAIN = "app.referralsaasquatch.com";
-  private static final int DEFAULT_REQUEST_TIMEOUT_MILLIS = 10000;
-  private static final int MAX_REQUEST_TIMEOUT_MILLIS = 60000;
-  private static final int DEFAULT_CONNECT_TIMOEUT_MILLIS = 2000;
-  private static final int MAX_CONNECT_TIMEOUT_MILLIS = 15000;
   private static final int DEFAULT_MAX_CONCURRENT_REQUESTS = 2;
   private static final int MAX_MAX_CONCURRENT_REQUESTS = 32;
+  static final int DEFAULT_REQUEST_TIMEOUT_MILLIS = 10000;
+  static final int MAX_REQUEST_TIMEOUT_MILLIS = 60000;
+  static final int DEFAULT_CONNECT_TIMOEUT_MILLIS = 2000;
+  static final int MAX_CONNECT_TIMEOUT_MILLIS = 15000;
 
   private final String tenantAlias;
   private final AuthMethod authMethod;
@@ -71,6 +71,32 @@ public final class ClientOptions {
 
   public static Builder newBuilder() {
     return new Builder();
+  }
+
+  static int validateRequestTimeout(long duration, @Nonnull TimeUnit timeUnit) {
+    final int millis = (int) timeUnit.toMillis(duration);
+    if (millis <= 0) {
+      throw new IllegalArgumentException("non-positive timeout");
+    }
+    if (millis > MAX_REQUEST_TIMEOUT_MILLIS) {
+      throw new IllegalArgumentException(
+          format("requestTimeout cannot be greater than %d seconds",
+              TimeUnit.MILLISECONDS.toSeconds(MAX_REQUEST_TIMEOUT_MILLIS)));
+    }
+    return millis;
+  }
+
+  static int validateConnectTimeout(long duration, @Nonnull TimeUnit timeUnit) {
+    final int millis = (int) timeUnit.toMillis(duration);
+    if (millis <= 0) {
+      throw new IllegalArgumentException("non-positive timeout");
+    }
+    if (millis > MAX_CONNECT_TIMEOUT_MILLIS) {
+      throw new IllegalArgumentException(
+          format("connectTimeout cannot be greater than %d seconds",
+              TimeUnit.MILLISECONDS.toSeconds(MAX_CONNECT_TIMEOUT_MILLIS)));
+    }
+    return millis;
   }
 
   public static final class Builder {
@@ -137,30 +163,12 @@ public final class ClientOptions {
     }
 
     public Builder setRequestTimeout(long duration, @Nonnull TimeUnit timeUnit) {
-      final int millis = (int) timeUnit.toMillis(duration);
-      if (millis <= 0) {
-        throw new IllegalArgumentException("non-positive timeout");
-      }
-      if (millis > MAX_REQUEST_TIMEOUT_MILLIS) {
-        throw new IllegalArgumentException(
-            format("requestTimeout cannot be greater than %d seconds",
-                TimeUnit.MILLISECONDS.toSeconds(MAX_REQUEST_TIMEOUT_MILLIS)));
-      }
-      this.requestTimeoutMillis = millis;
+      this.requestTimeoutMillis = validateRequestTimeout(duration, timeUnit);
       return this;
     }
 
     public Builder setConnectTimeout(long duration, @Nonnull TimeUnit timeUnit) {
-      final int millis = (int) timeUnit.toMillis(duration);
-      if (millis <= 0) {
-        throw new IllegalArgumentException("non-positive timeout");
-      }
-      if (millis > MAX_CONNECT_TIMEOUT_MILLIS) {
-        throw new IllegalArgumentException(
-            format("connectTimeout cannot be greater than %d seconds",
-                TimeUnit.MILLISECONDS.toSeconds(MAX_CONNECT_TIMEOUT_MILLIS)));
-      }
-      this.connectTimeoutMillis = millis;
+      this.connectTimeoutMillis = validateConnectTimeout(duration, timeUnit);
       return this;
     }
 
