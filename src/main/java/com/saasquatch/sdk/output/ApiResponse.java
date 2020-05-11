@@ -1,14 +1,17 @@
 package com.saasquatch.sdk.output;
 
+import java.util.Objects;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.apache.hc.client5.http.async.methods.SimpleHttpResponse;
 import org.apache.hc.core5.http.Header;
+import com.saasquatch.sdk.annotations.Internal;
 
 /**
  * Represents an API response from SaaSquatch. If the request has {@link #succeeded()}, then you
  * should <em>typically</em> be able to get the API result from {@link #getData()}. If the request
- * had {@link #failed()}, then you should <em>typically</em> be able to get a
- * {@link ApiError} from {@link #getApiError()}.
+ * had {@link #failed()}, then you should <em>typically</em> be able to get a {@link ApiError} from
+ * {@link #getApiError()}.
  *
  * @author sli
  */
@@ -18,44 +21,40 @@ public abstract class ApiResponse<T> {
   private T data;
   // Lazy init
   private ApiError apiError;
+  private boolean fieldsInitialized;
   protected final SimpleHttpResponse response;
 
-  ApiResponse(SimpleHttpResponse response) {
-    this.response = response;
+  @Internal
+  ApiResponse(@Nonnull SimpleHttpResponse response) {
+    this.response = Objects.requireNonNull(response);
   }
 
-  public int getStatusCode() {
+  public final int getStatusCode() {
     return response.getCode();
   }
 
-  public boolean succeeded() {
+  public final boolean succeeded() {
     final int statusCode = getStatusCode();
     return statusCode >= 200 && statusCode < 300;
   }
 
-  public boolean failed() {
+  public final boolean failed() {
     return !succeeded();
   }
 
   @Nullable
-  public String getHeader(String headerName) {
-    final Header firstHeader = response.getFirstHeader(headerName);
-    if (firstHeader == null) {
-      return null;
-    }
-    return firstHeader.getValue();
+  public final String getHeader(String headerName) {
+    final Header header = response.getFirstHeader(headerName);
+    return header == null ? null : header.getValue();
   }
 
   @Nullable
   public T getData() {
-    if (failed()) {
+    if (!succeeded()) {
       return null;
     }
-    T _data = data;
-    if (_data == null) {
-      data = _data = buildData();
-    }
-    return _data;
+    initializeFields();
+    return this.data;
   }
 
   @Nullable
@@ -63,13 +62,25 @@ public abstract class ApiResponse<T> {
     if (succeeded()) {
       return null;
     }
-    ApiError _apiError = apiError;
-    if (_apiError == null) {
-      apiError = _apiError = ApiError.fromResponse(response);
-    }
-    return _apiError;
+    initializeFields();
+    return this.apiError;
   }
 
   protected abstract T buildData();
+
+  private void initializeFields() {
+    if (!fieldsInitialized) {
+      synchronized (response) {
+        if (!fieldsInitialized) {
+          if (succeeded()) {
+            data = buildData();
+          } else {
+            apiError = ApiError.fromResponse(response);
+          }
+          fieldsInitialized = true;
+        }
+      }
+    }
+  }
 
 }
