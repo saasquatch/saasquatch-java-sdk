@@ -1,13 +1,13 @@
 package com.saasquatch.sdk.output;
 
 import static com.saasquatch.sdk.internal.InternalUtils.getBodyText;
-import static com.saasquatch.sdk.internal.json.GsonUtil.gson;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.apache.hc.client5.http.async.methods.SimpleHttpResponse;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.saasquatch.sdk.internal.json.GsonUtils;
 
 /**
  * Represents an API error from SaaSquatch
@@ -62,7 +62,7 @@ public final class ApiError {
     if (jsonElement instanceof JsonObject) {
       final JsonObject jsonObject = ((JsonObject) jsonElement);
       if (jsonObject.has("message") && jsonObject.has("statusCode")) {
-        return gson.fromJson(jsonObject, ApiError.class);
+        return GsonUtils.gson.fromJson(jsonObject, ApiError.class);
       }
     }
     /*

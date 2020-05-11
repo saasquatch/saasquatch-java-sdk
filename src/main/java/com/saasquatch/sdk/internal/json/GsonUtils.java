@@ -18,13 +18,13 @@ import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
-public final class GsonUtil {
+public final class GsonUtils {
 
   public static final Gson gson =
       new GsonBuilder().serializeNulls().registerTypeAdapter(Date.class, DateMillisAdapter.INSTANCE)
           .addSerializationExclusionStrategy(GsonIgnoreExlusionStrategy.INSTANCE).create();
 
-  private GsonUtil() {}
+  private GsonUtils() {}
 
   public static String toJson(Object src) {
     if (src instanceof HasCustomJsonSerialization) {

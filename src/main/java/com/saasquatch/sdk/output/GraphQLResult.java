@@ -1,11 +1,11 @@
 package com.saasquatch.sdk.output;
 
 import static com.saasquatch.sdk.internal.InternalUtils.getBodyText;
-import static com.saasquatch.sdk.internal.json.GsonUtil.gson;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Nullable;
 import org.apache.hc.client5.http.async.methods.SimpleHttpResponse;
+import com.saasquatch.sdk.internal.json.GsonUtils;
 
 /**
  * The result of a standard GraphQL request
@@ -41,7 +41,7 @@ public final class GraphQLResult {
   }
 
   static GraphQLResult fromResponse(SimpleHttpResponse response) {
-    return gson.fromJson(getBodyText(response), GraphQLResult.class);
+    return GsonUtils.gson.fromJson(getBodyText(response), GraphQLResult.class);
   }
 
 }

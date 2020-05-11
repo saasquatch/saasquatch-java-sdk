@@ -2,7 +2,6 @@ package com.saasquatch.sdk.output;
 
 import static com.saasquatch.sdk.internal.InternalUtils.format;
 import static com.saasquatch.sdk.internal.InternalUtils.getBodyText;
-import static com.saasquatch.sdk.internal.json.GsonUtil.gson;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -10,6 +9,7 @@ import javax.annotation.Nonnull;
 import org.apache.hc.client5.http.async.methods.SimpleHttpResponse;
 import com.google.gson.reflect.TypeToken;
 import com.saasquatch.sdk.annotations.Beta;
+import com.saasquatch.sdk.internal.json.GsonUtils;
 import com.saasquatch.sdk.models.Model;
 
 /**
@@ -27,7 +27,8 @@ public final class ListApiResponse extends ApiResponse<List<Object>> {
 
   @Override
   protected List<Object> buildData() {
-    return gson.fromJson(getBodyText(response), new TypeToken<List<Object>>() {}.getType());
+    return GsonUtils.gson.fromJson(getBodyText(response),
+        new TypeToken<List<Object>>() {}.getType());
   }
 
   /**
@@ -42,8 +43,8 @@ public final class ListApiResponse extends ApiResponse<List<Object>> {
      * I know modelClass is technically not being used here, but it's included to be JSON library
      * agnostic
      */
-    final List<T> modelList =
-        gson.fromJson(gson.toJsonTree(getData()), new TypeToken<List<T>>() {}.getType());
+    final List<T> modelList = GsonUtils.gson.fromJson(GsonUtils.gson.toJsonTree(getData()),
+        new TypeToken<List<T>>() {}.getType());
     if (modelList == null) {
       throw new IllegalStateException(
           format("Unable to convert to model list with class [%s]", modelClass));

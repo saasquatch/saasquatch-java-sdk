@@ -11,7 +11,7 @@ import javax.annotation.Nonnull;
 import com.saasquatch.sdk.SaaSquatchClient;
 import com.saasquatch.sdk.annotations.ClassicOnly;
 import com.saasquatch.sdk.annotations.Internal;
-import com.saasquatch.sdk.internal.json.GsonUtil;
+import com.saasquatch.sdk.internal.json.GsonUtils;
 import com.saasquatch.sdk.internal.json.HasCustomJsonSerialization;
 
 /**
@@ -123,7 +123,7 @@ public final class UserInput implements HasCustomJsonSerialization {
   @Internal
   @Override
   public String toJsonString() {
-    return GsonUtil.toJsonExcludingNullRootLevalFields(this);
+    return GsonUtils.toJsonExcludingNullRootLevalFields(this);
   }
 
   public static final class Builder {

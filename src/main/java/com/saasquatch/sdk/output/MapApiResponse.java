@@ -2,13 +2,13 @@ package com.saasquatch.sdk.output;
 
 import static com.saasquatch.sdk.internal.InternalUtils.format;
 import static com.saasquatch.sdk.internal.InternalUtils.getBodyText;
-import static com.saasquatch.sdk.internal.json.GsonUtil.gson;
 import java.util.Map;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 import org.apache.hc.client5.http.async.methods.SimpleHttpResponse;
 import com.google.gson.reflect.TypeToken;
 import com.saasquatch.sdk.annotations.Internal;
+import com.saasquatch.sdk.internal.json.GsonUtils;
 import com.saasquatch.sdk.models.Model;
 
 /**
@@ -26,7 +26,8 @@ public final class MapApiResponse extends ApiResponse<Map<String, Object>> {
 
   @Override
   protected Map<String, Object> buildData() {
-    return gson.fromJson(getBodyText(response), new TypeToken<Map<String, Object>>() {}.getType());
+    return GsonUtils.gson.fromJson(getBodyText(response),
+        new TypeToken<Map<String, Object>>() {}.getType());
   }
 
   /**
@@ -37,7 +38,7 @@ public final class MapApiResponse extends ApiResponse<Map<String, Object>> {
    */
   public <T extends Model> T toModel(@Nonnull Class<? extends T> modelClass) {
     Objects.requireNonNull(modelClass, "modelClass");
-    final T model = gson.fromJson(gson.toJsonTree(getData()), modelClass);
+    final T model = GsonUtils.gson.fromJson(GsonUtils.gson.toJsonTree(getData()), modelClass);
     if (model == null) {
       throw new IllegalStateException(
           format("Unable to convert to model with class [%s]", modelClass));
