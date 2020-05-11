@@ -2,13 +2,14 @@ package com.saasquatch.sdk.auth;
 
 import org.apache.hc.client5.http.async.methods.SimpleHttpRequest;
 
-final class NoAuth extends AuthMethod {
+enum NoAuth implements AuthMethod {
 
-  static final NoAuth INSTANCE = new NoAuth();
-
-  public NoAuth() {}
+  INSTANCE;
 
   @Override
   public void mutateRequest(SimpleHttpRequest request) {}
+
+  @Override
+  public void blockExternalImpl(ExternalImplBlocker externalImplBlocker) {}
 
 }

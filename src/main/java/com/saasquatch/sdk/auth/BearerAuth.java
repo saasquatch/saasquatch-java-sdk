@@ -3,7 +3,7 @@ package com.saasquatch.sdk.auth;
 import org.apache.hc.client5.http.async.methods.SimpleHttpRequest;
 import org.apache.hc.core5.http.HttpHeaders;
 
-final class BearerAuth extends AuthMethod {
+final class BearerAuth implements AuthMethod {
 
   private final String token;
 
@@ -15,5 +15,8 @@ final class BearerAuth extends AuthMethod {
   public void mutateRequest(SimpleHttpRequest request) {
     request.setHeader(HttpHeaders.AUTHORIZATION, "Bearer " + token);
   }
+
+  @Override
+  public void blockExternalImpl(ExternalImplBlocker externalImplBlocker) {}
 
 }

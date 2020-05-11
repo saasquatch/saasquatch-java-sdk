@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.Test;
-import com.saasquatch.sdk.auth.AuthMethod;
+import com.saasquatch.sdk.auth.AuthMethods;
 
 public class ClientOptionsTest {
 
@@ -35,7 +35,7 @@ public class ClientOptionsTest {
     assertThrows(NullPointerException.class, () -> builder.setAuthMethod(null));
     assertThrows(IllegalArgumentException.class, () -> builder.setMaxConcurrentRequests(100));
     assertThrows(IllegalArgumentException.class,
-        () -> ClientOptions.newBuilder().setAuthMethod(AuthMethod.ofTenantApiKey("foo")).build());
+        () -> ClientOptions.newBuilder().setAuthMethod(AuthMethods.ofTenantApiKey("foo")).build());
   }
 
 }

@@ -16,7 +16,7 @@ import org.junit.jupiter.api.Test;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.saasquatch.sdk.auth.AuthMethod;
+import com.saasquatch.sdk.auth.AuthMethods;
 import com.saasquatch.sdk.input.GraphQLInput;
 import com.saasquatch.sdk.input.UserLinkInput;
 import com.saasquatch.sdk.input.WidgetType;
@@ -73,9 +73,8 @@ public class SaaSquatchClientIntegrationTest {
     }
     // Test auth override
     {
-      final MapApiResponse response = Flowable
-          .fromPublisher(saasquatchClient.userUpsert(userInput,
-              RequestOptions.newBuilder().setAuthMethod(AuthMethod.ofTenantApiKey("fake")).build()))
+      final MapApiResponse response = Flowable.fromPublisher(saasquatchClient.userUpsert(userInput,
+          RequestOptions.newBuilder().setAuthMethod(AuthMethods.ofTenantApiKey("fake")).build()))
           .blockingSingle();
       assertEquals(401, response.getStatusCode());
       final ApiError apiError = response.getApiError();

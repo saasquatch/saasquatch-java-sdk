@@ -5,7 +5,7 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.hc.client5.http.async.methods.SimpleHttpRequest;
 import org.apache.hc.core5.http.HttpHeaders;
 
-final class BasicAuth extends AuthMethod {
+final class BasicAuth implements AuthMethod {
 
   private final String username;
   private final String password;
@@ -20,5 +20,8 @@ final class BasicAuth extends AuthMethod {
     request.setHeader(HttpHeaders.AUTHORIZATION,
         Base64.encodeBase64String((username + ':' + password).getBytes(UTF_8)));
   }
+
+  @Override
+  public void blockExternalImpl(ExternalImplBlocker externalImplBlocker) {}
 
 }

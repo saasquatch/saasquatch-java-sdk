@@ -25,6 +25,7 @@ import org.apache.hc.core5.http.message.BasicHeader;
 import org.apache.hc.core5.net.URIBuilder;
 import org.reactivestreams.Publisher;
 import com.saasquatch.sdk.auth.AuthMethod;
+import com.saasquatch.sdk.auth.AuthMethods;
 import com.saasquatch.sdk.input.GraphQLInput;
 import com.saasquatch.sdk.input.UserEventInput;
 import com.saasquatch.sdk.input.UserInput;
@@ -406,7 +407,7 @@ public final class SaaSquatchClient implements Closeable {
     if (authMethod == null) {
       authMethod = this.clientOptions.getAuthMethod();
     }
-    return authMethod == null ? AuthMethod.noAuth() : authMethod;
+    return authMethod == null ? AuthMethods.noAuth() : authMethod;
   }
 
   /**

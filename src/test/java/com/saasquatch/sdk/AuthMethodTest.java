@@ -3,19 +3,19 @@ package com.saasquatch.sdk;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
-import com.saasquatch.sdk.auth.AuthMethod;
+import com.saasquatch.sdk.auth.AuthMethods;
 
 public class AuthMethodTest {
 
   @Test
   public void testNull() {
-    assertThrows(NullPointerException.class, () -> AuthMethod.ofTenantApiKey(null));
-    assertThrows(NullPointerException.class, () -> AuthMethod.ofJwt(null));
+    assertThrows(NullPointerException.class, () -> AuthMethods.ofTenantApiKey(null));
+    assertThrows(NullPointerException.class, () -> AuthMethods.ofJwt(null));
   }
 
   @Test
   public void testNoAuthSingleton() {
-    assertSame(AuthMethod.noAuth(), AuthMethod.noAuth());
+    assertSame(AuthMethods.noAuth(), AuthMethods.noAuth());
   }
 
 }
