@@ -198,8 +198,8 @@ public final class SaaSquatchClient implements Closeable {
    */
   public Publisher<MapApiResponse> userUpsert(@Nonnull UserInput userInput,
       @Nullable RequestOptions requestOptions) {
-    return _userUpsert(userInput.getAccountId(), userInput.getId(), userInput,
-        null, requestOptions, false).map(MapApiResponse::new);
+    return _userUpsert(userInput.getAccountId(), userInput.getId(), userInput, null, requestOptions,
+        false).map(MapApiResponse::new);
   }
 
   /**
@@ -220,8 +220,8 @@ public final class SaaSquatchClient implements Closeable {
    */
   public Publisher<MapApiResponse> widgetUpsert(@Nonnull UserInput userInput,
       @Nullable WidgetType widgetType, @Nullable RequestOptions requestOptions) {
-    return _userUpsert(userInput.getAccountId(), userInput.getId(), userInput,
-        widgetType, requestOptions, true).map(MapApiResponse::new);
+    return _userUpsert(userInput.getAccountId(), userInput.getId(), userInput, widgetType,
+        requestOptions, true).map(MapApiResponse::new);
   }
 
   /**
