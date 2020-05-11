@@ -151,7 +151,7 @@ public final class ClientOptions {
       }
       if (millis > MAX_REQUEST_TIMEOUT_MILLIS) {
         throw new IllegalArgumentException(
-            format("Request timeout cannot be greater than %d seconds",
+            format("requestTimeout cannot be greater than %d seconds",
                 TimeUnit.MILLISECONDS.toSeconds(MAX_REQUEST_TIMEOUT_MILLIS)));
       }
       this.requestTimeoutMillis = millis;
@@ -165,7 +165,7 @@ public final class ClientOptions {
       }
       if (millis > MAX_CONNECT_TIMEOUT_MILLIS) {
         throw new IllegalArgumentException(
-            format("Connect timeout cannot be greater than %d seconds",
+            format("connectTimeout cannot be greater than %d seconds",
                 TimeUnit.MILLISECONDS.toSeconds(MAX_CONNECT_TIMEOUT_MILLIS)));
       }
       this.connectTimeoutMillis = millis;
