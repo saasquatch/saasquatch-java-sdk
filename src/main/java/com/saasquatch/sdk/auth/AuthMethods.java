@@ -1,6 +1,7 @@
 package com.saasquatch.sdk.auth;
 
 import static com.saasquatch.sdk.internal.InternalUtils.requireNotBlank;
+import java.util.Objects;
 import javax.annotation.Nonnull;
 import com.saasquatch.sdk.annotations.Beta;
 
@@ -20,8 +21,8 @@ public final class AuthMethods {
    */
   @Beta
   public static AuthMethod ofBasic(@Nonnull String username, @Nonnull String password) {
-    return new BasicAuth(requireNotBlank(username, "username"),
-        requireNotBlank(password, "password"));
+    return new BasicAuth(Objects.requireNonNull(username, "username"),
+        Objects.requireNonNull(password, "password"));
   }
 
   /**
