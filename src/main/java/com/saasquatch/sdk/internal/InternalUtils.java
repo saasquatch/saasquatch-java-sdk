@@ -41,7 +41,7 @@ public final class InternalUtils {
 
   private static final Map<String, String> RFC_3986_REPLACEMENTS;
   static {
-    final Map<String, String> m = new HashMap<>(3);
+    final Map<String, String> m = new HashMap<>(4);
     m.put("+", "%20");
     m.put("*", "%2A");
     m.put("%7E", "~");
