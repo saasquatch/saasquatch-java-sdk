@@ -18,7 +18,7 @@ final class BasicAuth implements AuthMethod {
   @Override
   public void mutateRequest(SimpleHttpRequest request) {
     request.setHeader(HttpHeaders.AUTHORIZATION,
-        Base64.encodeBase64String((username + ':' + password).getBytes(UTF_8)));
+        "Basic " + Base64.encodeBase64String((username + ':' + password).getBytes(UTF_8)));
   }
 
   @Override
