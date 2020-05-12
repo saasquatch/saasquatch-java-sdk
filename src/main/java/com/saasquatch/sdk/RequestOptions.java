@@ -16,6 +16,7 @@ import javax.annotation.Nullable;
 import org.apache.hc.client5.http.async.methods.SimpleHttpRequest;
 import org.apache.hc.core5.http.HttpHeaders;
 import org.apache.hc.core5.net.URIBuilder;
+import com.saasquatch.sdk.annotations.Beta;
 import com.saasquatch.sdk.auth.AuthMethod;
 
 /**
@@ -32,8 +33,7 @@ public final class RequestOptions {
     Collections.addAll(blockedHeaders, HttpHeaders.AUTHORIZATION, HttpHeaders.ACCEPT_ENCODING,
         HttpHeaders.CONTENT_ENCODING, HttpHeaders.CONTENT_LENGTH, HttpHeaders.CONTENT_TYPE,
         HttpHeaders.ACCEPT, HttpHeaders.ACCEPT_CHARSET, "Cookie", "Set-Cookie", "Set-Cookie2",
-        HttpHeaders.HOST, HttpHeaders.CACHE_CONTROL, HttpHeaders.USER_AGENT,
-        "X-SaaSquatch-User-Token");
+        HttpHeaders.HOST, HttpHeaders.CACHE_CONTROL, HttpHeaders.USER_AGENT);
     BLOCKED_HEADERS = Collections.unmodifiableSet(blockedHeaders);
   }
 
@@ -147,6 +147,7 @@ public final class RequestOptions {
      * Convenience method for {@link #addHeader(String, String)} where you can pass in multiple
      * headers
      */
+    @Beta
     public Builder addHeaders(@Nonnull String... keysAndValues) {
       if ((keysAndValues.length & 1) != 0) {
         throw new IllegalArgumentException("odd number of keys and values");
@@ -174,6 +175,7 @@ public final class RequestOptions {
      * Convenience method for {@link #addQueryParam(String, String) where you can pass in multiple
      * query parameters
      */
+    @Beta
     public Builder addQueryParams(@Nonnull String... keysAndValues) {
       if ((keysAndValues.length & 1) != 0) {
         throw new IllegalArgumentException("odd number of keys and values");
