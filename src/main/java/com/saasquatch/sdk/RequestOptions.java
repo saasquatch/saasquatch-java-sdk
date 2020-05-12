@@ -76,7 +76,7 @@ public final class RequestOptions {
     return connectTimeoutMillis == null ? defaultTimeout : connectTimeoutMillis;
   }
 
-  boolean isContentCompressionEnabled(Boolean defaultEnabled) {
+  boolean isContentCompressionEnabled(boolean defaultEnabled) {
     return contentCompressionEnabled == null ? defaultEnabled : contentCompressionEnabled;
   }
 

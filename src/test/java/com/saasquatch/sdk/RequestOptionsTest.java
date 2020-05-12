@@ -3,6 +3,7 @@ package com.saasquatch.sdk;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.Test;
 import com.saasquatch.sdk.auth.AuthMethods;
@@ -43,8 +44,11 @@ public class RequestOptionsTest {
     assertEquals(500, requestOptions.getConnectTimeoutMillis(1));
     assertEquals(5000, requestOptions.getRequestTimeoutMillis(1));
     assertEquals("aaaaaaaaaaaaaaaa", requestOptions.getTenantAlias());
+    assertTrue(requestOptions.isContentCompressionEnabled(false));
     assertEquals(123, RequestOptions.newBuilder().build().getConnectTimeoutMillis(123));
     assertEquals(123, RequestOptions.newBuilder().build().getRequestTimeoutMillis(123));
+    assertEquals(true, RequestOptions.newBuilder().build().isContentCompressionEnabled(true));
+    assertEquals(false, RequestOptions.newBuilder().build().isContentCompressionEnabled(false));
   }
 
 }
