@@ -57,7 +57,6 @@ public final class InternalUtils {
     return String.format(Locale.ROOT, format, args);
   }
 
-  @Nonnull
   public static String buildUserAgent(@Nonnull String clientId) {
     final String javaVersion = getSysProp("java.version", "");
     final String osStr = getSysProp("os.name", "") + ' ' + getSysProp("os.version", "");
@@ -128,7 +127,6 @@ public final class InternalUtils {
    * Same as {@link Collections#unmodifiableList(List)}, but makes a defensive copy so modifying the
    * original list doesn't modify the unmoodifiable list.
    */
-  @Nonnull
   public static <T> List<T> unmodifiableList(@Nonnull List<T> list) {
     switch (list.size()) {
       case 0:
@@ -175,7 +173,6 @@ public final class InternalUtils {
    * worth bringing in squatch-common as a dependency. If/when we do, we should replace this with
    * RSUrlCodec.
    */
-  @Nonnull
   public static String urlEncode(@Nonnull String s) {
     try {
       return stringReplace(URLEncoder.encode(s, UTF_8.name()), RFC_3986_REPLACEMENTS);
@@ -206,7 +203,6 @@ public final class InternalUtils {
   /**
    * URL decode
    */
-  @Nonnull
   public static String urlDecode(@Nonnull String s) {
     try {
       return URLDecoder.decode(s, UTF_8.name());
@@ -215,7 +211,7 @@ public final class InternalUtils {
     }
   }
 
-  public static boolean isBlank(@Nonnull CharSequence s) {
+  public static boolean isBlank(@Nullable CharSequence s) {
     if (s == null) {
       return true;
     }
