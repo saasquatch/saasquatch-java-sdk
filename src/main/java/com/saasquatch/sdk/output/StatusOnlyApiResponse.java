@@ -1,6 +1,7 @@
 package com.saasquatch.sdk.output;
 
 import org.apache.hc.client5.http.async.methods.SimpleHttpResponse;
+import com.saasquatch.sdk.annotations.Beta;
 import com.saasquatch.sdk.annotations.Internal;
 
 /**
@@ -8,6 +9,7 @@ import com.saasquatch.sdk.annotations.Internal;
  *
  * @author sli
  */
+@Beta
 public final class StatusOnlyApiResponse extends ApiResponse<Void> {
 
   @Internal
