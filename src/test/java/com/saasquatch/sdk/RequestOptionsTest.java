@@ -43,6 +43,8 @@ public class RequestOptionsTest {
     assertEquals(500, requestOptions.getConnectTimeoutMillis(1));
     assertEquals(5000, requestOptions.getRequestTimeoutMillis(1));
     assertEquals("aaaaaaaaaaaaaaaa", requestOptions.getTenantAlias());
+    assertEquals(123, RequestOptions.newBuilder().build().getConnectTimeoutMillis(123));
+    assertEquals(123, RequestOptions.newBuilder().build().getRequestTimeoutMillis(123));
   }
 
 }
