@@ -115,7 +115,7 @@ Anything marked with the `@Beta` or `@Internal` annotations, as well as anything
 
 This project uses a simple Maven build. Compile wilth `mvn compile` and run tests with `mvn test`.
 
-Since Android still doesn't fully support Java 8, Java 8 specific classes like `CompletableFuture`, `java.util.Optional`, and `java.time.Instant` should be avoided. Java 8 language features like lambda expressions, however, can be used.
+Since Android still doesn't fully support Java 8 🤦, Java 8 specific classes like `CompletableFuture`, `java.util.Optional`, and `java.time.Instant` should be avoided. Java 8 language features like lambda expressions, however, can be used.
 
 To run integration tests, you'll need a SaaSquatch account, and run:
 
