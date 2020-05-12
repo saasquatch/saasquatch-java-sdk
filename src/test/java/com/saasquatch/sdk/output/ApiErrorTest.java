@@ -17,7 +17,7 @@ public class ApiErrorTest {
     j.addProperty("rsCode", "RS001");
     final SimpleHttpResponse response = new SimpleHttpResponse(400);
     response.setBody(j.toString(), ContentType.APPLICATION_JSON);
-    final ApiError apiError = ApiError.fromResponse(response);
+    final ApiError apiError = ApiError.fromJson(response.getBodyText(), response.getCode());
     assertEquals("foo", apiError.getMessage());
     assertEquals("bar", apiError.getApiErrorCode());
     assertEquals(400, apiError.getStatusCode());
@@ -31,7 +31,7 @@ public class ApiErrorTest {
     j.addProperty("iDontKnowWhatThisFieldIs", true);
     final SimpleHttpResponse response = new SimpleHttpResponse(400);
     response.setBody(j.toString(), ContentType.APPLICATION_JSON);
-    final ApiError apiError = ApiError.fromResponse(response);
+    final ApiError apiError = ApiError.fromJson(response.getBodyText(), response.getCode());
     assertEquals(j.toString(), apiError.getMessage());
     assertEquals(400, apiError.getStatusCode());
   }
@@ -41,7 +41,7 @@ public class ApiErrorTest {
     final String htmlStr = "<p>lol</p>";
     final SimpleHttpResponse response = new SimpleHttpResponse(400);
     response.setBody(htmlStr, ContentType.TEXT_HTML);
-    final ApiError apiError = ApiError.fromResponse(response);
+    final ApiError apiError = ApiError.fromJson(response.getBodyText(), response.getCode());
     assertEquals(htmlStr, apiError.getMessage());
     assertEquals(400, apiError.getStatusCode());
   }

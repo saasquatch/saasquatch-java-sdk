@@ -1,9 +1,7 @@
 package com.saasquatch.sdk.output;
 
-import static com.saasquatch.sdk.internal.InternalUtils.getBodyText;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import org.apache.hc.client5.http.async.methods.SimpleHttpResponse;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
@@ -49,12 +47,11 @@ public final class ApiError {
     return rsCode;
   }
 
-  static ApiError fromResponse(SimpleHttpResponse response) {
+  static ApiError fromJson(String bodyText, int statusCode) {
     /*
      * Doing this because in case of a catastrophic failure, we may not be able to get an actual
      * ApiError from SaaSquatch.
      */
-    final String bodyText = getBodyText(response);
     JsonElement jsonElement;
     try {
       jsonElement = JsonParser.parseString(bodyText);
@@ -75,7 +72,7 @@ public final class ApiError {
      * This is a catastrophic failure and SaaSquatch servers failed to respond with a proper
      * ApiError. Just jam the response text into the error message.
      */
-    return new ApiError(bodyText, "UNHANDLED_API_EXCEPTION", response.getCode(), null);
+    return new ApiError(bodyText, "UNHANDLED_API_EXCEPTION", statusCode, null);
   }
 
 }

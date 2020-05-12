@@ -90,7 +90,7 @@ public abstract class ApiResponse<T> {
           if (succeeded()) {
             data = buildData();
           } else {
-            apiError = ApiError.fromResponse(response);
+            apiError = ApiError.fromJson(getBodyText(), getStatusCode());
           }
           fieldsInitialized = true;
         }
