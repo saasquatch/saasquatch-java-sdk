@@ -373,7 +373,8 @@ public final class SaaSquatchClient implements Closeable {
           requestOptions.getRequestTimeoutMillis(clientOptions.getRequestTimeoutMillis());
       connectTimeoutMillis =
           requestOptions.getConnectTimeoutMillis(clientOptions.getConnectTimeoutMillis());
-      gzip = requestOptions.isContentCompressionEnabled(clientOptions.isContentCompressionEnabled());
+      gzip =
+          requestOptions.isContentCompressionEnabled(clientOptions.isContentCompressionEnabled());
     } else {
       requestTimeoutMillis = clientOptions.getRequestTimeoutMillis();
       connectTimeoutMillis = clientOptions.getConnectTimeoutMillis();
