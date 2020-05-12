@@ -5,7 +5,6 @@ import static com.saasquatch.sdk.internal.InternalUtils.unmodifiableMap;
 import static com.saasquatch.sdk.internal.InternalUtils.unmodifiableSet;
 import java.util.Collections;
 import java.util.LinkedHashSet;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -89,6 +88,7 @@ public final class UserInput implements HasCustomJsonSerialization {
     return paymentProviderId;
   }
 
+  @ClassicOnly
   public String getReferralCode() {
     return referralCode;
   }
@@ -201,10 +201,6 @@ public final class UserInput implements HasCustomJsonSerialization {
     public Builder setLocale(@Nonnull String locale) {
       this.locale = requireNotBlank(locale, "locale");
       return this;
-    }
-
-    public Builder setLocale(@Nonnull Locale locale) {
-      return setLocale(locale.toString());
     }
 
     public Builder setImageUrl(@Nonnull String imageUrl) {
