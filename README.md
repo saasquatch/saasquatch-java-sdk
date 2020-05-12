@@ -32,22 +32,11 @@ Add the dependency:
 
 For more information and other built tools, [please refer to the JitPack page](https://jitpack.io/#saasquatch/saasquatch-java-sdk).
 
-SaaSquatch Java SDK works on Java 8+ and Android API level 21+. To use this library on Android, you'll need to configure your project to use Java 8 by adding the following to `build.gradle` (see [Android official docs](https://developer.android.com/studio/write/java8-support) for more information):
-
-```gradle
-android {
-  compileOptions {
-    sourceCompatibility JavaVersion.VERSION_1_8
-    targetCompatibility JavaVersion.VERSION_1_8
-  }
-  // For Kotlin projects
-  kotlinOptions {
-    jvmTarget = "1.8"
-  }
-}
-```
-
 This library aims to abstract away the I/O layer and [Reactive Streams](https://www.reactive-streams.org/) implementations to be implementation agnostic. As of right now, this library depends on [RxJava 3](https://github.com/ReactiveX/RxJava), [Gson](https://github.com/google/gson), and [Apache HttpClient 5](https://hc.apache.org/httpcomponents-client-5.0.x/index.html), but never exposes library-specific interfaces other than Reactive Streams interfaces. **It is recommended that you explicitly import the transitive dependencies if you intend to use them**, since we may upgrade or switch to other I/O or Reactive Streams libraries in the future.
+
+### Android
+
+SaaSquatch Java SDK works on Java 8+ and Android API level 21+. To use this library on Android, you'll need to configure your project to use Java 8 by adding the following to `build.gradle` (see [Android official docs](https://developer.android.com/studio/write/java8-support) for more information).
 
 ## Using the SDK
 
