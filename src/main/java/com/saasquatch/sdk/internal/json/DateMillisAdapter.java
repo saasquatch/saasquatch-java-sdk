@@ -10,7 +10,7 @@ import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
-public enum DateMillisAdapter implements JsonSerializer<Date>, JsonDeserializer<Date> {
+enum DateMillisAdapter implements JsonSerializer<Date>, JsonDeserializer<Date> {
 
   INSTANCE;
 
