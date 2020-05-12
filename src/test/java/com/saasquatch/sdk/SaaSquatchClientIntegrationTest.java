@@ -115,10 +115,8 @@ public class SaaSquatchClientIntegrationTest {
       assertTrue(response.getData().toLowerCase(Locale.ROOT).contains("<!doctype html>"));
     }
     {
-      final TextApiResponse response = Flowable
-          .fromPublisher(
-              saasquatchClient.renderWidget("asdf", "asdf", WidgetTypes.classicConversionWidget(), null))
-          .blockingSingle();
+      final TextApiResponse response = Flowable.fromPublisher(saasquatchClient.renderWidget("asdf",
+          "asdf", WidgetTypes.classicConversionWidget(), null)).blockingSingle();
       assertEquals(200, response.getStatusCode());
     }
     {
