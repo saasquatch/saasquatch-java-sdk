@@ -13,7 +13,6 @@ public class RequestOptionsTest {
     assertThrows(NullPointerException.class, () -> builder.addHeader(null, "a"));
     assertThrows(IllegalArgumentException.class, () -> builder.addHeader("\t", "a"));
     assertThrows(IllegalArgumentException.class, () -> builder.addHeader("a", "\t"));
-    assertThrows(IllegalArgumentException.class, () -> builder.addHeader("Authorization", "foo"));
     assertThrows(NullPointerException.class, () -> builder.addHeaders("a", "a", "a", null));
     assertThrows(IllegalArgumentException.class, () -> builder.addHeaders("a", "a", "a"));
     assertThrows(NullPointerException.class, () -> builder.addQueryParam(null, null));
