@@ -36,4 +36,14 @@ public class ApiErrorTest {
     assertEquals(400, apiError.getStatusCode());
   }
 
+  @Test
+  public void testCatastrophicFailureWithHtml() {
+    final String htmlStr = "<p>lol</p>";
+    final SimpleHttpResponse response = new SimpleHttpResponse(400);
+    response.setBody(htmlStr, ContentType.TEXT_HTML);
+    final ApiError apiError = ApiError.fromResponse(response);
+    assertEquals(htmlStr, apiError.getMessage());
+    assertEquals(400, apiError.getStatusCode());
+  }
+
 }
