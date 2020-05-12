@@ -4,12 +4,14 @@ import static com.saasquatch.sdk.internal.InternalUtils.entryOf;
 import static com.saasquatch.sdk.internal.InternalUtils.isBlank;
 import static com.saasquatch.sdk.internal.InternalUtils.requireNotBlank;
 import static com.saasquatch.sdk.internal.InternalUtils.unmodifiableList;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import java.io.ByteArrayInputStream;
 import java.security.Permission;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.AbstractMap.SimpleImmutableEntry;
@@ -119,6 +121,13 @@ public class InternalUtilsTest {
     assertTrue(isBlank(""));
     assertTrue(isBlank(" \t"));
     assertFalse(isBlank(" a \r"));
+  }
+
+  @Test
+  public void testInputStreamToByteArray() throws Exception {
+    final String s = InternalUtils.randomHexString(65536);
+    assertEquals(s,
+        new String(InternalUtils.toByteArray(new ByteArrayInputStream(s.getBytes(UTF_8))), UTF_8));
   }
 
 }
