@@ -1,6 +1,7 @@
 package com.saasquatch.sdk.input;
 
 import static com.saasquatch.sdk.internal.InternalUtils.urlEncode;
+import javax.annotation.Nonnull;
 
 final class ProgramWidgetType implements WidgetType {
 
@@ -9,7 +10,7 @@ final class ProgramWidgetType implements WidgetType {
   private final String programId;
   private final String widgetKey;
 
-  ProgramWidgetType(String programId, String widgetKey) {
+  ProgramWidgetType(@Nonnull String programId, @Nonnull String widgetKey) {
     this.programId = programId;
     this.widgetKey = widgetKey;
   }

@@ -117,7 +117,7 @@ public class SaaSquatchClientIntegrationTest {
     {
       final TextApiResponse response = Flowable
           .fromPublisher(
-              saasquatchClient.renderWidget("asdf", "asdf", WidgetTypes.classicConversion(), null))
+              saasquatchClient.renderWidget("asdf", "asdf", WidgetTypes.classicConversionWidget(), null))
           .blockingSingle();
       assertEquals(200, response.getStatusCode());
     }

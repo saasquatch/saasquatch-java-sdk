@@ -1,6 +1,8 @@
 package com.saasquatch.sdk.input;
 
+import javax.annotation.Nonnull;
 import com.saasquatch.sdk.SaaSquatchClient;
+import com.saasquatch.sdk.annotations.Internal;
 import com.saasquatch.sdk.annotations.NoExternalImpl;
 
 /**
@@ -14,8 +16,10 @@ import com.saasquatch.sdk.annotations.NoExternalImpl;
 @NoExternalImpl
 public interface WidgetType {
 
+  @Nonnull
   String getWidgetType();
 
+  @Internal
   void blockExternalImpl(ExternalImplBlocker externalImplBlocker);
 
 }
