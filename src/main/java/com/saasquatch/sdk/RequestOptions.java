@@ -30,10 +30,10 @@ public final class RequestOptions {
   private static final Set<String> BLOCKED_HEADERS;
   static {
     final Set<String> blockedHeaders = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
-    Collections.addAll(blockedHeaders, HttpHeaders.AUTHORIZATION, HttpHeaders.ACCEPT_ENCODING,
-        HttpHeaders.CONTENT_ENCODING, HttpHeaders.CONTENT_LENGTH, HttpHeaders.CONTENT_TYPE,
-        HttpHeaders.ACCEPT, HttpHeaders.ACCEPT_CHARSET, "Cookie", "Cookie2", "Set-Cookie",
-        "Set-Cookie2", HttpHeaders.HOST, HttpHeaders.CACHE_CONTROL, HttpHeaders.USER_AGENT);
+    Collections.addAll(blockedHeaders, HttpHeaders.ACCEPT_ENCODING, HttpHeaders.CONTENT_ENCODING,
+        HttpHeaders.CONTENT_LENGTH, HttpHeaders.CONTENT_TYPE, HttpHeaders.ACCEPT,
+        HttpHeaders.ACCEPT_CHARSET, "Cookie", "Cookie2", "Set-Cookie", "Set-Cookie2",
+        HttpHeaders.HOST, HttpHeaders.CACHE_CONTROL, HttpHeaders.USER_AGENT);
     BLOCKED_HEADERS = Collections.unmodifiableSet(blockedHeaders);
   }
 
