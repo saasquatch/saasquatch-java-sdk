@@ -2,9 +2,13 @@ package com.saasquatch.sdk;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.concurrent.TimeUnit;
+import org.apache.hc.client5.http.async.methods.SimpleHttpRequest;
+import org.apache.hc.client5.http.async.methods.SimpleHttpRequests;
+import org.apache.hc.core5.net.URIBuilder;
 import org.junit.jupiter.api.Test;
 import com.saasquatch.sdk.auth.AuthMethods;
 
@@ -49,6 +53,22 @@ public class RequestOptionsTest {
     assertEquals(123, RequestOptions.newBuilder().build().getRequestTimeoutMillis(123));
     assertEquals(true, RequestOptions.newBuilder().build().isContentCompressionEnabled(true));
     assertEquals(false, RequestOptions.newBuilder().build().isContentCompressionEnabled(false));
+  }
+
+  @Test
+  public void testRequestMutation() throws Exception {
+    final RequestOptions requestOptions =
+        RequestOptions.newBuilder().addHeader("a", "b").addQueryParam("c", "d").build();
+    final SimpleHttpRequest request = SimpleHttpRequests.get("http://app.referralsaasquatch.com");
+    assertNull(request.getFirstHeader("a"));
+    requestOptions.mutateRequest(request);
+    assertEquals("b", request.getFirstHeader("a").getValue());
+    final URIBuilder uriBuilder = new URIBuilder("http://example.com");
+    assertTrue(uriBuilder.getQueryParams().isEmpty());
+    requestOptions.mutateUrl(uriBuilder);
+    assertEquals(1, uriBuilder.getQueryParams().size());
+    assertEquals("c", uriBuilder.getQueryParams().get(0).getName());
+    assertEquals("d", uriBuilder.getQueryParams().get(0).getValue());
   }
 
 }
