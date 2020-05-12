@@ -6,6 +6,7 @@ import javax.annotation.Nullable;
 import org.apache.hc.client5.http.async.methods.SimpleHttpResponse;
 import org.apache.hc.core5.http.Header;
 import com.saasquatch.sdk.annotations.Internal;
+import com.saasquatch.sdk.internal.InternalUtils;
 
 /**
  * Represents an API response from SaaSquatch. If the request has {@link #succeeded()}, then you
@@ -22,7 +23,9 @@ public abstract class ApiResponse<T> {
   // Lazy init
   private ApiError apiError;
   private boolean fieldsInitialized;
-  protected final SimpleHttpResponse response;
+  // Lazy init. Not part of the lazy init of data and error, since those depend on bodyText.
+  private String bodyText;
+  private final SimpleHttpResponse response;
 
   @Internal
   ApiResponse(@Nonnull SimpleHttpResponse response) {
@@ -64,6 +67,18 @@ public abstract class ApiResponse<T> {
     }
     initializeFields();
     return this.apiError;
+  }
+
+  /**
+   * Get the raw body text of the HTTP request, if available.
+   */
+  @Nullable
+  public String getBodyText() {
+    String s = bodyText;
+    if (s == null) {
+      bodyText = s = InternalUtils.getBodyText(response);
+    }
+    return s;
   }
 
   protected abstract T buildData();

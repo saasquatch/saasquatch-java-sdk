@@ -1,7 +1,6 @@
 package com.saasquatch.sdk.output;
 
 import static com.saasquatch.sdk.internal.InternalUtils.format;
-import static com.saasquatch.sdk.internal.InternalUtils.getBodyText;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -27,8 +26,7 @@ public final class ListApiResponse extends ApiResponse<List<Object>> {
 
   @Override
   protected List<Object> buildData() {
-    return GsonUtils.gson.fromJson(getBodyText(response),
-        new TypeToken<List<Object>>() {}.getType());
+    return GsonUtils.gson.fromJson(getBodyText(), new TypeToken<List<Object>>() {}.getType());
   }
 
   /**

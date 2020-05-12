@@ -1,7 +1,6 @@
 package com.saasquatch.sdk.output;
 
 import static com.saasquatch.sdk.internal.InternalUtils.format;
-import static com.saasquatch.sdk.internal.InternalUtils.getBodyText;
 import java.util.Map;
 import java.util.Objects;
 import javax.annotation.Nonnull;
@@ -26,7 +25,7 @@ public final class MapApiResponse extends ApiResponse<Map<String, Object>> {
 
   @Override
   protected Map<String, Object> buildData() {
-    return GsonUtils.gson.fromJson(getBodyText(response),
+    return GsonUtils.gson.fromJson(getBodyText(),
         new TypeToken<Map<String, Object>>() {}.getType());
   }
 
