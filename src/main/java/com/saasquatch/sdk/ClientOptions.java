@@ -6,6 +6,7 @@ import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import com.saasquatch.sdk.annotations.Beta;
 import com.saasquatch.sdk.auth.AuthMethod;
 
 /**
@@ -30,16 +31,18 @@ public final class ClientOptions {
   private final int maxConcurrentRequests;
   private final int requestTimeoutMillis;
   private final int connectTimeoutMillis;
+  private final boolean contentCompressionEnabled;
 
   private ClientOptions(@Nullable String tenantAlias, @Nullable AuthMethod authMethod,
       @Nonnull String appDomain, int maxConcurrentRequests, int requestTimeoutMillis,
-      int connectTimeoutMillis) {
+      int connectTimeoutMillis, boolean contentCompressionEnabled) {
     this.tenantAlias = tenantAlias;
     this.authMethod = authMethod;
     this.appDomain = appDomain;
     this.maxConcurrentRequests = maxConcurrentRequests;
     this.requestTimeoutMillis = requestTimeoutMillis;
     this.connectTimeoutMillis = connectTimeoutMillis;
+    this.contentCompressionEnabled = contentCompressionEnabled;
   }
 
   @Nullable
@@ -67,6 +70,10 @@ public final class ClientOptions {
 
   int getConnectTimeoutMillis() {
     return connectTimeoutMillis;
+  }
+
+  boolean isContentCompressionEnabled() {
+    return contentCompressionEnabled;
   }
 
   public static Builder newBuilder() {
@@ -105,6 +112,7 @@ public final class ClientOptions {
     private int maxConcurrentRequests = DEFAULT_MAX_CONCURRENT_REQUESTS;
     private int requestTimeoutMillis = DEFAULT_REQUEST_TIMEOUT_MILLIS;
     private int connectTimeoutMillis = DEFAULT_CONNECT_TIMOEUT_MILLIS;
+    private boolean contentCompressionEnabled = true;
 
     private Builder() {}
 
@@ -166,6 +174,12 @@ public final class ClientOptions {
       return this;
     }
 
+    @Beta
+    public Builder setContentCompressionEnabled(boolean contentCompressionEnabled) {
+      this.contentCompressionEnabled = contentCompressionEnabled;
+      return this;
+    }
+
     /**
      * Build an immutable {@link ClientOptions}
      */
@@ -174,7 +188,7 @@ public final class ClientOptions {
         throw new IllegalArgumentException("tenantAlias is required if you set the authMethod");
       }
       return new ClientOptions(tenantAlias, authMethod, appDomain, maxConcurrentRequests,
-          requestTimeoutMillis, connectTimeoutMillis);
+          requestTimeoutMillis, connectTimeoutMillis, contentCompressionEnabled);
     }
 
   }

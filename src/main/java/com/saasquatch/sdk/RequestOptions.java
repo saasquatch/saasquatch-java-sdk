@@ -41,17 +41,19 @@ public final class RequestOptions {
   private final AuthMethod authMethod;
   private final Integer requestTimeoutMillis;
   private final Integer connectTimeoutMillis;
+  private final Boolean contentCompressionEnabled;
   private final List<Map.Entry<String, String>> headers;
   private final List<Map.Entry<String, String>> queryParams;
 
   private RequestOptions(@Nullable String tenantAlias, @Nullable AuthMethod authMethod,
       @Nullable Integer requestTimeoutMillis, @Nullable Integer connectTimeoutMillis,
-      @Nonnull List<Map.Entry<String, String>> headers,
+      @Nullable Boolean contentCompressionEnabled, @Nonnull List<Map.Entry<String, String>> headers,
       @Nonnull List<Map.Entry<String, String>> queryParams) {
     this.tenantAlias = tenantAlias;
     this.authMethod = authMethod;
     this.requestTimeoutMillis = requestTimeoutMillis;
     this.connectTimeoutMillis = connectTimeoutMillis;
+    this.contentCompressionEnabled = contentCompressionEnabled;
     this.headers = headers;
     this.queryParams = queryParams;
   }
@@ -72,6 +74,10 @@ public final class RequestOptions {
 
   int getConnectTimeoutMillis(int defaultTimeout) {
     return connectTimeoutMillis == null ? defaultTimeout : connectTimeoutMillis;
+  }
+
+  boolean isContentCompressionEnabled(Boolean defaultEnabled) {
+    return contentCompressionEnabled == null ? defaultEnabled : contentCompressionEnabled;
   }
 
   void mutateUrl(@Nonnull URIBuilder urlBuilder) {
@@ -96,6 +102,7 @@ public final class RequestOptions {
     private AuthMethod authMethod;
     private Integer requestTimeoutMillis;
     private Integer connectTimeoutMillis;
+    private Boolean contentCompressionEnabled;
     private List<Map.Entry<String, String>> headers = Collections.emptyList();
     private List<Map.Entry<String, String>> queryParams = Collections.emptyList();
 
@@ -124,6 +131,12 @@ public final class RequestOptions {
 
     public Builder setConnectTimeout(long duration, @Nonnull TimeUnit timeUnit) {
       this.connectTimeoutMillis = ClientOptions.validateConnectTimeout(duration, timeUnit);
+      return this;
+    }
+
+    @Beta
+    public Builder setContentCompressionEnabled(boolean contentCompressionEnabled) {
+      this.contentCompressionEnabled = contentCompressionEnabled;
       return this;
     }
 
@@ -191,7 +204,7 @@ public final class RequestOptions {
      */
     public RequestOptions build() {
       return new RequestOptions(tenantAlias, authMethod, requestTimeoutMillis, connectTimeoutMillis,
-          unmodifiableList(headers), unmodifiableList(queryParams));
+          contentCompressionEnabled, unmodifiableList(headers), unmodifiableList(queryParams));
     }
 
   }

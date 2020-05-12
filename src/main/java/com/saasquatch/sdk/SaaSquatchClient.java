@@ -1,12 +1,10 @@
 package com.saasquatch.sdk;
 
 import static com.saasquatch.sdk.internal.InternalUtils.requireNotBlank;
-import static com.saasquatch.sdk.internal.InternalUtils.unmodifiableList;
 import static com.saasquatch.sdk.internal.InternalUtils.urlEncode;
 import java.io.Closeable;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -21,7 +19,6 @@ import org.apache.hc.client5.http.impl.async.HttpAsyncClients;
 import org.apache.hc.client5.http.impl.nio.PoolingAsyncClientConnectionManagerBuilder;
 import org.apache.hc.core5.http.ContentType;
 import org.apache.hc.core5.http.HttpHeaders;
-import org.apache.hc.core5.http.message.BasicHeader;
 import org.apache.hc.core5.net.URIBuilder;
 import org.reactivestreams.Publisher;
 import com.saasquatch.sdk.auth.AuthMethod;
@@ -64,8 +61,6 @@ public final class SaaSquatchClient implements Closeable {
             .setMaxConnPerRoute(clientOptions.getMaxConcurrentRequests())
             .setMaxConnTotal(clientOptions.getMaxConcurrentRequests() << 1).build())
         .setUserAgent(InternalUtils.buildUserAgent(this.clientId))
-        .setDefaultHeaders(
-            unmodifiableList(Arrays.asList(new BasicHeader(HttpHeaders.ACCEPT_ENCODING, "gzip"))))
         .setThreadFactory(new InternalThreadFactory(this.clientId)).build();
     this.httpAsyncClient.start();
   }
@@ -372,14 +367,20 @@ public final class SaaSquatchClient implements Closeable {
     }
     getAuthMethod(requestOptions).mutateRequest(request);
     final int requestTimeoutMillis, connectTimeoutMillis;
+    final boolean gzip;
     if (requestOptions != null) {
       requestTimeoutMillis =
           requestOptions.getRequestTimeoutMillis(clientOptions.getRequestTimeoutMillis());
       connectTimeoutMillis =
           requestOptions.getConnectTimeoutMillis(clientOptions.getConnectTimeoutMillis());
+      gzip = requestOptions.isContentCompressionEnabled(clientOptions.isContentCompressionEnabled());
     } else {
       requestTimeoutMillis = clientOptions.getRequestTimeoutMillis();
       connectTimeoutMillis = clientOptions.getConnectTimeoutMillis();
+      gzip = clientOptions.isContentCompressionEnabled();
+    }
+    if (gzip) {
+      request.setHeader(HttpHeaders.ACCEPT_ENCODING, "gzip");
     }
     request.setConfig(
         RequestConfig.custom().setResponseTimeout(requestTimeoutMillis, TimeUnit.MILLISECONDS)
