@@ -1,4 +1,4 @@
-package com.saasquatch.sdk;
+package com.saasquatch.sdk.auth;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertSame;
