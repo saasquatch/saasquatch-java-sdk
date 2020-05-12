@@ -103,8 +103,8 @@ public final class RequestOptions {
     private Integer requestTimeoutMillis;
     private Integer connectTimeoutMillis;
     private Boolean contentCompressionEnabled;
-    private List<Map.Entry<String, String>> headers = Collections.emptyList();
-    private List<Map.Entry<String, String>> queryParams = Collections.emptyList();
+    private List<Map.Entry<String, String>> headers;
+    private List<Map.Entry<String, String>> queryParams;
 
     private Builder() {}
 
@@ -149,7 +149,7 @@ public final class RequestOptions {
       if (BLOCKED_HEADERS.contains(key)) {
         throw new IllegalArgumentException(key + " is not allowed");
       }
-      if (headers.isEmpty()) {
+      if (headers == null) {
         headers = new ArrayList<>();
       }
       headers.add(entryOf(key, value));
@@ -177,7 +177,7 @@ public final class RequestOptions {
     public Builder addQueryParam(@Nonnull String key, @Nonnull String value) {
       requireNotBlank(key, "key");
       requireNotBlank(value, "value");
-      if (queryParams.isEmpty()) {
+      if (queryParams == null) {
         queryParams = new ArrayList<>();
       }
       queryParams.add(entryOf(key, value));
@@ -204,7 +204,9 @@ public final class RequestOptions {
      */
     public RequestOptions build() {
       return new RequestOptions(tenantAlias, authMethod, requestTimeoutMillis, connectTimeoutMillis,
-          contentCompressionEnabled, unmodifiableList(headers), unmodifiableList(queryParams));
+          contentCompressionEnabled,
+          headers == null ? Collections.emptyList() : unmodifiableList(headers),
+          queryParams == null ? Collections.emptyList() : unmodifiableList(queryParams));
     }
 
   }
