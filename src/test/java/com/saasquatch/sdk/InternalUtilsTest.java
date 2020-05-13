@@ -1,5 +1,6 @@
 package com.saasquatch.sdk;
 
+import static com.saasquatch.sdk.internal.InternalUtils.addAllRejectingNull;
 import static com.saasquatch.sdk.internal.InternalUtils.entryOf;
 import static com.saasquatch.sdk.internal.InternalUtils.isBlank;
 import static com.saasquatch.sdk.internal.InternalUtils.requireNotBlank;
@@ -15,6 +16,7 @@ import java.io.ByteArrayInputStream;
 import java.security.Permission;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.AbstractMap.SimpleImmutableEntry;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -78,9 +80,8 @@ public class InternalUtilsTest {
       httpAsyncClient.start();
       {
         final SimpleHttpRequest request = SimpleHttpRequests.get("https://example.com");
-        final SimpleHttpResponse response =
-            Flowable.fromPublisher(InternalUtils.executeRequest(httpAsyncClient, request))
-                .blockingSingle();
+        final SimpleHttpResponse response = Flowable
+            .fromPublisher(InternalUtils.executeRequest(httpAsyncClient, request)).blockingSingle();
         assertEquals(200, response.getCode());
       }
       // Test Reactive Streams implementation agnostic
@@ -121,6 +122,14 @@ public class InternalUtilsTest {
     assertTrue(isBlank(""));
     assertTrue(isBlank(" \t"));
     assertFalse(isBlank(" a \r"));
+  }
+
+  @Test
+  public void testAddAll() {
+    final List<Integer> l = new ArrayList<>();
+    addAllRejectingNull(null, l, 1, 2, 3);
+    assertEquals(Arrays.asList(1, 2, 3), l);
+    assertThrows(NullPointerException.class, () -> addAllRejectingNull(null, l, 1, 2, null));
   }
 
   @Test

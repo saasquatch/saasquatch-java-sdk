@@ -1,9 +1,9 @@
 package com.saasquatch.sdk.input;
 
+import static com.saasquatch.sdk.internal.InternalUtils.addAllRejectingNull;
 import static com.saasquatch.sdk.internal.InternalUtils.requireNotBlank;
 import static com.saasquatch.sdk.internal.InternalUtils.unmodifiableList;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import javax.annotation.Nonnull;
@@ -76,7 +76,7 @@ public final class UserEventInput {
       if (this.events == null) {
         this.events = new ArrayList<>();
       }
-      Collections.addAll(this.events, events);
+      addAllRejectingNull("events", this.events, events);
       return this;
     }
 

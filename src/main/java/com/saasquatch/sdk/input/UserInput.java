@@ -3,7 +3,6 @@ package com.saasquatch.sdk.input;
 import static com.saasquatch.sdk.internal.InternalUtils.requireNotBlank;
 import static com.saasquatch.sdk.internal.InternalUtils.unmodifiableMap;
 import static com.saasquatch.sdk.internal.InternalUtils.unmodifiableSet;
-import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Objects;
@@ -243,7 +242,9 @@ public final class UserInput implements HasCustomJsonSerialization {
       if (this.segments == null) {
         this.segments = new LinkedHashSet<>();
       }
-      Collections.addAll(this.segments, segments);
+      for (String segment : segments) {
+        this.segments.add(requireNotBlank(segment, "segments"));
+      }
       return this;
     }
 
@@ -252,7 +253,7 @@ public final class UserInput implements HasCustomJsonSerialization {
         this.segments = new LinkedHashSet<>();
       }
       for (String segment : segments) {
-        this.segments.add('~' + segment);
+        this.segments.add('~' + requireNotBlank(segment, "segments"));
       }
       return this;
     }

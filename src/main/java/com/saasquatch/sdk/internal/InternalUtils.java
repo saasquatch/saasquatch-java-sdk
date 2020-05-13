@@ -12,6 +12,7 @@ import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -251,6 +252,15 @@ public final class InternalUtils {
     }
     buf.flip();
     return buf.toString();
+  }
+
+  @SafeVarargs
+  public static <T> void addAllRejectingNull(@Nullable String msg, Collection<T> col,
+      T... elements) {
+    Objects.requireNonNull(elements, msg);
+    for (T element : elements) {
+      col.add(Objects.requireNonNull(element, msg));
+    }
   }
 
   public static byte[] toByteArray(InputStream in) throws IOException {
