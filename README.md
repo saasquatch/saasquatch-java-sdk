@@ -1,6 +1,7 @@
 # SaaSquatch Java SDK (UNDER CONSTRUCTION!!!)
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![Build Status](https://travis-ci.org/saasquatch/saasquatch-java-sdk.svg?branch=master)](https://travis-ci.org/saasquatch/saasquatch-java-sdk)
 [![](https://jitpack.io/v/saasquatch/saasquatch-java-sdk.svg)](https://jitpack.io/#saasquatch/saasquatch-java-sdk)
 
 SaaSquatch SDK for Java
