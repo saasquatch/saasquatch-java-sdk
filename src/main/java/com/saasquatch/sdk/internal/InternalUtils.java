@@ -14,7 +14,6 @@ import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -40,14 +39,7 @@ import io.reactivex.rxjava3.core.Single;
 
 public final class InternalUtils {
 
-  private static final Map<String, String> RFC_3986_REPLACEMENTS;
-  static {
-    final Map<String, String> m = new HashMap<>(4);
-    m.put("+", "%20");
-    m.put("*", "%2A");
-    m.put("%7E", "~");
-    RFC_3986_REPLACEMENTS = Collections.unmodifiableMap(m);
-  }
+  private static final String[] RFC_3986_REPLACEMENTS = {"+", "%20", "*", "%2A", "%7E", "~"};
 
   private InternalUtils() {}
 
@@ -204,11 +196,17 @@ public final class InternalUtils {
   /**
    * More efficient String replace without regex.
    */
-  public static String stringReplace(String string, Map<String, String> replacementMap) {
+  public static String stringReplace(String string, String... replacements) {
+    if ((replacements.length & 1) != 0) {
+      throw new IllegalArgumentException("odd number of replacements");
+    }
     final StringBuilder sb = new StringBuilder(string);
-    for (Map.Entry<String, String> entry : replacementMap.entrySet()) {
-      final String key = entry.getKey();
-      final String value = entry.getValue();
+    for (int i = 0; i < replacements.length;) {
+      final String key = replacements[i++];
+      final String value = replacements[i++];
+      if (key.isEmpty()) {
+        continue;
+      }
       int start = sb.indexOf(key, 0);
       while (start > -1) {
         final int end = start + key.length();

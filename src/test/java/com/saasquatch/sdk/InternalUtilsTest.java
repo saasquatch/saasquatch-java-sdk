@@ -4,6 +4,7 @@ import static com.saasquatch.sdk.internal.InternalUtils.addAllRejectingNull;
 import static com.saasquatch.sdk.internal.InternalUtils.entryOf;
 import static com.saasquatch.sdk.internal.InternalUtils.isBlank;
 import static com.saasquatch.sdk.internal.InternalUtils.requireNotBlank;
+import static com.saasquatch.sdk.internal.InternalUtils.stringReplace;
 import static com.saasquatch.sdk.internal.InternalUtils.unmodifiableList;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -107,6 +108,14 @@ public class InternalUtilsTest {
     }
     assertSame(Collections.emptyList(), unmodifiableList(Arrays.asList()));
     assertEquals("SingletonList", unmodifiableList(Arrays.asList(1)).getClass().getSimpleName());
+  }
+
+  @Test
+  public void testStringReplace() {
+    assertThrows(IllegalArgumentException.class, () -> stringReplace("", ""));
+    assertEquals("", stringReplace("", "", ""));
+    assertEquals("def", stringReplace("a c", "", "foobar", " ", "b", "abc", "def"));
+    assertEquals("", stringReplace("abcdefghi", "abc", "def", "def", "ghi", "ghi", ""));
   }
 
   @Test
