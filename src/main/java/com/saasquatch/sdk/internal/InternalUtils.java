@@ -180,10 +180,6 @@ public final class InternalUtils {
 
   /**
    * RFC3986 URL encode<br>
-   * Note that this method has the same functionality as RSUrlCodec in squatch-common and it's less
-   * efficient, but the difference should be negligible for our use case. For now it's probably not
-   * worth bringing in squatch-common as a dependency. If/when we do, we should replace this with
-   * RSUrlCodec.
    */
   public static String urlEncode(@Nonnull String s) {
     try {
