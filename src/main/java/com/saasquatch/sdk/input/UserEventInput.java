@@ -6,6 +6,7 @@ import static com.saasquatch.sdk.internal.InternalUtils.unmodifiableList;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import javax.annotation.Nonnull;
 import com.saasquatch.sdk.SaaSquatchClient;
 
@@ -63,6 +64,7 @@ public final class UserEventInput {
     }
 
     public Builder setEvents(@Nonnull List<UserEventDataInput> events) {
+      Objects.requireNonNull(events, "events");
       // Ensure mutability
       if (events instanceof ArrayList || events instanceof LinkedList) {
         this.events = events;

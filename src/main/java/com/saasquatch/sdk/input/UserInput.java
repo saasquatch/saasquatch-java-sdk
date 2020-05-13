@@ -229,6 +229,7 @@ public final class UserInput implements HasCustomJsonSerialization {
     }
 
     public Builder setSegments(@Nonnull Set<String> segments) {
+      Objects.requireNonNull(segments, "segments");
       // Ensure mutability and ordering
       if (segments instanceof LinkedHashSet || segments instanceof TreeSet) {
         this.segments = segments;
