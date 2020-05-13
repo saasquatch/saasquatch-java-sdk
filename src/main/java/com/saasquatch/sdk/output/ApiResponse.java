@@ -1,6 +1,8 @@
 package com.saasquatch.sdk.output;
 
 import java.util.Objects;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.apache.hc.client5.http.async.methods.SimpleHttpResponse;
@@ -22,7 +24,8 @@ public abstract class ApiResponse<T> {
   private T data;
   // Lazy init
   private ApiError apiError;
-  private boolean fieldsInitialized;
+  private boolean externalFieldsInitialized;
+  private final Lock externalFieldsLock = new ReentrantLock();
   // Lazy init. Not part of the lazy init of data and error, since those depend on bodyText.
   private String bodyText;
   private final SimpleHttpResponse response;
@@ -84,16 +87,19 @@ public abstract class ApiResponse<T> {
   protected abstract T buildData();
 
   private void initializeFields() {
-    if (!fieldsInitialized) {
-      synchronized (response) {
-        if (!fieldsInitialized) {
+    if (!externalFieldsInitialized) {
+      externalFieldsLock.lock();
+      try {
+        if (!externalFieldsInitialized) {
           if (succeeded()) {
             data = buildData();
           } else {
             apiError = ApiError.fromJson(getBodyText(), getStatusCode());
           }
-          fieldsInitialized = true;
+          externalFieldsInitialized = true;
         }
+      } finally {
+        externalFieldsLock.unlock();
       }
     }
   }
