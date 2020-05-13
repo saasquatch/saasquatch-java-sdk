@@ -179,7 +179,7 @@ public final class InternalUtils {
   }
 
   /**
-   * RFC3986 URL encode<br>
+   * RFC3986 URL encode
    */
   public static String urlEncode(@Nonnull String s) {
     try {
