@@ -1,5 +1,6 @@
 package com.saasquatch.sdk.test;
 
+import static com.saasquatch.sdk.internal.InternalUtils.getSysPropOrEnv;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 import java.util.Locale;
 import java.util.Objects;
@@ -36,7 +37,7 @@ public class IntegrationTestUtils {
   }
 
   public static String getAppDomain() {
-    final String appDomain = System.getProperty(APP_DOMAIN_PROP);
+    final String appDomain = getSysPropOrEnv(APP_DOMAIN_PROP);
     if (appDomain != null && appDomain.toLowerCase(Locale.ROOT).contains(PROD_APP_DOMAIN)) {
       System.out.println("Running tests against the production app is not allowed!!!");
       return null;
@@ -45,11 +46,11 @@ public class IntegrationTestUtils {
   }
 
   public static String getTenantAlias() {
-    return System.getProperty(TENANT_ALIAS_PROP);
+    return getSysPropOrEnv(TENANT_ALIAS_PROP);
   }
 
   public static String getTenantApiKey() {
-    return System.getProperty(TENANT_API_KEY_PROP);
+    return getSysPropOrEnv(TENANT_API_KEY_PROP);
   }
 
   public static SaaSquatchClient newTestClient() {

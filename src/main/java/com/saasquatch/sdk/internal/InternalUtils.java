@@ -89,6 +89,25 @@ public final class InternalUtils {
   }
 
   /**
+   * Get the system property or env variable by a key
+   */
+  @Nullable
+  public static String getSysPropOrEnv(@Nonnull String key) {
+    String result = null;
+    try {
+      result = System.getProperty(key);
+    } catch (Throwable t) {
+    }
+    if (result == null) {
+      try {
+        result = System.getenv(key);
+      } catch (Throwable t) {
+      }
+    }
+    return result;
+  }
+
+  /**
    * Executes a non-blocking request
    *
    * @returns a {@link Publisher} that emits one element
