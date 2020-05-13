@@ -27,7 +27,7 @@ import com.saasquatch.sdk.models.UserEventResult;
 import com.saasquatch.sdk.output.ApiError;
 import com.saasquatch.sdk.output.GraphQLApiResponse;
 import com.saasquatch.sdk.output.GraphQLResult;
-import com.saasquatch.sdk.output.MapApiResponse;
+import com.saasquatch.sdk.output.JsonObjectApiResponse;
 import com.saasquatch.sdk.output.TextApiResponse;
 import com.saasquatch.sdk.test.IntegrationTestUtils;
 import io.reactivex.rxjava3.core.Flowable;
@@ -58,7 +58,7 @@ public class SaaSquatchClientIntegrationTest {
     userInput.put("firstName", "Foo");
     userInput.put("lastName", "Bar");
     {
-      final MapApiResponse response =
+      final JsonObjectApiResponse response =
           Flowable.fromPublisher(saasquatchClient.userUpsert(userInput, null)).blockingSingle();
       assertEquals(200, response.getStatusCode());
       final User user = response.toModel(User.class);
@@ -73,7 +73,8 @@ public class SaaSquatchClientIntegrationTest {
     }
     // Test auth override
     {
-      final MapApiResponse response = Flowable.fromPublisher(saasquatchClient.userUpsert(userInput,
+      final JsonObjectApiResponse response = Flowable.fromPublisher(saasquatchClient.userUpsert(
+          userInput,
           RequestOptions.newBuilder().setAuthMethod(AuthMethods.ofTenantApiKey("fake")).build()))
           .blockingSingle();
       assertEquals(401, response.getStatusCode());
@@ -82,8 +83,9 @@ public class SaaSquatchClientIntegrationTest {
     }
     // Test tenantAlias override
     {
-      final MapApiResponse response = Flowable.fromPublisher(saasquatchClient.userUpsert(userInput,
-          RequestOptions.newBuilder().setTenantAlias("fake").build())).blockingSingle();
+      final JsonObjectApiResponse response =
+          Flowable.fromPublisher(saasquatchClient.userUpsert(userInput,
+              RequestOptions.newBuilder().setTenantAlias("fake").build())).blockingSingle();
       assertEquals(404, response.getStatusCode());
       final ApiError apiError = response.getApiError();
       assertEquals(404, apiError.getStatusCode());
@@ -96,7 +98,7 @@ public class SaaSquatchClientIntegrationTest {
     userInput.put("id", "asdf");
     userInput.put("accountId", "asdf");
     userInput.put("locale", "???");
-    final MapApiResponse response =
+    final JsonObjectApiResponse response =
         Flowable.fromPublisher(saasquatchClient.userUpsert(userInput, null)).blockingSingle();
     assertEquals(400, response.getStatusCode());
     final ApiError apiError = response.getApiError();
@@ -148,7 +150,7 @@ public class SaaSquatchClientIntegrationTest {
     fakeEvent.put("fields", ImmutableMap.of("foo", "bar"));
     userEventInput.put("events", Arrays.asList(fakeEvent));
     {
-      final MapApiResponse response = Flowable
+      final JsonObjectApiResponse response = Flowable
           .fromPublisher(saasquatchClient.logUserEvent(userEventInput, null)).blockingSingle();
       assertEquals(200, response.getStatusCode());
       final UserEventResult model = response.toModel(UserEventResult.class);
@@ -168,7 +170,7 @@ public class SaaSquatchClientIntegrationTest {
     userInput.put("accountId", "asdf");
     userInput.put("firstName", "Foo");
     userInput.put("lastName", "Bar");
-    final MapApiResponse response = Flowable
+    final JsonObjectApiResponse response = Flowable
         .fromPublisher(saasquatchClient.widgetUpsert(userInput, null,
             RequestOptions.newBuilder().addQueryParam("widgetType", "invalid").build()))
         .blockingSingle();
@@ -203,7 +205,7 @@ public class SaaSquatchClientIntegrationTest {
   }
 
   private void upsertEmptyUser(String accountId, String userId) {
-    final MapApiResponse response = Flowable
+    final JsonObjectApiResponse response = Flowable
         .fromPublisher(saasquatchClient
             .userUpsert(ImmutableMap.of("accountId", accountId, "id", userId), null))
         .blockingSingle();

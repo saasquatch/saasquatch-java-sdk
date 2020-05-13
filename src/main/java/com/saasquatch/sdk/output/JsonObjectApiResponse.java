@@ -16,10 +16,10 @@ import com.saasquatch.sdk.models.Model;
  *
  * @author sli
  */
-public final class MapApiResponse extends ApiResponse<Map<String, Object>> {
+public final class JsonObjectApiResponse extends ApiResponse<Map<String, Object>> {
 
   @Internal
-  public MapApiResponse(SimpleHttpResponse response) {
+  public JsonObjectApiResponse(SimpleHttpResponse response) {
     super(response);
   }
 

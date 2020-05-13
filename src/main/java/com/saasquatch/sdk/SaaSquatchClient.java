@@ -35,7 +35,7 @@ import com.saasquatch.sdk.models.User;
 import com.saasquatch.sdk.models.UserEventResult;
 import com.saasquatch.sdk.models.WidgetUpsertResult;
 import com.saasquatch.sdk.output.GraphQLApiResponse;
-import com.saasquatch.sdk.output.MapApiResponse;
+import com.saasquatch.sdk.output.JsonObjectApiResponse;
 import com.saasquatch.sdk.output.TextApiResponse;
 import io.reactivex.rxjava3.core.Flowable;
 
@@ -147,9 +147,9 @@ public final class SaaSquatchClient implements Closeable {
    * <a href="https://docs.referralsaasquatch.com/api/methods/#open_get_user">Link to official
    * docs</a>
    */
-  public Publisher<MapApiResponse> getUser(@Nonnull String accountId, @Nonnull String userId,
+  public Publisher<JsonObjectApiResponse> getUser(@Nonnull String accountId, @Nonnull String userId,
       @Nullable RequestOptions requestOptions) {
-    return _getUser(accountId, userId, null, requestOptions, false).map(MapApiResponse::new);
+    return _getUser(accountId, userId, null, requestOptions, false).map(JsonObjectApiResponse::new);
   }
 
   /**
@@ -192,10 +192,10 @@ public final class SaaSquatchClient implements Closeable {
    * <a href="https://docs.referralsaasquatch.com/api/methods/#open_user_upsert">Link to official
    * docs</a>
    */
-  public Publisher<MapApiResponse> userUpsert(@Nonnull UserInput userInput,
+  public Publisher<JsonObjectApiResponse> userUpsert(@Nonnull UserInput userInput,
       @Nullable RequestOptions requestOptions) {
     return _userUpsert(userInput.getAccountId(), userInput.getId(), userInput, null, requestOptions,
-        false).map(MapApiResponse::new);
+        false).map(JsonObjectApiResponse::new);
   }
 
   /**
@@ -204,30 +204,30 @@ public final class SaaSquatchClient implements Closeable {
    * <a href="https://docs.referralsaasquatch.com/api/methods/#open_user_upsert">Link to official
    * docs</a>
    */
-  public Publisher<MapApiResponse> userUpsert(@Nonnull Map<String, Object> userInput,
+  public Publisher<JsonObjectApiResponse> userUpsert(@Nonnull Map<String, Object> userInput,
       @Nullable RequestOptions requestOptions) {
     return _userUpsert((String) userInput.get("accountId"), (String) userInput.get("id"), userInput,
-        null, requestOptions, false).map(MapApiResponse::new);
+        null, requestOptions, false).map(JsonObjectApiResponse::new);
   }
 
   /**
    * Create or update a user and render the widget.<br>
    * By default, the result of the response can be unmarshalled to {@link WidgetUpsertResult}.
    */
-  public Publisher<MapApiResponse> widgetUpsert(@Nonnull UserInput userInput,
+  public Publisher<JsonObjectApiResponse> widgetUpsert(@Nonnull UserInput userInput,
       @Nullable WidgetType widgetType, @Nullable RequestOptions requestOptions) {
     return _userUpsert(userInput.getAccountId(), userInput.getId(), userInput, widgetType,
-        requestOptions, true).map(MapApiResponse::new);
+        requestOptions, true).map(JsonObjectApiResponse::new);
   }
 
   /**
    * Create or update a user and render the widget.<br>
    * By default, the result of the response can be unmarshalled to {@link WidgetUpsertResult}.
    */
-  public Publisher<MapApiResponse> widgetUpsert(@Nonnull Map<String, Object> userInput,
+  public Publisher<JsonObjectApiResponse> widgetUpsert(@Nonnull Map<String, Object> userInput,
       @Nullable WidgetType widgetType, @Nullable RequestOptions requestOptions) {
     return _userUpsert((String) userInput.get("accountId"), (String) userInput.get("id"), userInput,
-        widgetType, requestOptions, true).map(MapApiResponse::new);
+        widgetType, requestOptions, true).map(JsonObjectApiResponse::new);
   }
 
   private Flowable<SimpleHttpResponse> _userUpsert(@Nonnull String accountId,
@@ -261,7 +261,7 @@ public final class SaaSquatchClient implements Closeable {
    * <a href="https://docs.referralsaasquatch.com/api/methods/#lookup-a-users-share-urls">Link to
    * official docs</a>
    */
-  public Publisher<MapApiResponse> getUserShareLinks(@Nonnull UserLinkInput userLinkInput,
+  public Publisher<JsonObjectApiResponse> getUserShareLinks(@Nonnull UserLinkInput userLinkInput,
       @Nullable RequestOptions requestOptions) {
     // api/v1/:tenantAlias/account/:accountId/user/:userId/shareurls
     try {
@@ -277,7 +277,7 @@ public final class SaaSquatchClient implements Closeable {
       }
       final SimpleHttpRequest request = SimpleHttpRequests.get(urlBuilder.build());
       mutateRequest(request, requestOptions);
-      return executeRequest(request).map(MapApiResponse::new);
+      return executeRequest(request).map(JsonObjectApiResponse::new);
     } catch (URISyntaxException e) {
       throw new RuntimeException(e);
     }
@@ -288,7 +288,7 @@ public final class SaaSquatchClient implements Closeable {
    * By default, the result of the response can be unmarshalled to {@link UserEventResult}.<br>
    * <a href="https://docs.referralsaasquatch.com/api/methods/#trackEvent">Link to official docs</a>
    */
-  public Publisher<MapApiResponse> logUserEvent(@Nonnull UserEventInput userEventInput,
+  public Publisher<JsonObjectApiResponse> logUserEvent(@Nonnull UserEventInput userEventInput,
       @Nullable RequestOptions requestOptions) {
     return _logUserEvent(userEventInput.getAccountId(), userEventInput.getUserId(), userEventInput,
         requestOptions);
@@ -299,7 +299,7 @@ public final class SaaSquatchClient implements Closeable {
    * By default, the result of the response can be unmarshalled to {@link UserEventResult}.<br>
    * <a href="https://docs.referralsaasquatch.com/api/methods/#trackEvent">Link to official docs</a>
    */
-  public Publisher<MapApiResponse> logUserEvent(@Nonnull Map<String, Object> userEventInput,
+  public Publisher<JsonObjectApiResponse> logUserEvent(@Nonnull Map<String, Object> userEventInput,
       @Nullable RequestOptions requestOptions) {
     final Map<String, Object> body = userEventInput;
     final String accountId = requireNotBlank((String) body.get("accountId"), "accountId");
@@ -307,8 +307,8 @@ public final class SaaSquatchClient implements Closeable {
     return _logUserEvent(accountId, userId, body, requestOptions);
   }
 
-  private Publisher<MapApiResponse> _logUserEvent(@Nonnull String accountId, @Nonnull String userId,
-      @Nonnull Object body, @Nullable RequestOptions requestOptions) {
+  private Publisher<JsonObjectApiResponse> _logUserEvent(@Nonnull String accountId,
+      @Nonnull String userId, @Nonnull Object body, @Nullable RequestOptions requestOptions) {
     try {
       final URIBuilder urlBuilder = new URIBuilder(
           baseTenantApiUrl(requestOptions).append("/open/account/").append(urlEncode(accountId))
@@ -317,7 +317,7 @@ public final class SaaSquatchClient implements Closeable {
       final SimpleHttpRequest request = SimpleHttpRequests.post(urlBuilder.build());
       mutateRequest(request, requestOptions);
       setJsonPojoBody(request, body);
-      return executeRequest(request).map(MapApiResponse::new);
+      return executeRequest(request).map(JsonObjectApiResponse::new);
     } catch (URISyntaxException e) {
       throw new RuntimeException(e);
     }
@@ -328,7 +328,7 @@ public final class SaaSquatchClient implements Closeable {
    * <a href="https://docs.referralsaasquatch.com/api/methods/#open_apply_code">Link to official
    * docs</a>
    */
-  public Publisher<MapApiResponse> applyReferralCode(@Nonnull String accountId,
+  public Publisher<JsonObjectApiResponse> applyReferralCode(@Nonnull String accountId,
       @Nonnull String userId, @Nonnull String referralCode,
       @Nullable RequestOptions requestOptions) {
     requireNotBlank(accountId, "accountId");
@@ -342,7 +342,7 @@ public final class SaaSquatchClient implements Closeable {
       final SimpleHttpRequest request = SimpleHttpRequests.post(urlBuilder.build());
       mutateRequest(request, requestOptions);
       setJsonStringBody(request, "{}");
-      return executeRequest(request).map(MapApiResponse::new);
+      return executeRequest(request).map(JsonObjectApiResponse::new);
     } catch (URISyntaxException e) {
       throw new RuntimeException(e);
     }

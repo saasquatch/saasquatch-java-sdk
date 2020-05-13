@@ -18,9 +18,9 @@ import com.saasquatch.sdk.models.Model;
  * @author sli
  */
 @Beta
-public final class ListApiResponse extends ApiResponse<List<Object>> {
+public final class JsonArrayApiResponse extends ApiResponse<List<Object>> {
 
-  private ListApiResponse(SimpleHttpResponse response) {
+  private JsonArrayApiResponse(SimpleHttpResponse response) {
     super(response);
   }
 
