@@ -114,7 +114,8 @@ public class InternalUtilsTest {
   public void testStringReplace() {
     assertThrows(IllegalArgumentException.class, () -> stringReplace("", ""));
     assertEquals("", stringReplace("", "", ""));
-    assertEquals("def", stringReplace("a c", "", "foobar", " ", "b", "abc", "def"));
+    assertEquals("def",
+        stringReplace("a c", "abc", "foobar", "", "foobar", " ", "b", "abc", "def"));
     assertEquals("", stringReplace("abcdefghi", "abc", "def", "def", "ghi", "ghi", ""));
   }
 
