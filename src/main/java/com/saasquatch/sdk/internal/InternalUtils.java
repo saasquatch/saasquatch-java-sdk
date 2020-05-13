@@ -179,17 +179,6 @@ public final class InternalUtils {
   }
 
   /**
-   * RFC3986 URL encode
-   */
-  public static String urlEncode(@Nonnull String s) {
-    try {
-      return stringReplace(URLEncoder.encode(s, UTF_8.name()), RFC_3986_REPLACEMENTS);
-    } catch (UnsupportedEncodingException e) {
-      throw new RuntimeException(e); // Seriously Java?
-    }
-  }
-
-  /**
    * More efficient String replace without regex.
    */
   public static String stringReplace(String string, String... replacements) {
@@ -212,6 +201,17 @@ public final class InternalUtils {
       }
     }
     return sb.toString();
+  }
+
+  /**
+   * RFC3986 URL encode
+   */
+  public static String urlEncode(@Nonnull String s) {
+    try {
+      return stringReplace(URLEncoder.encode(s, UTF_8.name()), RFC_3986_REPLACEMENTS);
+    } catch (UnsupportedEncodingException e) {
+      throw new RuntimeException(e); // Seriously Java?
+    }
   }
 
   /**
