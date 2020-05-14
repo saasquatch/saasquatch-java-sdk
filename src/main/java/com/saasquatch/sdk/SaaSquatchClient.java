@@ -59,7 +59,7 @@ public final class SaaSquatchClient implements Closeable {
     this.httpAsyncClient = HttpAsyncClients.custom().disableCookieManagement()
         .setConnectionManager(PoolingAsyncClientConnectionManagerBuilder.create()
             .setMaxConnPerRoute(clientOptions.getMaxConcurrentRequests())
-            .setMaxConnTotal(clientOptions.getMaxConcurrentRequests() << 1).build())
+            .setMaxConnTotal(clientOptions.getMaxConcurrentRequests()).build())
         .setUserAgent(InternalUtils.buildUserAgent(this.clientId))
         .setThreadFactory(new InternalThreadFactory(this.clientId)).build();
     this.httpAsyncClient.start();
