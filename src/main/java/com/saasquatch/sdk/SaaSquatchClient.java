@@ -73,7 +73,7 @@ public final class SaaSquatchClient implements Closeable {
    *        requests. If you are in a multi-tenant environment, you should be using
    *        {@link SaaSquatchClient#create(ClientOptions)} without a tenantAlias, and then pass the
    *        tenantAlias you want to use in every request via
-   *        {@link RequestOptions#setTenantAlias(String)}
+   *        {@link RequestOptions.Builder#setTenantAlias(String)}
    * @see #create(ClientOptions)
    */
   public static SaaSquatchClient createForTenant(@Nonnull String tenantAlias) {
