@@ -37,4 +37,9 @@ public final class GraphQLResult {
     return extensions;
   }
 
+  @Nullable
+  public ApiError getApiError() {
+    return ApiError.fromGraphQLResult(this);
+  }
+
 }

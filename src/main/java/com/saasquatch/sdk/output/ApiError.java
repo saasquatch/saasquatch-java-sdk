@@ -78,6 +78,7 @@ public final class ApiError {
     return new ApiError(bodyText, INTERNAL_ERROR_STRING, statusCode, null);
   }
 
+  @Nullable
   static ApiError fromGraphQLResult(@Nonnull GraphQLResult graphQLResult) {
     final List<Object> errors = graphQLResult.getErrors();
     if (errors == null || errors.isEmpty()) {
