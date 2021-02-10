@@ -49,18 +49,6 @@ public final class ApiError {
     return rsCode;
   }
 
-  public static ApiError fromJson(String bodyText, int statusCode) {
-    final ApiError fromBodyText = fromBodyText(bodyText);
-    if (fromBodyText != null) {
-      return fromBodyText;
-    }
-    /*
-     * This is a catastrophic failure and SaaSquatch servers failed to respond with a proper
-     * ApiError. Just jam the response text into the error message.
-     */
-    return new ApiError(bodyText, null, null, null);
-  }
-
   @Nullable
   public static ApiError fromBodyText(String bodyText) {
     /*

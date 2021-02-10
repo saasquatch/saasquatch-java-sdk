@@ -1,6 +1,8 @@
 package com.saasquatch.sdk.output;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 import org.apache.hc.client5.http.async.methods.SimpleHttpResponse;
 import org.apache.hc.core5.http.ContentType;
 import org.junit.jupiter.api.Test;
@@ -17,7 +19,7 @@ public class ApiErrorTest {
     j.addProperty("rsCode", "RS001");
     final SimpleHttpResponse response = new SimpleHttpResponse(400);
     response.setBody(j.toString(), ContentType.APPLICATION_JSON);
-    final ApiError apiError = ApiError.fromJson(response.getBodyText(), response.getCode());
+    final ApiError apiError = ApiError.fromBodyText(response.getBodyText());
     assertEquals("foo", apiError.getMessage());
     assertEquals("bar", apiError.getApiErrorCode());
     assertEquals(400, apiError.getStatusCode());
@@ -31,9 +33,8 @@ public class ApiErrorTest {
     j.addProperty("iDontKnowWhatThisFieldIs", true);
     final SimpleHttpResponse response = new SimpleHttpResponse(400);
     response.setBody(j.toString(), ContentType.APPLICATION_JSON);
-    final ApiError apiError = ApiError.fromJson(response.getBodyText(), response.getCode());
-    assertEquals(j.toString(), apiError.getMessage());
-    assertEquals(400, apiError.getStatusCode());
+    final ApiError apiError = ApiError.fromBodyText(response.getBodyText());
+    assertNull(apiError);
   }
 
   @Test
@@ -41,9 +42,8 @@ public class ApiErrorTest {
     final String htmlStr = "<p>lol</p>";
     final SimpleHttpResponse response = new SimpleHttpResponse(400);
     response.setBody(htmlStr, ContentType.TEXT_HTML);
-    final ApiError apiError = ApiError.fromJson(response.getBodyText(), response.getCode());
-    assertEquals(htmlStr, apiError.getMessage());
-    assertEquals(400, apiError.getStatusCode());
+    final ApiError apiError = ApiError.fromBodyText(response.getBodyText());
+    assertNull(apiError);
   }
 
 }
