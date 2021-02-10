@@ -90,12 +90,12 @@ public final class ApiError {
     if (apiErrorObj instanceof Map) {
       return GsonUtils.gson.fromJson(GsonUtils.gson.toJsonTree(apiErrorObj), ApiError.class);
     }
-    @SuppressWarnings("unchecked")
-    final Map<String, Object> firstError = (Map<String, Object>) errors.get(0);
     /*
      * This is a GraphQL error where the apiError isn't propagating through properly.
      * Just grab the error message.
      */
+    @SuppressWarnings("unchecked")
+    final Map<String, Object> firstError = (Map<String, Object>) errors.get(0);
     return new ApiError((String) firstError.get("message"), null, null, null);
   }
 

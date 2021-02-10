@@ -19,10 +19,21 @@ public abstract class ApiResponse<T> {
   // Lazy init. Not part of the lazy init of data and error, since those depend on bodyText.
   private String bodyText;
   private final SimpleHttpResponse response;
+  private final boolean hasDataOverride;
+  private final T dataOverride;
 
   @Internal
   ApiResponse(@Nonnull SimpleHttpResponse response) {
     this.response = response;
+    this.hasDataOverride = false;
+    this.dataOverride = null;
+  }
+
+  @Internal
+  ApiResponse(@Nonnull SimpleHttpResponse response, @Nullable T dataOverride) {
+    this.response = response;
+    this.hasDataOverride = true;
+    this.dataOverride = dataOverride;
   }
 
   public final int getStatusCode() {
@@ -42,6 +53,9 @@ public abstract class ApiResponse<T> {
 
   @Nullable
   public final T getData() {
+    if (hasDataOverride) {
+      return dataOverride;
+    }
     return buildData();
   }
 
