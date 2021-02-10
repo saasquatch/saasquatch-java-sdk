@@ -4,6 +4,7 @@ import static com.saasquatch.sdk.internal.InternalUtils.requireNotBlank;
 
 import java.util.Objects;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * Input for rendering a widget.
@@ -26,18 +27,22 @@ public final class RenderWidgetInput {
     this.locale = locale;
   }
 
+  @Nullable
   public UserIdInput getUser() {
     return user;
   }
 
+  @Nullable
   public WidgetType getWidgetType() {
     return widgetType;
   }
 
+  @Nullable
   public String getEngagementMedium() {
     return engagementMedium;
   }
 
+  @Nullable
   public String getLocale() {
     return locale;
   }
