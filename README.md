@@ -111,7 +111,7 @@ Anything marked with the `@Beta` or `@Internal` annotations, as well as anything
 
 ## Development
 
-This project uses a simple Maven build. Compile wilth `mvn compile` and run tests with `mvn test`.
+This project uses a simple Maven build. Compile with `mvn compile` and run tests with `mvn test`.
 
 Since Android still doesn't fully support Java 8 🤦, Java 8 specific classes like `CompletableFuture`, `java.util.Optional`, and `java.time.Instant` should be avoided. Java 8 language features like lambda expressions, however, can be used. This restriction does not apply to the test suite.
 
