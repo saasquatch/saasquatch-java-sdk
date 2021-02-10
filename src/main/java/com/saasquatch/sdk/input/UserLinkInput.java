@@ -60,7 +60,7 @@ public final class UserLinkInput {
     private String shareMedium;
     private String engagementMedium;
 
-    public Builder() {}
+    private Builder() {}
 
     public Builder setAccountId(@Nonnull String accountId) {
       this.accountId = requireNotBlank(accountId, "accountId");
