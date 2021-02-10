@@ -1,7 +1,7 @@
 package com.saasquatch.sdk.output;
 
-import org.apache.hc.client5.http.async.methods.SimpleHttpResponse;
 import com.saasquatch.sdk.annotations.Internal;
+import org.apache.hc.client5.http.async.methods.SimpleHttpResponse;
 
 /**
  * {@link ApiResponse} that returns plain text
@@ -13,6 +13,12 @@ public final class TextApiResponse extends ApiResponse<String> {
   @Internal
   public TextApiResponse(SimpleHttpResponse response) {
     super(response);
+  }
+
+  @Internal
+  public TextApiResponse(SimpleHttpResponse response, String dataOverride,
+      ApiError apiErrorOverride) {
+    super(response, dataOverride, apiErrorOverride);
   }
 
   @Override
