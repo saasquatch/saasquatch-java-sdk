@@ -2,6 +2,7 @@ package com.saasquatch.sdk.exceptions;
 
 import com.saasquatch.sdk.annotations.Internal;
 import com.saasquatch.sdk.output.ApiError;
+import com.saasquatch.sdk.util.SaaSquatchHttpResponse;
 import javax.annotation.Nonnull;
 
 /**
@@ -10,17 +11,15 @@ import javax.annotation.Nonnull;
  *
  * @author sli
  */
-public final class SaaSquatchApiException extends SaaSquatchException {
+public final class SaaSquatchApiException extends SaaSquatchHttpResponseEnclosedException {
 
   @Nonnull
   private final ApiError apiError;
-  private final String bodyText;
 
   @Internal
-  public SaaSquatchApiException(@Nonnull ApiError apiError, String bodyText) {
-    super(apiError.getMessage());
+  public SaaSquatchApiException(@Nonnull ApiError apiError, @Nonnull SaaSquatchHttpResponse httpResponse) {
+    super(apiError.getMessage(), httpResponse);
     this.apiError = apiError;
-    this.bodyText = bodyText;
   }
 
   @Nonnull
@@ -28,7 +27,4 @@ public final class SaaSquatchApiException extends SaaSquatchException {
     return apiError;
   }
 
-  public String getBodyText() {
-    return bodyText;
-  }
 }

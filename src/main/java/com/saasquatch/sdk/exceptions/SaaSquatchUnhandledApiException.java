@@ -1,6 +1,8 @@
 package com.saasquatch.sdk.exceptions;
 
 import com.saasquatch.sdk.annotations.Internal;
+import com.saasquatch.sdk.util.SaaSquatchHttpResponse;
+import javax.annotation.Nonnull;
 
 /**
  * {@link Exception} type representing an unhandled API error, i.e. the HTTP request is successful,
@@ -8,18 +10,11 @@ import com.saasquatch.sdk.annotations.Internal;
  *
  * @author sli
  */
-public final class SaaSquatchUnhandledApiException extends SaaSquatchException {
-
-  private final String bodyText;
+public final class SaaSquatchUnhandledApiException extends SaaSquatchHttpResponseEnclosedException {
 
   @Internal
-  public SaaSquatchUnhandledApiException(String bodyText) {
-    super();
-    this.bodyText = bodyText;
-  }
-
-  public String getBodyText() {
-    return bodyText;
+  public SaaSquatchUnhandledApiException(@Nonnull SaaSquatchHttpResponse httpResponse) {
+    super(httpResponse);
   }
 
 }

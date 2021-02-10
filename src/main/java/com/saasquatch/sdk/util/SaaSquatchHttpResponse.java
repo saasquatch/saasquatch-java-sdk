@@ -34,19 +34,13 @@ public interface SaaSquatchHttpResponse {
    * @return The first header value for the given header name
    */
   @Nullable
-  default String getFirstHeader(String headerName) {
-    final List<String> headers = getHeaders(headerName);
-    return headers.isEmpty() ? null : headers.get(0);
-  }
+  String getFirstHeader(String headerName);
 
   /**
    * @return The last header value for the given header name
    */
   @Nullable
-  default String getLastHeader(String headerName) {
-    final List<String> headers = getHeaders(headerName);
-    return headers.isEmpty() ? null : headers.get(headers.size() - 1);
-  }
+  String getLastHeader(String headerName);
 
   /**
    * @return All the headers

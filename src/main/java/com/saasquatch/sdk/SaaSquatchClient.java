@@ -219,11 +219,9 @@ public final class SaaSquatchClient implements Closeable {
           final GraphQLResult graphQLResult = graphQLApiResponse.getData();
           final ApiError graphQLApiError = graphQLResult.getGraphQLApiError();
           if (graphQLApiError != null) {
-            throw new SaaSquatchApiException(graphQLApiError,
-                graphQLApiResponse.getHttpResponse().getBodyText());
+            throw new SaaSquatchApiException(graphQLApiError, graphQLApiResponse.getHttpResponse());
           } else if (graphQLResult.getErrors() != null && !graphQLResult.getErrors().isEmpty()) {
-            throw new SaaSquatchUnhandledApiException(
-                graphQLApiResponse.getHttpResponse().getBodyText());
+            throw new SaaSquatchUnhandledApiException(graphQLApiResponse.getHttpResponse());
           }
           String templateString = null;
           if (graphQLResult.getData() != null) {
@@ -491,16 +489,16 @@ public final class SaaSquatchClient implements Closeable {
         .doOnNext(this::httpResponseToPossibleException);
   }
 
-  private void httpResponseToPossibleException(@Nonnull SaaSquatchHttpResponse response) {
-    if (response.getStatusCode() < 300) {
+  private void httpResponseToPossibleException(@Nonnull SaaSquatchHttpResponse httpResponse) {
+    if (httpResponse.getStatusCode() < 300) {
       return;
     }
-    final String bodyText = response.getBodyText();
+    final String bodyText = httpResponse.getBodyText();
     final ApiError apiError = ApiError.fromBodyText(bodyText);
     if (apiError != null) {
-      throw new SaaSquatchApiException(apiError, bodyText);
+      throw new SaaSquatchApiException(apiError, httpResponse);
     }
-    throw new SaaSquatchUnhandledApiException(bodyText);
+    throw new SaaSquatchUnhandledApiException(httpResponse);
   }
 
 }
