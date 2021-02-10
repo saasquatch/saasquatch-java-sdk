@@ -37,7 +37,6 @@ import com.saasquatch.sdk.input.UserEventInput;
 import com.saasquatch.sdk.input.UserInput;
 import com.saasquatch.sdk.input.UserLinkInput;
 import com.saasquatch.sdk.input.WidgetType;
-import com.saasquatch.sdk.internal.InternalThreadFactory;
 import com.saasquatch.sdk.internal.InternalUtils;
 import com.saasquatch.sdk.internal.json.GsonUtils;
 import com.saasquatch.sdk.models.User;
@@ -69,8 +68,7 @@ public final class SaaSquatchClient implements Closeable {
         .setConnectionManager(PoolingAsyncClientConnectionManagerBuilder.create()
             .setMaxConnPerRoute(clientOptions.getMaxConcurrentRequests())
             .setMaxConnTotal(clientOptions.getMaxConcurrentRequests()).build())
-        .setUserAgent(InternalUtils.buildUserAgent(this.clientId))
-        .setThreadFactory(new InternalThreadFactory(this.clientId)).build();
+        .setUserAgent(InternalUtils.buildUserAgent(this.clientId)).build();
     this.httpAsyncClient.start();
   }
 

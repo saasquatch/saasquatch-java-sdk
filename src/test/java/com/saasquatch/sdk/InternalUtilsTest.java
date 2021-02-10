@@ -15,6 +15,10 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import com.saasquatch.sdk.internal.InternalUtils;
+import io.reactivex.rxjava3.annotations.NonNull;
+import io.reactivex.rxjava3.core.Flowable;
 import java.io.ByteArrayInputStream;
 import java.security.Permission;
 import java.util.AbstractMap.SimpleEntry;
@@ -32,10 +36,6 @@ import org.apache.hc.client5.http.async.methods.SimpleHttpResponse;
 import org.apache.hc.client5.http.impl.async.CloseableHttpAsyncClient;
 import org.apache.hc.client5.http.impl.async.HttpAsyncClients;
 import org.junit.jupiter.api.Test;
-import com.saasquatch.sdk.internal.InternalThreadFactory;
-import com.saasquatch.sdk.internal.InternalUtils;
-import io.reactivex.rxjava3.annotations.NonNull;
-import io.reactivex.rxjava3.core.Flowable;
 import reactor.core.publisher.Mono;
 
 public class InternalUtilsTest {
@@ -77,8 +77,7 @@ public class InternalUtilsTest {
 
   @Test
   public void testRxExecuteRequestWorks() throws Exception {
-    final ExecutorService executor =
-        Executors.newCachedThreadPool(new InternalThreadFactory("foo"));
+    final ExecutorService executor = Executors.newCachedThreadPool();
     try (CloseableHttpAsyncClient httpAsyncClient = HttpAsyncClients.createDefault()) {
       httpAsyncClient.start();
       {
