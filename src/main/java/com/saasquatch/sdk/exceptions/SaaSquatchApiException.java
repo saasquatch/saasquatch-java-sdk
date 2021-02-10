@@ -14,11 +14,13 @@ public class SaaSquatchApiException extends SaaSquatchException {
 
   @Nonnull
   private final ApiError apiError;
+  private final String bodyText;
 
   @Internal
-  public SaaSquatchApiException(@Nonnull ApiError apiError) {
+  public SaaSquatchApiException(@Nonnull ApiError apiError, String bodyText) {
     super(apiError.getMessage());
     this.apiError = apiError;
+    this.bodyText = bodyText;
   }
 
   @Nonnull
@@ -26,4 +28,7 @@ public class SaaSquatchApiException extends SaaSquatchException {
     return apiError;
   }
 
+  public String getBodyText() {
+    return bodyText;
+  }
 }

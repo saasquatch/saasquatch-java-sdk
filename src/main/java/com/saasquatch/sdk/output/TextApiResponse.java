@@ -15,12 +15,6 @@ public final class TextApiResponse extends ApiResponse<String> {
     super(response);
   }
 
-  @Internal
-  public TextApiResponse(SimpleHttpResponse response, String dataOverride,
-      ApiError apiErrorOverride) {
-    super(response, dataOverride, apiErrorOverride);
-  }
-
   @Override
   protected String buildData() {
     return getBodyText();

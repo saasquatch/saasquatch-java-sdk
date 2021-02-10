@@ -49,7 +49,20 @@ public final class ApiError {
     return rsCode;
   }
 
-  static ApiError fromJson(String bodyText, int statusCode) {
+  public static ApiError fromJson(String bodyText, int statusCode) {
+    final ApiError fromBodyText = fromBodyText(bodyText);
+    if (fromBodyText != null) {
+      return fromBodyText;
+    }
+    /*
+     * This is a catastrophic failure and SaaSquatch servers failed to respond with a proper
+     * ApiError. Just jam the response text into the error message.
+     */
+    return new ApiError(bodyText, null, null, null);
+  }
+
+  @Nullable
+  public static ApiError fromBodyText(String bodyText) {
     /*
      * Doing this because in case of a catastrophic failure, we may not be able to get an actual
      * ApiError from SaaSquatch.
@@ -70,11 +83,8 @@ public final class ApiError {
         return GsonUtils.gson.fromJson(jsonObject, ApiError.class);
       }
     }
-    /*
-     * This is a catastrophic failure and SaaSquatch servers failed to respond with a proper
-     * ApiError. Just jam the response text into the error message.
-     */
-    return new ApiError(bodyText, null, null, null);
+    // We cannot get a valid ApiError
+    return null;
   }
 
   @Nullable

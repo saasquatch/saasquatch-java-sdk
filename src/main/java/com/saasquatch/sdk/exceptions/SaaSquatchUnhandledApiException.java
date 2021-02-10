@@ -8,16 +8,14 @@ package com.saasquatch.sdk.exceptions;
  */
 public class SaaSquatchUnhandledApiException extends SaaSquatchException {
 
-  public SaaSquatchUnhandledApiException(String message) {
-    super(message);
+  private final String bodyText;
+
+  public SaaSquatchUnhandledApiException(String bodyText) {
+    super();
+    this.bodyText = bodyText;
   }
 
-  public SaaSquatchUnhandledApiException(String message, Throwable cause) {
-    super(message, cause);
+  public String getBodyText() {
+    return bodyText;
   }
-
-  public SaaSquatchUnhandledApiException(Throwable cause) {
-    super(cause);
-  }
-
 }
