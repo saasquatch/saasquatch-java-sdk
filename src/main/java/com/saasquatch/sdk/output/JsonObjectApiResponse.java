@@ -1,11 +1,11 @@
 package com.saasquatch.sdk.output;
 
 import static com.saasquatch.sdk.internal.InternalUtils.format;
+import static com.saasquatch.sdk.internal.json.GsonUtils.gson;
 
 import com.google.gson.reflect.TypeToken;
 import com.saasquatch.sdk.annotations.Internal;
 import com.saasquatch.sdk.internal.json.GsonUtils;
-import com.saasquatch.sdk.models.Model;
 import com.saasquatch.sdk.util.SaaSquatchHttpResponse;
 import java.util.Map;
 import java.util.Objects;
@@ -26,7 +26,7 @@ public final class JsonObjectApiResponse extends ApiResponse<Map<String, Object>
 
   @Override
   protected Map<String, Object> buildData() {
-    return GsonUtils.gson.fromJson(getHttpResponse().getBodyText(),
+    return gson.fromJson(getHttpResponse().getBodyText(),
         new TypeToken<Map<String, Object>>() {}.getType());
   }
 
@@ -36,9 +36,9 @@ public final class JsonObjectApiResponse extends ApiResponse<Map<String, Object>
    * customizing the JSON response body with things like {@code extraFields}. Otherwise it may cause
    * unexpected behaviors.
    */
-  public <T extends Model> T toModel(@Nonnull Class<? extends T> modelClass) {
+  public <T> T toModel(@Nonnull Class<? extends T> modelClass) {
     Objects.requireNonNull(modelClass, "modelClass");
-    final T model = GsonUtils.gson.fromJson(GsonUtils.gson.toJsonTree(getData()), modelClass);
+    final T model = gson.fromJson(gson.toJsonTree(getData()), modelClass);
     if (model == null) {
       throw new IllegalStateException(
           format("Unable to convert to model with class [%s]", modelClass));

@@ -1,5 +1,7 @@
 package com.saasquatch.sdk.output;
 
+import static com.saasquatch.sdk.internal.json.GsonUtils.gson;
+
 import com.saasquatch.sdk.util.SaaSquatchHttpResponse;
 import com.saasquatch.sdk.annotations.Internal;
 import com.saasquatch.sdk.internal.json.GsonUtils;
@@ -22,7 +24,7 @@ public final class GraphQLApiResponse extends ApiResponse<GraphQLResult> {
 
   @Override
   protected GraphQLResult buildData() {
-    return GsonUtils.gson.fromJson(getHttpResponse().getBodyText(), GraphQLResult.class);
+    return gson.fromJson(getHttpResponse().getBodyText(), GraphQLResult.class);
   }
 
 }

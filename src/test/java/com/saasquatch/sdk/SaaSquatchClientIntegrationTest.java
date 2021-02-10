@@ -1,5 +1,6 @@
 package com.saasquatch.sdk;
 
+import static com.saasquatch.sdk.internal.json.GsonUtils.gson;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -195,8 +196,7 @@ public class SaaSquatchClientIntegrationTest {
     assertEquals(200, response.getHttpResponse().getStatusCode());
     final GraphQLResult graphQLResult = response.getData();
     assertTrue(graphQLResult.getErrors() == null || graphQLResult.getErrors().isEmpty());
-    final JsonObject dataJson =
-        GsonUtils.gson.toJsonTree(graphQLResult.getData()).getAsJsonObject();
+    final JsonObject dataJson = gson.toJsonTree(graphQLResult.getData()).getAsJsonObject();
     final JsonElement totalCountElem = dataJson.get("users").getAsJsonObject().get("totalCount");
     assertTrue(totalCountElem.isJsonPrimitive());
   }

@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.Set;
 import com.saasquatch.sdk.annotations.ClassicOnly;
 
-public final class User implements Model {
+public final class User {
 
   private final String accountId;
   private final String id;

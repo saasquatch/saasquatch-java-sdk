@@ -1,6 +1,7 @@
 package com.saasquatch.sdk.output;
 
 import static com.saasquatch.sdk.internal.InternalUtils.defaultIfNull;
+import static com.saasquatch.sdk.internal.json.GsonUtils.gson;
 
 import java.util.Collections;
 import java.util.List;
@@ -71,7 +72,7 @@ public final class ApiError {
     if (jsonElement instanceof JsonObject) {
       final JsonObject jsonObject = ((JsonObject) jsonElement);
       if (jsonObject.has("message") && jsonObject.has("statusCode")) {
-        return GsonUtils.gson.fromJson(jsonObject, ApiError.class);
+        return gson.fromJson(jsonObject, ApiError.class);
       }
     }
     // We cannot get a valid ApiError
@@ -88,14 +89,14 @@ public final class ApiError {
         Collections.emptyMap());
     final Object apiErrorObj = extensions.get("apiError");
     if (apiErrorObj instanceof Map) {
-      return GsonUtils.gson.fromJson(GsonUtils.gson.toJsonTree(apiErrorObj), ApiError.class);
+      return gson.fromJson(gson.toJsonTree(apiErrorObj), ApiError.class);
     }
     /*
      * This is a GraphQL error where the apiError isn't propagating through properly.
      * Just grab the error message.
      */
-    @SuppressWarnings("unchecked")
-    final Map<String, Object> firstError = (Map<String, Object>) errors.get(0);
+    @SuppressWarnings("unchecked") final Map<String, Object> firstError = (Map<String, Object>) errors
+        .get(0);
     return new ApiError((String) firstError.get("message"), null, null, null);
   }
 

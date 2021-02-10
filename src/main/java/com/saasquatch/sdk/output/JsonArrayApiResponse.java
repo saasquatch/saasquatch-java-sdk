@@ -1,11 +1,11 @@
 package com.saasquatch.sdk.output;
 
 import static com.saasquatch.sdk.internal.InternalUtils.format;
+import static com.saasquatch.sdk.internal.json.GsonUtils.gson;
 
 import com.google.gson.reflect.TypeToken;
 import com.saasquatch.sdk.annotations.Beta;
 import com.saasquatch.sdk.internal.json.GsonUtils;
-import com.saasquatch.sdk.models.Model;
 import com.saasquatch.sdk.util.SaaSquatchHttpResponse;
 import java.util.Collections;
 import java.util.List;
@@ -27,7 +27,7 @@ public final class JsonArrayApiResponse extends ApiResponse<List<Object>> {
 
   @Override
   protected List<Object> buildData() {
-    return GsonUtils.gson.fromJson(getHttpResponse().getBodyText(),
+    return gson.fromJson(getHttpResponse().getBodyText(),
         new TypeToken<List<Object>>() {}.getType());
   }
 
@@ -37,13 +37,13 @@ public final class JsonArrayApiResponse extends ApiResponse<List<Object>> {
    * customizing the JSON response body with things like {@code extraFields}. Otherwise it may cause
    * unexpected behaviors.
    */
-  public <T extends Model> List<T> toModelList(@Nonnull Class<? extends T> modelClass) {
+  public <T> List<T> toModelList(@Nonnull Class<? extends T> modelClass) {
     Objects.requireNonNull(modelClass, "modelClass");
     /*
      * I know modelClass is technically not being used here, but it's included to be JSON library
      * agnostic
      */
-    final List<T> modelList = GsonUtils.gson.fromJson(GsonUtils.gson.toJsonTree(getData()),
+    final List<T> modelList = gson.fromJson(gson.toJsonTree(getData()),
         new TypeToken<List<T>>() {
         }.getType());
     if (modelList == null) {

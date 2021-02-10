@@ -3,7 +3,7 @@ package com.saasquatch.sdk.models;
 import java.util.Map;
 import com.saasquatch.sdk.annotations.ClassicOnly;
 
-public final class WidgetUpsertResult implements Model {
+public final class WidgetUpsertResult {
 
   private final String template;
   private final Map<String, Object> jsOptions;
