@@ -1,15 +1,13 @@
 package com.saasquatch.sdk.output;
 
+import com.saasquatch.sdk.annotations.Internal;
 import com.saasquatch.sdk.annotations.NoExternalImpl;
+import com.saasquatch.sdk.internal.InternalUtils;
 import java.util.Objects;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.apache.hc.client5.http.async.methods.SimpleHttpResponse;
 import org.apache.hc.core5.http.Header;
-import com.saasquatch.sdk.annotations.Internal;
-import com.saasquatch.sdk.internal.InternalUtils;
 
 /**
  * Represents an API response from SaaSquatch. If the request has {@link #succeeded()}, then you
@@ -22,12 +20,6 @@ import com.saasquatch.sdk.internal.InternalUtils;
 @NoExternalImpl
 public abstract class ApiResponse<T> {
 
-  // Lazy init
-  private T data;
-  // Lazy init
-  private ApiError apiError;
-  private boolean externalFieldsInitialized;
-  private final Lock externalFieldsLock = new ReentrantLock();
   // Lazy init. Not part of the lazy init of data and error, since those depend on bodyText.
   private String bodyText;
   private final SimpleHttpResponse response;
@@ -57,21 +49,19 @@ public abstract class ApiResponse<T> {
   }
 
   @Nullable
-  public T getData() {
+  public final T getData() {
     if (!succeeded()) {
       return null;
     }
-    initializeFields();
-    return this.data;
+    return buildData();
   }
 
   @Nullable
-  public ApiError getApiError() {
+  public final ApiError getApiError() {
     if (succeeded()) {
       return null;
     }
-    initializeFields();
-    return this.apiError;
+    return buildApiError();
   }
 
   /**
@@ -88,22 +78,8 @@ public abstract class ApiResponse<T> {
 
   protected abstract T buildData();
 
-  private void initializeFields() {
-    if (!externalFieldsInitialized) {
-      externalFieldsLock.lock();
-      try {
-        if (!externalFieldsInitialized) {
-          if (succeeded()) {
-            data = buildData();
-          } else {
-            apiError = ApiError.fromJson(getBodyText(), getStatusCode());
-          }
-          externalFieldsInitialized = true;
-        }
-      } finally {
-        externalFieldsLock.unlock();
-      }
-    }
+  protected ApiError buildApiError() {
+    return ApiError.fromJson(getBodyText(), getStatusCode());
   }
 
 }

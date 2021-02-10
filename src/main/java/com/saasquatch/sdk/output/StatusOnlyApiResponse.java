@@ -17,15 +17,6 @@ public final class StatusOnlyApiResponse extends ApiResponse<Void> {
     super(response);
   }
 
-  /**
-   * @deprecated always null
-   */
-  @Override
-  @Deprecated
-  public Void getData() {
-    return null;
-  }
-
   @Override
   protected Void buildData() {
     return null;
