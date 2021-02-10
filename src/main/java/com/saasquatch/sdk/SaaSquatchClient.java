@@ -198,7 +198,10 @@ public final class SaaSquatchClient implements Closeable {
         + "}";
     final Map<String, Object> variables = new HashMap<>();
     variables.put("user", renderWidgetInput.getUser());
-    variables.put("widgetType", renderWidgetInput.getWidgetType().getWidgetType());
+    final WidgetType widgetType = renderWidgetInput.getWidgetType();
+    if (widgetType != null) {
+      variables.put("widgetType", widgetType.getWidgetType());
+    }
     variables.put("engagementMedium", renderWidgetInput.getEngagementMedium());
     variables.put("locale", renderWidgetInput.getLocale());
     return Flowable.fromPublisher(graphQL(GraphQLInput.newBuilder()
