@@ -1,5 +1,6 @@
 package com.saasquatch.sdk;
 
+import static com.saasquatch.sdk.internal.InternalUtils.getNestedMapValue;
 import static com.saasquatch.sdk.internal.InternalUtils.requireNotBlank;
 
 import com.saasquatch.sdk.auth.AuthMethod;
@@ -258,20 +259,9 @@ public final class SaaSquatchClient implements Closeable {
         .doOnNext(InternalUtils::throwSquatchExceptionForPotentialGraphQLError)
         .map(graphQLApiResponse -> {
           final GraphQLResult graphQLResult = graphQLApiResponse.getData();
-          Map<String, Object> widgetConfigValues = null;
-          if (graphQLResult.getData() != null) {
-            @SuppressWarnings("unchecked") final Map<String, Object> renderWidgetMap =
-                (Map<String, Object>) graphQLResult.getData().get("renderWidget");
-            if (renderWidgetMap != null) {
-              @SuppressWarnings("unchecked") final Map<String, Object> widgetConfigMap =
-                  (Map<String, Object>) renderWidgetMap.get("widgetConfig");
-              if (widgetConfigMap != null) {
-                @SuppressWarnings("unchecked") final Map<String, Object> _widgetConfigValues =
-                    (Map<String, Object>) widgetConfigMap.get("values");
-                widgetConfigValues = _widgetConfigValues;
-              }
-            }
-          }
+          @SuppressWarnings("unchecked") final Map<String, Object> widgetConfigValues =
+              (Map<String, Object>) getNestedMapValue(graphQLResult.getData(), "renderWidget",
+                  "widgetConfig", "values");
           return new JsonObjectApiResponse(graphQLApiResponse.getHttpResponse(),
               widgetConfigValues);
         });
