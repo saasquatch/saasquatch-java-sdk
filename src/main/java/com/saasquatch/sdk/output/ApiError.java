@@ -1,5 +1,7 @@
 package com.saasquatch.sdk.output;
 
+import java.util.List;
+import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import com.google.gson.JsonElement;
@@ -14,6 +16,8 @@ import com.saasquatch.sdk.internal.json.GsonUtils;
  * @author sli
  */
 public final class ApiError {
+
+  private static final String INTERNAL_ERROR_STRING = "UNHANDLED_API_EXCEPTION";
 
   private final String message;
   private final String apiErrorCode;
@@ -71,7 +75,22 @@ public final class ApiError {
      * This is a catastrophic failure and SaaSquatch servers failed to respond with a proper
      * ApiError. Just jam the response text into the error message.
      */
-    return new ApiError(bodyText, "UNHANDLED_API_EXCEPTION", statusCode, null);
+    return new ApiError(bodyText, INTERNAL_ERROR_STRING, statusCode, null);
+  }
+
+  static ApiError fromGraphQLResult(@Nonnull GraphQLResult graphQLResult) {
+    final List<Object> errors = graphQLResult.getErrors();
+    if (errors == null || errors.isEmpty()) {
+      return null;
+    }
+    final Map<String, Object> extensions = graphQLResult.getExtensions();
+    final Object apiErrorObj = extensions.get("apiError");
+    if (apiErrorObj instanceof Map) {
+      return GsonUtils.gson.fromJson(GsonUtils.gson.toJsonTree(apiErrorObj), ApiError.class);
+    }
+    @SuppressWarnings("unchecked")
+    final Map<String, Object> firstError = (Map<String, Object>) errors.get(0);
+    return new ApiError((String) firstError.get("message"), INTERNAL_ERROR_STRING, 500, null);
   }
 
 }
