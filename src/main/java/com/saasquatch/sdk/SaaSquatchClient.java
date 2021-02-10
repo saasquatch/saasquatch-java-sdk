@@ -2,13 +2,29 @@ package com.saasquatch.sdk;
 
 import static com.saasquatch.sdk.internal.InternalUtils.requireNotBlank;
 
+import com.saasquatch.sdk.auth.AuthMethod;
+import com.saasquatch.sdk.auth.AuthMethods;
 import com.saasquatch.sdk.exceptions.SaaSquatchApiException;
 import com.saasquatch.sdk.exceptions.SaaSquatchUnhandledApiException;
+import com.saasquatch.sdk.input.GraphQLInput;
 import com.saasquatch.sdk.input.RenderWidgetInput;
+import com.saasquatch.sdk.input.UserEventInput;
+import com.saasquatch.sdk.input.UserInput;
+import com.saasquatch.sdk.input.UserLinkInput;
+import com.saasquatch.sdk.input.WidgetType;
+import com.saasquatch.sdk.internal.InternalUtils;
+import com.saasquatch.sdk.internal.json.GsonUtils;
+import com.saasquatch.sdk.models.User;
+import com.saasquatch.sdk.models.UserEventResult;
+import com.saasquatch.sdk.models.WidgetUpsertResult;
 import com.saasquatch.sdk.output.ApiError;
+import com.saasquatch.sdk.output.GraphQLApiResponse;
 import com.saasquatch.sdk.output.GraphQLResult;
+import com.saasquatch.sdk.output.JsonObjectApiResponse;
+import com.saasquatch.sdk.output.TextApiResponse;
 import com.saasquatch.sdk.util.Client5SaaSquatchHttpResponse;
 import com.saasquatch.sdk.util.SaaSquatchHttpResponse;
+import io.reactivex.rxjava3.core.Flowable;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -30,22 +46,6 @@ import org.apache.hc.core5.http.ContentType;
 import org.apache.hc.core5.http.HttpHeaders;
 import org.apache.hc.core5.net.URIBuilder;
 import org.reactivestreams.Publisher;
-import com.saasquatch.sdk.auth.AuthMethod;
-import com.saasquatch.sdk.auth.AuthMethods;
-import com.saasquatch.sdk.input.GraphQLInput;
-import com.saasquatch.sdk.input.UserEventInput;
-import com.saasquatch.sdk.input.UserInput;
-import com.saasquatch.sdk.input.UserLinkInput;
-import com.saasquatch.sdk.input.WidgetType;
-import com.saasquatch.sdk.internal.InternalUtils;
-import com.saasquatch.sdk.internal.json.GsonUtils;
-import com.saasquatch.sdk.models.User;
-import com.saasquatch.sdk.models.UserEventResult;
-import com.saasquatch.sdk.models.WidgetUpsertResult;
-import com.saasquatch.sdk.output.GraphQLApiResponse;
-import com.saasquatch.sdk.output.JsonObjectApiResponse;
-import com.saasquatch.sdk.output.TextApiResponse;
-import io.reactivex.rxjava3.core.Flowable;
 
 /**
  * Main entry point for SaaSquatch APIs
