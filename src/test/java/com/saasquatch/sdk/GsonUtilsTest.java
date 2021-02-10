@@ -8,7 +8,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
-import com.saasquatch.sdk.internal.json.GsonUtils;
 
 public class GsonUtilsTest {
 

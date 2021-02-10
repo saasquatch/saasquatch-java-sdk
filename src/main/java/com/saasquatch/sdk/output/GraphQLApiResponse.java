@@ -4,7 +4,6 @@ import static com.saasquatch.sdk.internal.json.GsonUtils.gson;
 
 import com.saasquatch.sdk.util.SaaSquatchHttpResponse;
 import com.saasquatch.sdk.annotations.Internal;
-import com.saasquatch.sdk.internal.json.GsonUtils;
 
 /**
  * Response from a GraphQL request. Note that this class differs from other {@link ApiResponse}

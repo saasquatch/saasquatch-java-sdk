@@ -23,7 +23,6 @@ import com.saasquatch.sdk.auth.AuthMethods;
 import com.saasquatch.sdk.input.GraphQLInput;
 import com.saasquatch.sdk.input.UserLinkInput;
 import com.saasquatch.sdk.input.WidgetTypes;
-import com.saasquatch.sdk.internal.json.GsonUtils;
 import com.saasquatch.sdk.models.User;
 import com.saasquatch.sdk.models.UserEventData;
 import com.saasquatch.sdk.models.UserEventResult;

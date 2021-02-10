@@ -2,7 +2,6 @@ package com.saasquatch.sdk.input;
 
 import javax.annotation.Nonnull;
 import com.saasquatch.sdk.SaaSquatchClient;
-import com.saasquatch.sdk.annotations.Internal;
 import com.saasquatch.sdk.annotations.NoExternalImpl;
 
 /**
