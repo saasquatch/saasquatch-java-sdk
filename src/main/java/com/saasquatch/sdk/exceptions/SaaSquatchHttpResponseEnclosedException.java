@@ -1,5 +1,6 @@
 package com.saasquatch.sdk.exceptions;
 
+import com.saasquatch.sdk.annotations.Internal;
 import com.saasquatch.sdk.annotations.NoExternalImpl;
 import com.saasquatch.sdk.util.SaaSquatchHttpResponse;
 import javax.annotation.Nonnull;
@@ -14,22 +15,26 @@ public abstract class SaaSquatchHttpResponseEnclosedException extends SaaSquatch
 
   private final SaaSquatchHttpResponse httpResponse;
 
+  @Internal
   public SaaSquatchHttpResponseEnclosedException(@Nonnull SaaSquatchHttpResponse httpResponse) {
     this.httpResponse = httpResponse;
   }
 
+  @Internal
   public SaaSquatchHttpResponseEnclosedException(String message,
       @Nonnull SaaSquatchHttpResponse httpResponse) {
     super(message);
     this.httpResponse = httpResponse;
   }
 
+  @Internal
   public SaaSquatchHttpResponseEnclosedException(String message, Throwable cause,
       @Nonnull SaaSquatchHttpResponse httpResponse) {
     super(message, cause);
     this.httpResponse = httpResponse;
   }
 
+  @Internal
   public SaaSquatchHttpResponseEnclosedException(Throwable cause,
       @Nonnull SaaSquatchHttpResponse httpResponse) {
     super(cause);

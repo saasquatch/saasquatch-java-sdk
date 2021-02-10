@@ -1,6 +1,12 @@
 package com.saasquatch.sdk.internal;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
+
+import com.saasquatch.sdk.exceptions.SaaSquatchApiException;
+import com.saasquatch.sdk.exceptions.SaaSquatchUnhandledApiException;
+import com.saasquatch.sdk.output.ApiError;
+import com.saasquatch.sdk.output.GraphQLApiResponse;
+import com.saasquatch.sdk.output.GraphQLResult;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -186,7 +192,7 @@ public final class InternalUtils {
       throw new IllegalArgumentException("odd number of replacements");
     }
     final StringBuilder sb = new StringBuilder(string);
-    for (int i = 0; i < replacements.length;) {
+    for (int i = 0; i < replacements.length; ) {
       final String key = replacements[i++];
       final String value = replacements[i++];
       if (key.isEmpty()) {
@@ -318,6 +324,19 @@ public final class InternalUtils {
 
   public static <T> T defaultIfNull(T item, T fallback) {
     return item == null ? fallback : item;
+  }
+
+  public static void throwSquatchExceptionForPotentialGraphQLError(GraphQLApiResponse graphQLApiResponse) {
+    final GraphQLResult graphQLResult = graphQLApiResponse.getData();
+    if (graphQLResult == null) {
+      throw new SaaSquatchUnhandledApiException(graphQLApiResponse.getHttpResponse());
+    }
+    final ApiError graphQLApiError = graphQLResult.getGraphQLApiError();
+    if (graphQLApiError != null) {
+      throw new SaaSquatchApiException(graphQLApiError, graphQLApiResponse.getHttpResponse());
+    } else if (graphQLResult.getErrors() != null && !graphQLResult.getErrors().isEmpty()) {
+      throw new SaaSquatchUnhandledApiException(graphQLApiResponse.getHttpResponse());
+    }
   }
 
 }

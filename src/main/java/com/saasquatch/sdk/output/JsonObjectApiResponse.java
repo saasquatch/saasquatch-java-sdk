@@ -9,6 +9,7 @@ import com.saasquatch.sdk.util.SaaSquatchHttpResponse;
 import java.util.Map;
 import java.util.Objects;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * {@link ApiResponse} that has a JSON object. The JSON object will be represented as a {@link Map}
@@ -21,6 +22,12 @@ public final class JsonObjectApiResponse extends ApiResponse<Map<String, Object>
   @Internal
   public JsonObjectApiResponse(SaaSquatchHttpResponse httpResponse) {
     super(httpResponse);
+  }
+
+  @Internal
+  public JsonObjectApiResponse(@Nonnull SaaSquatchHttpResponse httpResponse,
+      @Nullable Map<String, Object> dataOverride) {
+    super(httpResponse, dataOverride);
   }
 
   @Override

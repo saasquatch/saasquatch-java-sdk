@@ -178,8 +178,8 @@ public final class SaaSquatchClient implements Closeable {
   /**
    * Render a widget without a user.<br> The response is the widget HTML.
    */
-  public Publisher<TextApiResponse> renderWidget(@Nonnull RenderWidgetInput renderWidgetInput,
-      RequestOptions requestOptions) {
+  public Publisher<TextApiResponse> renderWidget(
+      @Nonnull RenderWidgetInput renderWidgetInput, @Nullable RequestOptions requestOptions) {
     Objects.requireNonNull(renderWidgetInput, "renderWidgetInput");
     final String query = "query renderWidget(\n"
         + "  $user: UserIdInput\n"
@@ -208,14 +208,9 @@ public final class SaaSquatchClient implements Closeable {
         .setQuery(query)
         .setVariables(variables)
         .build(), requestOptions))
+        .doOnNext(InternalUtils::throwSquatchExceptionForPotentialGraphQLError)
         .map(graphQLApiResponse -> {
           final GraphQLResult graphQLResult = graphQLApiResponse.getData();
-          final ApiError graphQLApiError = graphQLResult.getGraphQLApiError();
-          if (graphQLApiError != null) {
-            throw new SaaSquatchApiException(graphQLApiError, graphQLApiResponse.getHttpResponse());
-          } else if (graphQLResult.getErrors() != null && !graphQLResult.getErrors().isEmpty()) {
-            throw new SaaSquatchUnhandledApiException(graphQLApiResponse.getHttpResponse());
-          }
           String templateString = null;
           if (graphQLResult.getData() != null) {
             @SuppressWarnings("unchecked") final Map<String, Object> renderWidgetMap =
@@ -225,6 +220,60 @@ public final class SaaSquatchClient implements Closeable {
             }
           }
           return new TextApiResponse(graphQLApiResponse.getHttpResponse(), templateString);
+        });
+  }
+
+  public Publisher<JsonObjectApiResponse> getWidgetConfigValues(
+      @Nonnull RenderWidgetInput renderWidgetInput, @Nullable RequestOptions requestOptions) {
+    Objects.requireNonNull(renderWidgetInput, "renderWidgetInput");
+    final String query = "query renderWidget(\n"
+        + "  $user: UserIdInput\n"
+        + "  $widgetType: WidgetType\n"
+        + "  $engagementMedium: UserEngagementMedium\n"
+        + "  $locale: RSLocale\n"
+        + ") {\n"
+        + "  renderWidget(\n"
+        + "    user: $user\n"
+        + "    widgetType: $widgetType\n"
+        + "    engagementMedium: $engagementMedium\n"
+        + "    locale: $locale\n"
+        + "  ) {\n"
+        + "    widgetConfig {\n"
+        + "      values\n"
+        + "    }\n"
+        + "  }\n"
+        + "}";
+    final Map<String, Object> variables = new HashMap<>();
+    variables.put("user", renderWidgetInput.getUser());
+    final WidgetType widgetType = renderWidgetInput.getWidgetType();
+    if (widgetType != null) {
+      variables.put("widgetType", widgetType.getWidgetType());
+    }
+    variables.put("engagementMedium", renderWidgetInput.getEngagementMedium());
+    variables.put("locale", renderWidgetInput.getLocale());
+    return Flowable.fromPublisher(graphQL(GraphQLInput.newBuilder()
+        .setQuery(query)
+        .setVariables(variables)
+        .build(), requestOptions))
+        .doOnNext(InternalUtils::throwSquatchExceptionForPotentialGraphQLError)
+        .map(graphQLApiResponse -> {
+          final GraphQLResult graphQLResult = graphQLApiResponse.getData();
+          Map<String, Object> widgetConfigValues = null;
+          if (graphQLResult.getData() != null) {
+            @SuppressWarnings("unchecked") final Map<String, Object> renderWidgetMap =
+                (Map<String, Object>) graphQLResult.getData().get("renderWidget");
+            if (renderWidgetMap != null) {
+              @SuppressWarnings("unchecked") final Map<String, Object> widgetConfigMap =
+                  (Map<String, Object>) renderWidgetMap.get("widgetConfig");
+              if (widgetConfigMap != null) {
+                @SuppressWarnings("unchecked") final Map<String, Object> _widgetConfigValues =
+                    (Map<String, Object>) widgetConfigMap.get("values");
+                widgetConfigValues = _widgetConfigValues;
+              }
+            }
+          }
+          return new JsonObjectApiResponse(graphQLApiResponse.getHttpResponse(),
+              widgetConfigValues);
         });
   }
 
