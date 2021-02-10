@@ -22,7 +22,7 @@ public final class ClientOptions {
   private static final int MAX_MAX_CONCURRENT_REQUESTS = 32;
   static final int DEFAULT_REQUEST_TIMEOUT_MILLIS = 10000;
   static final int MAX_REQUEST_TIMEOUT_MILLIS = 60000;
-  static final int DEFAULT_CONNECT_TIMOEUT_MILLIS = 2000;
+  static final int DEFAULT_CONNECT_TIMEOUT_MILLIS = 2000;
   static final int MAX_CONNECT_TIMEOUT_MILLIS = 15000;
 
   private final String tenantAlias;
@@ -111,7 +111,7 @@ public final class ClientOptions {
     private String appDomain = DEFAULT_APP_DOMAIN;
     private int maxConcurrentRequests = DEFAULT_MAX_CONCURRENT_REQUESTS;
     private int requestTimeoutMillis = DEFAULT_REQUEST_TIMEOUT_MILLIS;
-    private int connectTimeoutMillis = DEFAULT_CONNECT_TIMOEUT_MILLIS;
+    private int connectTimeoutMillis = DEFAULT_CONNECT_TIMEOUT_MILLIS;
     private boolean contentCompressionEnabled = true;
 
     private Builder() {}
