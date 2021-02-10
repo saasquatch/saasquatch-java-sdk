@@ -28,7 +28,7 @@ public final class GsonUtils {
    * Serialize the object to JSON while excluding null root level fields. Only works if the input
    * object is to be serialized into a JSON object.
    */
-  public static String toJsonExcludingNullRootLevalFields(Object src) {
+  public static String toJsonExcludingNullRootLevelFields(Object src) {
     final JsonObject jsonObject = (JsonObject) gson.toJsonTree(src);
     final List<String> fieldsToRemove = new ArrayList<>(jsonObject.size());
     for (Map.Entry<String, JsonElement> entry : jsonObject.entrySet()) {

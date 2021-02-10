@@ -128,7 +128,7 @@ public final class UserInput implements HasCustomJsonSerialization {
   @Internal
   @Override
   public String toJsonString() {
-    return GsonUtils.toJsonExcludingNullRootLevalFields(this);
+    return GsonUtils.toJsonExcludingNullRootLevelFields(this);
   }
 
   public static Builder newBuilder() {
