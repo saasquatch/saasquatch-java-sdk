@@ -26,6 +26,22 @@ public final class RenderWidgetInput {
     this.locale = locale;
   }
 
+  public UserIdInput getUser() {
+    return user;
+  }
+
+  public WidgetType getWidgetType() {
+    return widgetType;
+  }
+
+  public String getEngagementMedium() {
+    return engagementMedium;
+  }
+
+  public String getLocale() {
+    return locale;
+  }
+
   public static Builder newBuilder() {
     return new Builder();
   }
