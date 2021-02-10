@@ -15,8 +15,6 @@ public class GsonUtilsTest {
   public void testDateSerialization() {
     final Map<String, Object> m = Collections.singletonMap("foo", new Date(123));
     assertEquals("{\"foo\":123}", gson.toJson(m));
-
-    SaaSquatchClient saasquatchClient = SaaSquatchClient.createForTenant("yourTenantAlias");
   }
 
   @Test
