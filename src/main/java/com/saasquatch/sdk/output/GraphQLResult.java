@@ -37,8 +37,11 @@ public final class GraphQLResult {
     return extensions;
   }
 
+  /**
+   * @return The potential ApiError embedded in the GraphQL response (not the root level response).
+   */
   @Nullable
-  public ApiError getApiError() {
+  public ApiError getGraphQLApiError() {
     return ApiError.fromGraphQLResult(this);
   }
 

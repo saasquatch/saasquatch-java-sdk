@@ -17,14 +17,12 @@ import com.saasquatch.sdk.internal.json.GsonUtils;
  */
 public final class ApiError {
 
-  private static final String INTERNAL_ERROR_STRING = "UNHANDLED_API_EXCEPTION";
-
   private final String message;
   private final String apiErrorCode;
-  private final int statusCode;
+  private final Integer statusCode;
   private final String rsCode;
 
-  private ApiError(String message, String apiErrorCode, int statusCode, String rsCode) {
+  private ApiError(String message, String apiErrorCode, Integer statusCode, String rsCode) {
     this.message = message;
     this.apiErrorCode = apiErrorCode;
     this.statusCode = statusCode;
@@ -36,12 +34,13 @@ public final class ApiError {
     return message;
   }
 
-  @Nonnull
+  @Nullable
   public String getApiErrorCode() {
     return apiErrorCode;
   }
 
-  public int getStatusCode() {
+  @Nullable
+  public Integer getStatusCode() {
     return statusCode;
   }
 
@@ -75,7 +74,7 @@ public final class ApiError {
      * This is a catastrophic failure and SaaSquatch servers failed to respond with a proper
      * ApiError. Just jam the response text into the error message.
      */
-    return new ApiError(bodyText, INTERNAL_ERROR_STRING, statusCode, null);
+    return new ApiError(bodyText, null, null, null);
   }
 
   @Nullable
@@ -91,7 +90,11 @@ public final class ApiError {
     }
     @SuppressWarnings("unchecked")
     final Map<String, Object> firstError = (Map<String, Object>) errors.get(0);
-    return new ApiError((String) firstError.get("message"), INTERNAL_ERROR_STRING, 500, null);
+    /*
+     * This is a GraphQL error where the apiError isn't propagating through properly.
+     * Just grab the error message.
+     */
+    return new ApiError((String) firstError.get("message"), null, null, null);
   }
 
 }
