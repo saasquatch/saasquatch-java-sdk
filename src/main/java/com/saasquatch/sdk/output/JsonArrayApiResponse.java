@@ -44,8 +44,7 @@ public final class JsonArrayApiResponse extends ApiResponse<List<Object>> {
      * agnostic
      */
     final List<T> modelList = gson.fromJson(gson.toJsonTree(getData()),
-        new TypeToken<List<T>>() {
-        }.getType());
+        new TypeToken<List<T>>() {}.getType());
     if (modelList == null) {
       throw new IllegalStateException(
           format("Unable to convert to model list with class [%s]", modelClass));
