@@ -2,6 +2,7 @@ package com.saasquatch.sdk.internal;
 
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicLong;
+import javax.annotation.Nonnull;
 
 public final class InternalThreadFactory implements ThreadFactory {
 
@@ -13,7 +14,7 @@ public final class InternalThreadFactory implements ThreadFactory {
   }
 
   @Override
-  public Thread newThread(Runnable r) {
+  public Thread newThread(@Nonnull  Runnable r) {
     final Thread thread = new Thread(r, baseName + '-' + idx.getAndIncrement());
     if (!thread.isDaemon()) {
       thread.setDaemon(true);

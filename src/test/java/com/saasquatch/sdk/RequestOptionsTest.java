@@ -1,6 +1,7 @@
 package com.saasquatch.sdk;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -51,8 +52,8 @@ public class RequestOptionsTest {
     assertTrue(requestOptions.isContentCompressionEnabled(false));
     assertEquals(123, RequestOptions.newBuilder().build().getConnectTimeoutMillis(123));
     assertEquals(123, RequestOptions.newBuilder().build().getRequestTimeoutMillis(123));
-    assertEquals(true, RequestOptions.newBuilder().build().isContentCompressionEnabled(true));
-    assertEquals(false, RequestOptions.newBuilder().build().isContentCompressionEnabled(false));
+    assertTrue(RequestOptions.newBuilder().build().isContentCompressionEnabled(true));
+    assertFalse(RequestOptions.newBuilder().build().isContentCompressionEnabled(false));
   }
 
   @Test

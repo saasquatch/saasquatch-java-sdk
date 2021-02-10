@@ -15,6 +15,7 @@ final class ProgramWidgetType implements WidgetType {
     this.widgetKey = widgetKey;
   }
 
+  @Nonnull
   @Override
   public String getWidgetType() {
     String t = widgetType;

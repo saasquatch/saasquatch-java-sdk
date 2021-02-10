@@ -2,6 +2,7 @@ package com.saasquatch.sdk.test;
 
 import static com.saasquatch.sdk.internal.InternalUtils.getSysPropOrEnv;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
+
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
@@ -39,8 +40,8 @@ public class IntegrationTestUtils {
   public static String getAppDomain() {
     final String appDomain = getSysPropOrEnv(APP_DOMAIN_PROP);
     if (appDomain != null && appDomain.toLowerCase(Locale.ROOT).contains(PROD_APP_DOMAIN)) {
-      System.out.println("Running tests against the production app is not allowed!!!");
-      return null;
+      throw new IllegalArgumentException(
+          "Running tests against the production app is not allowed!!!");
     }
     return appDomain;
   }

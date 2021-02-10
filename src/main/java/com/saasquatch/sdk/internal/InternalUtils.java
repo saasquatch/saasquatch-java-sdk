@@ -102,7 +102,7 @@ public final class InternalUtils {
   /**
    * Executes a non-blocking request
    *
-   * @returns a {@link Publisher} that emits one element
+   * @return a {@link Publisher} that emits one element
    */
   public static Flowable<SimpleHttpResponse> executeRequest(
       @Nonnull CloseableHttpAsyncClient httpAsyncClient, @Nonnull SimpleHttpRequest request) {

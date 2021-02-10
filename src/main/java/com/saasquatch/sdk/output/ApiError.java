@@ -37,7 +37,6 @@ public final class ApiError {
     return apiErrorCode;
   }
 
-  @Nonnull
   public int getStatusCode() {
     return statusCode;
   }

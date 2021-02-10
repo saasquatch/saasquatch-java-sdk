@@ -11,11 +11,13 @@ final class ConstantWidgetType implements WidgetType {
   }
 
   @Override
+  @Nonnull
   public String getWidgetType() {
     return this.widgetType;
   }
 
   @Override
-  public void blockExternalImpl(ExternalImplBlocker externalImplBlocker) {}
+  public void blockExternalImpl(ExternalImplBlocker externalImplBlocker) {
+  }
 
 }
