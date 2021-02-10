@@ -21,8 +21,8 @@ import javax.annotation.Nonnull;
 @Beta
 public final class JsonArrayApiResponse extends ApiResponse<List<Object>> {
 
-  private JsonArrayApiResponse(SaaSquatchHttpResponse response) {
-    super(response);
+  private JsonArrayApiResponse(SaaSquatchHttpResponse httpResponse) {
+    super(httpResponse);
   }
 
   @Override

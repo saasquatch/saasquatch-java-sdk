@@ -13,13 +13,13 @@ import javax.annotation.Nullable;
 public final class TextApiResponse extends ApiResponse<String> {
 
   @Internal
-  public TextApiResponse(@Nonnull SaaSquatchHttpResponse response) {
-    super(response);
+  public TextApiResponse(@Nonnull SaaSquatchHttpResponse httpResponse) {
+    super(httpResponse);
   }
 
   @Internal
-  public TextApiResponse(@Nonnull SaaSquatchHttpResponse response, @Nullable String dataOverride) {
-    super(response, dataOverride);
+  public TextApiResponse(@Nonnull SaaSquatchHttpResponse httpResponse, @Nullable String dataOverride) {
+    super(httpResponse, dataOverride);
   }
 
   @Override

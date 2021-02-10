@@ -20,8 +20,8 @@ import javax.annotation.Nonnull;
 public final class JsonObjectApiResponse extends ApiResponse<Map<String, Object>> {
 
   @Internal
-  public JsonObjectApiResponse(SaaSquatchHttpResponse response) {
-    super(response);
+  public JsonObjectApiResponse(SaaSquatchHttpResponse httpResponse) {
+    super(httpResponse);
   }
 
   @Override

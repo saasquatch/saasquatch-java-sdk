@@ -13,8 +13,8 @@ import com.saasquatch.sdk.util.SaaSquatchHttpResponse;
 public final class StatusOnlyApiResponse extends ApiResponse<Void> {
 
   @Internal
-  public StatusOnlyApiResponse(SaaSquatchHttpResponse response) {
-    super(response);
+  public StatusOnlyApiResponse(SaaSquatchHttpResponse httpResponse) {
+    super(httpResponse);
   }
 
   @Override

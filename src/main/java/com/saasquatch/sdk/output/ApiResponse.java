@@ -16,27 +16,27 @@ public abstract class ApiResponse<T> {
 
   // Lazy init. Not part of the lazy init of data and error, since those depend on bodyText.
   private String bodyText;
-  private final SaaSquatchHttpResponse response;
+  private final SaaSquatchHttpResponse httpResponse;
   private final boolean hasDataOverride;
   private final T dataOverride;
 
   @Internal
-  ApiResponse(@Nonnull SaaSquatchHttpResponse response) {
-    this.response = response;
+  ApiResponse(@Nonnull SaaSquatchHttpResponse httpResponse) {
+    this.httpResponse = httpResponse;
     this.hasDataOverride = false;
     this.dataOverride = null;
   }
 
   @Internal
-  ApiResponse(@Nonnull SaaSquatchHttpResponse response, @Nullable T dataOverride) {
-    this.response = response;
+  ApiResponse(@Nonnull SaaSquatchHttpResponse httpResponse, @Nullable T dataOverride) {
+    this.httpResponse = httpResponse;
     this.hasDataOverride = true;
     this.dataOverride = dataOverride;
   }
 
   @Nonnull
   public SaaSquatchHttpResponse getHttpResponse() {
-    return response;
+    return httpResponse;
   }
 
   @Nullable

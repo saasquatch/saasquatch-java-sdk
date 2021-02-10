@@ -16,8 +16,8 @@ import com.saasquatch.sdk.internal.json.GsonUtils;
 public final class GraphQLApiResponse extends ApiResponse<GraphQLResult> {
 
   @Internal
-  public GraphQLApiResponse(SaaSquatchHttpResponse response) {
-    super(response);
+  public GraphQLApiResponse(SaaSquatchHttpResponse httpResponse) {
+    super(httpResponse);
   }
 
   @Override
