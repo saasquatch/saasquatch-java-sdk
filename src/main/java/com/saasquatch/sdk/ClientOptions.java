@@ -22,8 +22,8 @@ public final class ClientOptions {
   private static final int MAX_MAX_CONCURRENT_REQUESTS = 32;
   static final int DEFAULT_REQUEST_TIMEOUT_MILLIS = 10000;
   static final int MAX_REQUEST_TIMEOUT_MILLIS = 60000;
-  static final int DEFAULT_CONNECT_TIMEOUT_MILLIS = 2000;
-  static final int MAX_CONNECT_TIMEOUT_MILLIS = 15000;
+  static final int DEFAULT_CONNECT_TIMEOUT_MILLIS = 5000;
+  static final int MAX_CONNECT_TIMEOUT_MILLIS = 30000;
 
   private final String tenantAlias;
   private final AuthMethod authMethod;
