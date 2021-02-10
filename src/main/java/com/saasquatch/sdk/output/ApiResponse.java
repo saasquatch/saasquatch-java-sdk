@@ -68,7 +68,7 @@ public abstract class ApiResponse<T> {
    * Get the raw body text of the HTTP request, if available.
    */
   @Nullable
-  public String getBodyText() {
+  public final String getBodyText() {
     String s = bodyText;
     if (s == null) {
       bodyText = s = InternalUtils.getBodyText(response);
