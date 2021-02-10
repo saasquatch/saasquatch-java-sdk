@@ -10,7 +10,7 @@ import javax.annotation.Nonnull;
  *
  * @author sli
  */
-public class SaaSquatchApiException extends SaaSquatchException {
+public final class SaaSquatchApiException extends SaaSquatchException {
 
   @Nonnull
   private final ApiError apiError;

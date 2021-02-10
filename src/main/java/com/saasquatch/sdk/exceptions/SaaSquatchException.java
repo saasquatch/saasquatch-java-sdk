@@ -1,24 +1,26 @@
 package com.saasquatch.sdk.exceptions;
 
+import com.saasquatch.sdk.annotations.NoExternalImpl;
+
 /**
  * Base {@link Exception} type for SaaSquatch Java SDK
  *
  * @author sli
  */
-public class SaaSquatchException extends RuntimeException {
+@NoExternalImpl
+public abstract class SaaSquatchException extends RuntimeException {
 
-  public SaaSquatchException() {
-  }
+  SaaSquatchException() {}
 
-  public SaaSquatchException(String message) {
+  SaaSquatchException(String message) {
     super(message);
   }
 
-  public SaaSquatchException(String message, Throwable cause) {
+  SaaSquatchException(String message, Throwable cause) {
     super(message, cause);
   }
 
-  public SaaSquatchException(Throwable cause) {
+  SaaSquatchException(Throwable cause) {
     super(cause);
   }
 
