@@ -339,4 +339,19 @@ public final class InternalUtils {
     }
   }
 
+  @SuppressWarnings("rawtypes")
+  public static Object getNestedMapValue(Map map, String... keys) {
+    Object result = map;
+    if (result == null) {
+      return null;
+    }
+    for (String key : keys) {
+      result = ((Map) result).get(key);
+      if (result == null) {
+        return null;
+      }
+    }
+    return result;
+  }
+
 }

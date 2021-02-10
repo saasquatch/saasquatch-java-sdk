@@ -3,10 +3,12 @@ package com.saasquatch.sdk;
 import static com.saasquatch.sdk.internal.InternalUtils.addAllRejectingNull;
 import static com.saasquatch.sdk.internal.InternalUtils.defaultIfNull;
 import static com.saasquatch.sdk.internal.InternalUtils.entryOf;
+import static com.saasquatch.sdk.internal.InternalUtils.getNestedMapValue;
 import static com.saasquatch.sdk.internal.InternalUtils.isBlank;
 import static com.saasquatch.sdk.internal.InternalUtils.requireNotBlank;
 import static com.saasquatch.sdk.internal.InternalUtils.stringReplace;
 import static com.saasquatch.sdk.internal.InternalUtils.unmodifiableList;
+import static com.saasquatch.sdk.internal.json.GsonUtils.gson;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -17,6 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.saasquatch.sdk.internal.InternalUtils;
+import com.saasquatch.sdk.internal.json.GsonUtils;
 import io.reactivex.rxjava3.annotations.NonNull;
 import io.reactivex.rxjava3.core.Flowable;
 import java.io.ByteArrayInputStream;
@@ -27,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.PropertyPermission;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -159,6 +163,20 @@ public class InternalUtilsTest {
       assertSame(o1, defaultIfNull(o1, null));
       assertSame(o2, defaultIfNull(null, o2));
       assertNull(defaultIfNull(null, null));
+    }
+  }
+
+  @Test
+  public void testGetNestedMapValue() {
+    assertNull(getNestedMapValue(null));
+    assertNull(getNestedMapValue(null, "foo"));
+    final Map<?, ?> m = gson.fromJson("{\"a\":{\"b\":true}}", Map.class);
+    assertEquals(true, getNestedMapValue(m, "a", "b"));
+    assertNull(getNestedMapValue(m, "a", "c"));
+    assertThrows(ClassCastException.class, () -> getNestedMapValue(m, "a", "b", "c"));
+    {
+      final Object value = getNestedMapValue(m, "a");
+      assertEquals("{\"b\":true}", gson.toJson(value));
     }
   }
 
