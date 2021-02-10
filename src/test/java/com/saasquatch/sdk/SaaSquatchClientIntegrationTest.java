@@ -62,7 +62,7 @@ public class SaaSquatchClientIntegrationTest {
     {
       final JsonObjectApiResponse response =
           Flowable.fromPublisher(saasquatchClient.userUpsert(userInput, null)).blockingSingle();
-      assertEquals(200, response.getStatusCode());
+      assertEquals(200, response.getHttpResponse().getStatusCode());
       final User user = response.toModel(User.class);
       assertNotNull(user);
       assertEquals("asdf", user.getId());
@@ -118,27 +118,27 @@ public class SaaSquatchClientIntegrationTest {
       final TextApiResponse response =
           Flowable.fromPublisher(saasquatchClient.renderWidget("asdf", "asdf", null, null))
               .blockingSingle();
-      assertEquals(200, response.getStatusCode());
+      assertEquals(200, response.getHttpResponse().getStatusCode());
       assertTrue(response.getData().toLowerCase(Locale.ROOT).contains("<!doctype html>"));
     }
     {
       final TextApiResponse response = Flowable.fromPublisher(saasquatchClient.renderWidget("asdf",
           "asdf", WidgetTypes.classicConversionWidget(), null)).blockingSingle();
-      assertEquals(200, response.getStatusCode());
+      assertEquals(200, response.getHttpResponse().getStatusCode());
     }
     {
       final TextApiResponse response = Flowable
           .fromPublisher(saasquatchClient.renderWidget("asdf", "asdf", null,
               RequestOptions.newBuilder().addQueryParam("widgetType", "CONVERSION_WIDGET").build()))
           .blockingSingle();
-      assertEquals(200, response.getStatusCode());
+      assertEquals(200, response.getHttpResponse().getStatusCode());
     }
     {
       final TextApiResponse response = Flowable
           .fromPublisher(saasquatchClient.renderWidget("asdf", "asdf", null,
               RequestOptions.newBuilder().addQueryParam("widgetType", "invalid").build()))
           .blockingSingle();
-      assertEquals(400, response.getStatusCode());
+      assertEquals(400, response.getHttpResponse().getStatusCode());
     }
   }
 
@@ -157,7 +157,7 @@ public class SaaSquatchClientIntegrationTest {
     {
       final JsonObjectApiResponse response = Flowable
           .fromPublisher(saasquatchClient.logUserEvent(userEventInput, null)).blockingSingle();
-      assertEquals(200, response.getStatusCode());
+      assertEquals(200, response.getHttpResponse().getStatusCode());
       final UserEventResult model = response.toModel(UserEventResult.class);
       assertNotNull(model.getAccountId());
       assertNotNull(model.getUserId());
@@ -192,7 +192,7 @@ public class SaaSquatchClientIntegrationTest {
     final GraphQLApiResponse response =
         Flowable.fromPublisher(saasquatchClient.graphQL(GraphQLInput.ofQuery(query), null))
             .blockingSingle();
-    assertEquals(200, response.getStatusCode());
+    assertEquals(200, response.getHttpResponse().getStatusCode());
     final GraphQLResult graphQLResult = response.getData();
     assertTrue(graphQLResult.getErrors() == null || graphQLResult.getErrors().isEmpty());
     final JsonObject dataJson =

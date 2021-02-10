@@ -1,6 +1,6 @@
 package com.saasquatch.sdk.output;
 
-import org.apache.hc.client5.http.async.methods.SimpleHttpResponse;
+import com.saasquatch.sdk.util.SaaSquatchHttpResponse;
 import com.saasquatch.sdk.annotations.Internal;
 import com.saasquatch.sdk.internal.json.GsonUtils;
 
@@ -16,13 +16,13 @@ import com.saasquatch.sdk.internal.json.GsonUtils;
 public final class GraphQLApiResponse extends ApiResponse<GraphQLResult> {
 
   @Internal
-  public GraphQLApiResponse(SimpleHttpResponse response) {
+  public GraphQLApiResponse(SaaSquatchHttpResponse response) {
     super(response);
   }
 
   @Override
   protected GraphQLResult buildData() {
-    return GsonUtils.gson.fromJson(getBodyText(), GraphQLResult.class);
+    return GsonUtils.gson.fromJson(getHttpResponse().getBodyText(), GraphQLResult.class);
   }
 
 }

@@ -1,15 +1,16 @@
 package com.saasquatch.sdk.output;
 
 import static com.saasquatch.sdk.internal.InternalUtils.format;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import javax.annotation.Nonnull;
-import org.apache.hc.client5.http.async.methods.SimpleHttpResponse;
+
 import com.google.gson.reflect.TypeToken;
 import com.saasquatch.sdk.annotations.Beta;
 import com.saasquatch.sdk.internal.json.GsonUtils;
 import com.saasquatch.sdk.models.Model;
+import com.saasquatch.sdk.util.SaaSquatchHttpResponse;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import javax.annotation.Nonnull;
 
 /**
  * {@link ApiResponse} that has a JSON array. The JSON array will be represented as a {@link List}
@@ -20,13 +21,14 @@ import com.saasquatch.sdk.models.Model;
 @Beta
 public final class JsonArrayApiResponse extends ApiResponse<List<Object>> {
 
-  private JsonArrayApiResponse(SimpleHttpResponse response) {
+  private JsonArrayApiResponse(SaaSquatchHttpResponse response) {
     super(response);
   }
 
   @Override
   protected List<Object> buildData() {
-    return GsonUtils.gson.fromJson(getBodyText(), new TypeToken<List<Object>>() {}.getType());
+    return GsonUtils.gson.fromJson(getHttpResponse().getBodyText(),
+        new TypeToken<List<Object>>() {}.getType());
   }
 
   /**
@@ -42,7 +44,8 @@ public final class JsonArrayApiResponse extends ApiResponse<List<Object>> {
      * agnostic
      */
     final List<T> modelList = GsonUtils.gson.fromJson(GsonUtils.gson.toJsonTree(getData()),
-        new TypeToken<List<T>>() {}.getType());
+        new TypeToken<List<T>>() {
+        }.getType());
     if (modelList == null) {
       throw new IllegalStateException(
           format("Unable to convert to model list with class [%s]", modelClass));

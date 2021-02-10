@@ -1,10 +1,19 @@
 package com.saasquatch.sdk;
 
 import static com.saasquatch.sdk.internal.InternalUtils.requireNotBlank;
+
+import com.saasquatch.sdk.exceptions.SaaSquatchApiException;
+import com.saasquatch.sdk.exceptions.SaaSquatchUnhandledApiException;
+import com.saasquatch.sdk.input.RenderWidgetInput;
+import com.saasquatch.sdk.output.ApiError;
+import com.saasquatch.sdk.output.GraphQLResult;
+import com.saasquatch.sdk.util.Client5SaaSquatchHttpResponse;
+import com.saasquatch.sdk.util.SaaSquatchHttpResponse;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -13,7 +22,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.apache.hc.client5.http.async.methods.SimpleHttpRequest;
 import org.apache.hc.client5.http.async.methods.SimpleHttpRequests;
-import org.apache.hc.client5.http.async.methods.SimpleHttpResponse;
 import org.apache.hc.client5.http.config.RequestConfig;
 import org.apache.hc.client5.http.impl.async.CloseableHttpAsyncClient;
 import org.apache.hc.client5.http.impl.async.HttpAsyncClients;
@@ -70,10 +78,10 @@ public final class SaaSquatchClient implements Closeable {
    * Initialize a {@link SaaSquatchClient} with a tenantAlias and default options.
    *
    * @param tenantAlias Your tenantAlias. This will be the default tenantAlias for all your
-   *        requests. If you are in a multi-tenant environment, you should be using
-   *        {@link SaaSquatchClient#create(ClientOptions)} without a tenantAlias, and then pass the
-   *        tenantAlias you want to use in every request via
-   *        {@link RequestOptions.Builder#setTenantAlias(String)}
+   *                    requests. If you are in a multi-tenant environment, you should be using
+   *                    {@link SaaSquatchClient#create(ClientOptions)} without a tenantAlias, and
+   *                    then pass the tenantAlias you want to use in every request via {@link
+   *                    RequestOptions.Builder#setTenantAlias(String)}
    * @see #create(ClientOptions)
    */
   public static SaaSquatchClient createForTenant(@Nonnull String tenantAlias) {
@@ -99,11 +107,12 @@ public final class SaaSquatchClient implements Closeable {
   }
 
   /**
-   * Build a message link for a given user with the specified program and mediums.<br>
-   * Note that this method simply builds a URL and does not do any I/O. Depending on the combination
-   * of shareMedium and engagementMedium, the URL built may not work. And since this method does not
+   * Build a message link for a given user with the specified program and mediums.<br> Note that
+   * this method simply builds a URL and does not do any I/O. Depending on the combination of
+   * shareMedium and engagementMedium, the URL built may not work. And since this method does not
    * make an API call, the configured {@link AuthMethod} and HTTP headers are ignored.<br>
-   * <a href="https://docs.referralsaasquatch.com/features/message-links/">Link to official docs</a>
+   * <a href="https://docs.referralsaasquatch.com/features/message-links/">Link to official
+   * docs</a>
    */
   public String buildUserMessageLink(@Nonnull UserLinkInput userLinkInput,
       @Nullable RequestOptions requestOptions) {
@@ -138,8 +147,8 @@ public final class SaaSquatchClient implements Closeable {
   }
 
   /**
-   * Get a user.<br>
-   * By default, the result of the response can be unmarshalled to {@link User}.<br>
+   * Get a user.<br> By default, the result of the response can be unmarshalled to {@link
+   * User}.<br>
    * <a href="https://docs.referralsaasquatch.com/api/methods/#open_get_user">Link to official
    * docs</a>
    */
@@ -149,15 +158,15 @@ public final class SaaSquatchClient implements Closeable {
   }
 
   /**
-   * Render a widget for a user.<br>
-   * The response is the widget HTML.
+   * Render a widget for a user.<br> The response is the widget HTML.
    */
   public Publisher<TextApiResponse> renderWidget(@Nonnull String accountId, @Nonnull String userId,
       @Nullable WidgetType widgetType, @Nullable RequestOptions requestOptions) {
     return _getUser(accountId, userId, widgetType, requestOptions, true).map(TextApiResponse::new);
   }
 
-  private Flowable<SimpleHttpResponse> _getUser(@Nonnull String accountId, @Nonnull String userId,
+  private Flowable<SaaSquatchHttpResponse> _getUser(@Nonnull String accountId,
+      @Nonnull String userId,
       @Nullable WidgetType widgetType, @Nullable RequestOptions requestOptions,
       boolean widgetRequest) {
     final URIBuilder urlBuilder = baseUrlBuilder(requestOptions);
@@ -177,8 +186,60 @@ public final class SaaSquatchClient implements Closeable {
   }
 
   /**
-   * Create or update a user.<br>
-   * By default, the result of the response can be unmarshalled to {@link User}.<br>
+   * Render a widget without a user.<br> The response is the widget HTML.
+   */
+  public Publisher<TextApiResponse> renderWidget(@Nonnull RenderWidgetInput renderWidgetInput,
+      RequestOptions requestOptions) {
+    Objects.requireNonNull(renderWidgetInput, "renderWidgetInput");
+    final String query = "query renderWidget(\n"
+        + "  $user: UserIdInput\n"
+        + "  $widgetType: WidgetType\n"
+        + "  $engagementMedium: UserEngagementMedium\n"
+        + "  $locale: RSLocale\n"
+        + ") {\n"
+        + "  renderWidget(\n"
+        + "    user: $user\n"
+        + "    widgetType: $widgetType\n"
+        + "    engagementMedium: $engagementMedium\n"
+        + "    locale: $locale\n"
+        + "  ) {\n"
+        + "    template\n"
+        + "  }\n"
+        + "}";
+    final Map<String, Object> variables = new HashMap<>();
+    variables.put("user", renderWidgetInput.getUser());
+    variables.put("widgetType", renderWidgetInput.getWidgetType());
+    variables.put("engagementMedium", renderWidgetInput.getEngagementMedium());
+    variables.put("locale", renderWidgetInput.getLocale());
+    return Flowable.fromPublisher(graphQL(GraphQLInput.newBuilder()
+        .setQuery(query)
+        .setVariables(variables)
+        .build(), requestOptions))
+        .map(graphQLApiResponse -> {
+          final GraphQLResult graphQLResult = graphQLApiResponse.getData();
+          final ApiError graphQLApiError = graphQLResult.getGraphQLApiError();
+          if (graphQLApiError != null) {
+            throw new SaaSquatchApiException(graphQLApiError,
+                graphQLApiResponse.getHttpResponse().getBodyText());
+          } else if (graphQLResult.getErrors() != null && !graphQLResult.getErrors().isEmpty()) {
+            throw new SaaSquatchUnhandledApiException(
+                graphQLApiResponse.getHttpResponse().getBodyText());
+          }
+          String templateString = null;
+          if (graphQLResult.getData() != null) {
+            @SuppressWarnings("unchecked") final Map<String, Object> renderWidgetMap =
+                (Map<String, Object>) graphQLResult.getData().get("renderWidget");
+            if (renderWidgetMap != null) {
+              templateString = (String) renderWidgetMap.get("template");
+            }
+          }
+          return new TextApiResponse(graphQLApiResponse.getHttpResponse(), templateString);
+        });
+  }
+
+  /**
+   * Create or update a user.<br> By default, the result of the response can be unmarshalled to
+   * {@link User}.<br>
    * <a href="https://docs.referralsaasquatch.com/api/methods/#open_user_upsert">Link to official
    * docs</a>
    */
@@ -189,8 +250,8 @@ public final class SaaSquatchClient implements Closeable {
   }
 
   /**
-   * Create or update a user.<br>
-   * By default, the result of the response can be unmarshalled to {@link User}.<br>
+   * Create or update a user.<br> By default, the result of the response can be unmarshalled to
+   * {@link User}.<br>
    * <a href="https://docs.referralsaasquatch.com/api/methods/#open_user_upsert">Link to official
    * docs</a>
    */
@@ -201,8 +262,8 @@ public final class SaaSquatchClient implements Closeable {
   }
 
   /**
-   * Create or update a user and render the widget.<br>
-   * By default, the result of the response can be unmarshalled to {@link WidgetUpsertResult}.
+   * Create or update a user and render the widget.<br> By default, the result of the response can
+   * be unmarshalled to {@link WidgetUpsertResult}.
    */
   public Publisher<JsonObjectApiResponse> widgetUpsert(@Nonnull UserInput userInput,
       @Nullable WidgetType widgetType, @Nullable RequestOptions requestOptions) {
@@ -211,8 +272,8 @@ public final class SaaSquatchClient implements Closeable {
   }
 
   /**
-   * Create or update a user and render the widget.<br>
-   * By default, the result of the response can be unmarshalled to {@link WidgetUpsertResult}.
+   * Create or update a user and render the widget.<br> By default, the result of the response can
+   * be unmarshalled to {@link WidgetUpsertResult}.
    */
   public Publisher<JsonObjectApiResponse> widgetUpsert(@Nonnull Map<String, Object> userInput,
       @Nullable WidgetType widgetType, @Nullable RequestOptions requestOptions) {
@@ -220,7 +281,7 @@ public final class SaaSquatchClient implements Closeable {
         widgetType, requestOptions, true).map(JsonObjectApiResponse::new);
   }
 
-  private Flowable<SimpleHttpResponse> _userUpsert(@Nonnull String accountId,
+  private Flowable<SaaSquatchHttpResponse> _userUpsert(@Nonnull String accountId,
       @Nonnull String userId, @Nonnull Object body, @Nullable WidgetType widgetType,
       @Nullable RequestOptions requestOptions, boolean widgetRequest) {
     final URIBuilder urlBuilder = baseUrlBuilder(requestOptions);
@@ -264,9 +325,10 @@ public final class SaaSquatchClient implements Closeable {
   }
 
   /**
-   * Log a user event.<br>
-   * By default, the result of the response can be unmarshalled to {@link UserEventResult}.<br>
-   * <a href="https://docs.referralsaasquatch.com/api/methods/#trackEvent">Link to official docs</a>
+   * Log a user event.<br> By default, the result of the response can be unmarshalled to {@link
+   * UserEventResult}.<br>
+   * <a href="https://docs.referralsaasquatch.com/api/methods/#trackEvent">Link to official
+   * docs</a>
    */
   public Publisher<JsonObjectApiResponse> logUserEvent(@Nonnull UserEventInput userEventInput,
       @Nullable RequestOptions requestOptions) {
@@ -275,9 +337,10 @@ public final class SaaSquatchClient implements Closeable {
   }
 
   /**
-   * Log a user event.<br>
-   * By default, the result of the response can be unmarshalled to {@link UserEventResult}.<br>
-   * <a href="https://docs.referralsaasquatch.com/api/methods/#trackEvent">Link to official docs</a>
+   * Log a user event.<br> By default, the result of the response can be unmarshalled to {@link
+   * UserEventResult}.<br>
+   * <a href="https://docs.referralsaasquatch.com/api/methods/#trackEvent">Link to official
+   * docs</a>
    */
   public Publisher<JsonObjectApiResponse> logUserEvent(@Nonnull Map<String, Object> userEventInput,
       @Nullable RequestOptions requestOptions) {
@@ -422,8 +485,22 @@ public final class SaaSquatchClient implements Closeable {
     request.setBody(jsonStr, ContentType.APPLICATION_JSON);
   }
 
-  private Flowable<SimpleHttpResponse> executeRequest(@Nonnull SimpleHttpRequest request) {
-    return InternalUtils.executeRequest(httpAsyncClient, request);
+  private Flowable<SaaSquatchHttpResponse> executeRequest(@Nonnull SimpleHttpRequest request) {
+    return InternalUtils.executeRequest(httpAsyncClient, request)
+        .<SaaSquatchHttpResponse>map(Client5SaaSquatchHttpResponse::new)
+        .doOnNext(this::httpResponseToPossibleException);
+  }
+
+  private void httpResponseToPossibleException(@Nonnull SaaSquatchHttpResponse response) {
+    if (response.getStatusCode() < 300) {
+      return;
+    }
+    final String bodyText = response.getBodyText();
+    final ApiError apiError = ApiError.fromBodyText(bodyText);
+    if (apiError != null) {
+      throw new SaaSquatchApiException(apiError, bodyText);
+    }
+    throw new SaaSquatchUnhandledApiException(bodyText);
   }
 
 }

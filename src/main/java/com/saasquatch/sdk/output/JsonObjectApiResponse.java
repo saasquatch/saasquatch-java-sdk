@@ -1,14 +1,15 @@
 package com.saasquatch.sdk.output;
 
 import static com.saasquatch.sdk.internal.InternalUtils.format;
-import java.util.Map;
-import java.util.Objects;
-import javax.annotation.Nonnull;
-import org.apache.hc.client5.http.async.methods.SimpleHttpResponse;
+
 import com.google.gson.reflect.TypeToken;
 import com.saasquatch.sdk.annotations.Internal;
 import com.saasquatch.sdk.internal.json.GsonUtils;
 import com.saasquatch.sdk.models.Model;
+import com.saasquatch.sdk.util.SaaSquatchHttpResponse;
+import java.util.Map;
+import java.util.Objects;
+import javax.annotation.Nonnull;
 
 /**
  * {@link ApiResponse} that has a JSON object. The JSON object will be represented as a {@link Map}
@@ -19,13 +20,13 @@ import com.saasquatch.sdk.models.Model;
 public final class JsonObjectApiResponse extends ApiResponse<Map<String, Object>> {
 
   @Internal
-  public JsonObjectApiResponse(SimpleHttpResponse response) {
+  public JsonObjectApiResponse(SaaSquatchHttpResponse response) {
     super(response);
   }
 
   @Override
   protected Map<String, Object> buildData() {
-    return GsonUtils.gson.fromJson(getBodyText(),
+    return GsonUtils.gson.fromJson(getHttpResponse().getBodyText(),
         new TypeToken<Map<String, Object>>() {}.getType());
   }
 
