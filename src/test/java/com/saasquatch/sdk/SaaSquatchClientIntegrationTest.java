@@ -4,6 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import com.saasquatch.sdk.exceptions.SaaSquatchApiException;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -72,22 +74,23 @@ public class SaaSquatchClientIntegrationTest {
       assertNotNull(user.getSegments());
     }
     // Test auth override
-    {
-      final JsonObjectApiResponse response = Flowable.fromPublisher(saasquatchClient.userUpsert(
+    try {
+      Flowable.fromPublisher(saasquatchClient.userUpsert(
           userInput,
           RequestOptions.newBuilder().setAuthMethod(AuthMethods.ofTenantApiKey("fake")).build()))
-          .blockingSingle();
-      assertEquals(401, response.getStatusCode());
-      final ApiError apiError = response.getApiError();
+          .blockingSubscribe();
+    } catch (SaaSquatchApiException e) {
+      final ApiError apiError = e.getApiError();
+      assertEquals(401, apiError.getStatusCode());
       assertEquals(401, apiError.getStatusCode());
     }
     // Test tenantAlias override
-    {
-      final JsonObjectApiResponse response =
-          Flowable.fromPublisher(saasquatchClient.userUpsert(userInput,
-              RequestOptions.newBuilder().setTenantAlias("fake").build())).blockingSingle();
-      assertEquals(404, response.getStatusCode());
-      final ApiError apiError = response.getApiError();
+    try {
+      Flowable.fromPublisher(saasquatchClient.userUpsert(userInput,
+          RequestOptions.newBuilder().setTenantAlias("fake").build())).blockingSubscribe();
+    } catch (SaaSquatchApiException e) {
+      final ApiError apiError = e.getApiError();
+      assertEquals(404, apiError.getStatusCode());
       assertEquals(404, apiError.getStatusCode());
     }
   }
@@ -98,11 +101,13 @@ public class SaaSquatchClientIntegrationTest {
     userInput.put("id", "asdf");
     userInput.put("accountId", "asdf");
     userInput.put("locale", "???");
-    final JsonObjectApiResponse response =
-        Flowable.fromPublisher(saasquatchClient.userUpsert(userInput, null)).blockingSingle();
-    assertEquals(400, response.getStatusCode());
-    final ApiError apiError = response.getApiError();
-    assertEquals(400, apiError.getStatusCode());
+    try {
+      Flowable.fromPublisher(saasquatchClient.userUpsert(userInput, null)).blockingSubscribe();
+    } catch (SaaSquatchApiException e) {
+      final ApiError apiError = e.getApiError();
+      assertEquals(400, apiError.getStatusCode());
+      assertEquals(400, apiError.getStatusCode());
+    }
   }
 
   @Test
@@ -170,14 +175,15 @@ public class SaaSquatchClientIntegrationTest {
     userInput.put("accountId", "asdf");
     userInput.put("firstName", "Foo");
     userInput.put("lastName", "Bar");
-    final JsonObjectApiResponse response = Flowable
-        .fromPublisher(saasquatchClient.widgetUpsert(userInput, null,
-            RequestOptions.newBuilder().addQueryParam("widgetType", "invalid").build()))
-        .blockingSingle();
-    assertEquals(400, response.getStatusCode());
-    final ApiError apiError = response.getApiError();
-    assertNotNull(apiError);
-    assertEquals("RS036", apiError.getRsCode());
+    try {
+      Flowable.fromPublisher(saasquatchClient.widgetUpsert(userInput, null,
+          RequestOptions.newBuilder().addQueryParam("widgetType", "invalid").build()))
+          .blockingSubscribe();
+    } catch (SaaSquatchApiException e) {
+      final ApiError apiError = e.getApiError();
+      assertEquals(400, apiError.getStatusCode());
+      assertEquals("RS036", apiError.getRsCode());
+    }
   }
 
   @Test
@@ -205,11 +211,9 @@ public class SaaSquatchClientIntegrationTest {
   }
 
   private void upsertEmptyUser(String accountId, String userId) {
-    final JsonObjectApiResponse response = Flowable
-        .fromPublisher(saasquatchClient
-            .userUpsert(ImmutableMap.of("accountId", accountId, "id", userId), null))
-        .blockingSingle();
-    assertTrue(response.succeeded());
+    Flowable.fromPublisher(
+        saasquatchClient.userUpsert(ImmutableMap.of("accountId", accountId, "id", userId), null))
+        .blockingSubscribe();
   }
 
 }
