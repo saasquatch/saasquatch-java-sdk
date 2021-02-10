@@ -18,11 +18,7 @@ public class SaaSquatchClientTest {
       assertThrows(IllegalArgumentException.class, () -> saasquatchClient.getUser(" ", null, null));
       assertThrows(IllegalArgumentException.class, () -> saasquatchClient.getUser(" ", " ", null));
       assertThrows(NullPointerException.class,
-          () -> saasquatchClient.renderWidget(null, null, null, null));
-      assertThrows(IllegalArgumentException.class,
-          () -> saasquatchClient.renderWidget(" ", null, null, null));
-      assertThrows(IllegalArgumentException.class,
-          () -> saasquatchClient.renderWidget(" ", " ", null, null));
+          () -> saasquatchClient.renderWidget(null, null));
       assertThrows(NullPointerException.class,
           () -> saasquatchClient.userUpsert((UserInput) null, null));
       assertThrows(NullPointerException.class,

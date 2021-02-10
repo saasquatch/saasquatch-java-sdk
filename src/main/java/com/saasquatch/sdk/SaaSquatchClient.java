@@ -155,14 +155,6 @@ public final class SaaSquatchClient implements Closeable {
     return _getUser(accountId, userId, null, requestOptions, false).map(JsonObjectApiResponse::new);
   }
 
-  /**
-   * Render a widget for a user.<br> The response is the widget HTML.
-   */
-  public Publisher<TextApiResponse> renderWidget(@Nonnull String accountId, @Nonnull String userId,
-      @Nullable WidgetType widgetType, @Nullable RequestOptions requestOptions) {
-    return _getUser(accountId, userId, widgetType, requestOptions, true).map(TextApiResponse::new);
-  }
-
   private Flowable<SaaSquatchHttpResponse> _getUser(@Nonnull String accountId,
       @Nonnull String userId,
       @Nullable WidgetType widgetType, @Nullable RequestOptions requestOptions,

@@ -7,6 +7,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.saasquatch.sdk.exceptions.SaaSquatchApiException;
+import com.saasquatch.sdk.input.RenderWidgetInput;
+import com.saasquatch.sdk.input.UserIdInput;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -115,30 +117,19 @@ public class SaaSquatchClientIntegrationTest {
     upsertEmptyUser("asdf", "asdf");
     // Attempt to render a widget
     {
-      final TextApiResponse response =
-          Flowable.fromPublisher(saasquatchClient.renderWidget("asdf", "asdf", null, null))
-              .blockingSingle();
+      final TextApiResponse response = Flowable
+          .fromPublisher(saasquatchClient.renderWidget(RenderWidgetInput.newBuilder().setUser(
+              UserIdInput.of("asdf", "asdf")).build(), null))
+          .blockingSingle();
       assertEquals(200, response.getHttpResponse().getStatusCode());
       assertTrue(response.getData().toLowerCase(Locale.ROOT).contains("<!doctype html>"));
     }
     {
-      final TextApiResponse response = Flowable.fromPublisher(saasquatchClient.renderWidget("asdf",
-          "asdf", WidgetTypes.classicConversionWidget(), null)).blockingSingle();
-      assertEquals(200, response.getHttpResponse().getStatusCode());
-    }
-    {
       final TextApiResponse response = Flowable
-          .fromPublisher(saasquatchClient.renderWidget("asdf", "asdf", null,
-              RequestOptions.newBuilder().addQueryParam("widgetType", "CONVERSION_WIDGET").build()))
-          .blockingSingle();
+          .fromPublisher(saasquatchClient.renderWidget(RenderWidgetInput.newBuilder().setUser(
+              UserIdInput.of("asdf", "asdf")).setWidgetType(WidgetTypes.classicConversionWidget())
+              .build(), null)).blockingSingle();
       assertEquals(200, response.getHttpResponse().getStatusCode());
-    }
-    {
-      final TextApiResponse response = Flowable
-          .fromPublisher(saasquatchClient.renderWidget("asdf", "asdf", null,
-              RequestOptions.newBuilder().addQueryParam("widgetType", "invalid").build()))
-          .blockingSingle();
-      assertEquals(400, response.getHttpResponse().getStatusCode());
     }
   }
 
