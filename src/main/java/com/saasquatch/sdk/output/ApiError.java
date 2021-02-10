@@ -58,11 +58,11 @@ public final class ApiError {
      * Doing this because in case of a catastrophic failure, we may not be able to get an actual
      * ApiError from SaaSquatch.
      */
-    JsonElement jsonElement;
+    final JsonElement jsonElement;
     try {
       jsonElement = JsonParser.parseString(bodyText);
     } catch (JsonParseException e) {
-      jsonElement = null;
+      return null;
     }
     /*
      * If the response is a JSON object and it has the appropriate fields, then it's probably an
