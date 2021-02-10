@@ -1,5 +1,6 @@
 package com.saasquatch.sdk.output;
 
+import com.saasquatch.sdk.annotations.NoExternalImpl;
 import java.util.Objects;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -18,6 +19,7 @@ import com.saasquatch.sdk.internal.InternalUtils;
  *
  * @author sli
  */
+@NoExternalImpl
 public abstract class ApiResponse<T> {
 
   // Lazy init
