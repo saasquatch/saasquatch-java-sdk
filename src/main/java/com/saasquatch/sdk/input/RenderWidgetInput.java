@@ -80,6 +80,10 @@ public final class RenderWidgetInput {
       return this;
     }
 
+    public RenderWidgetInput build() {
+      return new RenderWidgetInput(user, widgetType, engagementMedium, locale);
+    }
+
   }
 
 }

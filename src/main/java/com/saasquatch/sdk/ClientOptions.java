@@ -129,8 +129,7 @@ public final class ClientOptions {
      * {@link AuthMethod}, a default tenantAlias is required.
      */
     public Builder setAuthMethod(@Nonnull AuthMethod authMethod) {
-      Objects.requireNonNull(authMethod, "authMethod");
-      this.authMethod = authMethod;
+      this.authMethod = Objects.requireNonNull(authMethod, "authMethod");
       return this;
     }
 
