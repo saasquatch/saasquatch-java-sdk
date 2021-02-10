@@ -121,7 +121,7 @@ To run integration tests, you'll need a SaaSquatch account, and run:
 mvn test -D"com.saasquatch.sdk.test.appDomain"="REPLACEME" -D"com.saasquatch.sdk.test.tenantAlias"="REPLACEME" -D"com.saasquatch.sdk.test.tenantApiKey"="REPLACEME"
 ```
 
-## LICENSE
+## License
 
 Unless explicitly stated otherwise all files in this repository are licensed under the Apache License 2.0.
 
