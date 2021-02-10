@@ -21,7 +21,4 @@ final class BasicAuth implements AuthMethod {
         "Basic " + Base64.encodeBase64String((username + ':' + password).getBytes(UTF_8)));
   }
 
-  @Override
-  public void blockExternalImpl(ExternalImplBlocker externalImplBlocker) {}
-
 }

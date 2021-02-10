@@ -25,7 +25,4 @@ final class ProgramWidgetType implements WidgetType {
     return t;
   }
 
-  @Override
-  public void blockExternalImpl(ExternalImplBlocker externalImplBlocker) {}
-
 }

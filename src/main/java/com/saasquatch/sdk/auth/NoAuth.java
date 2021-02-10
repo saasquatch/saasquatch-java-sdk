@@ -9,7 +9,4 @@ enum NoAuth implements AuthMethod {
   @Override
   public void mutateRequest(SimpleHttpRequest request) {}
 
-  @Override
-  public void blockExternalImpl(ExternalImplBlocker externalImplBlocker) {}
-
 }

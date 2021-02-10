@@ -16,7 +16,4 @@ public interface AuthMethod {
   @Internal
   void mutateRequest(SimpleHttpRequest request);
 
-  @Internal
-  void blockExternalImpl(ExternalImplBlocker externalImplBlocker);
-
 }

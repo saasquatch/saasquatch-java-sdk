@@ -16,8 +16,4 @@ final class ConstantWidgetType implements WidgetType {
     return this.widgetType;
   }
 
-  @Override
-  public void blockExternalImpl(ExternalImplBlocker externalImplBlocker) {
-  }
-
 }

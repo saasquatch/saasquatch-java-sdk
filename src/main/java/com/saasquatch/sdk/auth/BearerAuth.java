@@ -16,7 +16,4 @@ final class BearerAuth implements AuthMethod {
     request.setHeader(HttpHeaders.AUTHORIZATION, "Bearer " + token);
   }
 
-  @Override
-  public void blockExternalImpl(ExternalImplBlocker externalImplBlocker) {}
-
 }

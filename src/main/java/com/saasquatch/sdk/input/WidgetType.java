@@ -19,7 +19,4 @@ public interface WidgetType {
   @Nonnull
   String getWidgetType();
 
-  @Internal
-  void blockExternalImpl(ExternalImplBlocker externalImplBlocker);
-
 }

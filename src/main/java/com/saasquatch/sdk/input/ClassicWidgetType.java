@@ -12,7 +12,4 @@ enum ClassicWidgetType implements WidgetType {
     return name();
   }
 
-  @Override
-  public void blockExternalImpl(ExternalImplBlocker externalImplBlocker) {}
-
 }
