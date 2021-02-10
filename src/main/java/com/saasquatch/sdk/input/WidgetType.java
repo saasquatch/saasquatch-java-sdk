@@ -1,5 +1,6 @@
 package com.saasquatch.sdk.input;
 
+import com.saasquatch.sdk.RequestOptions;
 import javax.annotation.Nonnull;
 import com.saasquatch.sdk.SaaSquatchClient;
 import com.saasquatch.sdk.annotations.NoExternalImpl;
@@ -8,8 +9,8 @@ import com.saasquatch.sdk.annotations.NoExternalImpl;
  * A SaaSquatch widget type
  *
  * @author sli
- * @see SaaSquatchClient#renderWidget(String, String, WidgetType, com.saasquatch.sdk.RequestOptions)
- * @see SaaSquatchClient#widgetUpsert(UserInput, WidgetType, com.saasquatch.sdk.RequestOptions)
+ * @see SaaSquatchClient#renderWidget(RenderWidgetInput, RequestOptions)
+ * @see SaaSquatchClient#widgetUpsert(UserInput, WidgetType, RequestOptions)
  * @see WidgetTypes
  */
 @NoExternalImpl
