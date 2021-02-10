@@ -78,30 +78,29 @@ Every API method in `SaaSquatchClient` takes a `RequestOptions`, where you can s
 `SaaSquatchClient` returns [Reactive Streams](https://www.reactive-streams.org/) interfaces. Assuming you are using RxJava, then a typical API call made with this SDK would look something like this:
 
 ```java
-final Map<String, Object> userInput = ...;
-final String jwt = ...;
-final Publisher<MapApiResponse> responsePublisher =
-    saasquatchClient.userUpsert(userInput,
-        RequestOptions.newBuilder().setAuthMethod(AuthMethod.ofJwt(jwt)).build());
+final Publisher<JsonObjectApiResponse> responsePublisher = saasquatchClient
+    .userUpsert(userInput,
+        RequestOptions.newBuilder().setAuthMethod(AuthMethods.ofJwt(jwt)).build());
 Flowable.fromPublisher(responsePublisher)
     .doOnNext(response -> {
-      System.out.printf("Status[%d] received\n", response.getStatusCode());
-      if (response.failed()) {
-        // Non 2XX received, in which case we should typically get a standard api error
-        final ApiError apiError = response.getApiError();
-        System.out.println(apiError.getMessage());
-      } else {
-        // Getting the raw JSON data as a Map and do whatever you want with it
-        final Map<String, Object> data = response.getData();
-        // Or unmarshal the JSON result to one of the provided model classes
-        final User user = response.toModel(User.class);
-        System.out.printf("User with accountId[%s] and id[%s] created\n",
-            user.getAccountId(), user.getId());
-      }
+      System.out.printf("Status[%d] received\n", response.getHttpResponse().getStatusCode());
+      // Getting the raw JSON data as a Map and do whatever you want with it
+      final Map<String, Object> data = response.getData();
+      // Or unmarshal the JSON result to one of the provided model classes
+      final User user = response.toModel(User.class);
+      System.out.printf("User with accountId[%s] and id[%s] created\n",
+          user.getAccountId(), user.getId());
     })
-    .doOnError(ex -> {
-      System.out.println("Catastrophic failure!!!");
+    .onErrorResumeNext(ex -> {
+      if (ex instanceof SaaSquatchApiException) {
+        // Non 2XX received, in which case we should typically get a standard api error
+        final ApiError apiError = ((SaaSquatchApiException) ex).getApiError();
+        System.out.println(apiError.getMessage());
+        return Flowable.empty();
+      }
+      // Catastrophic failure!!!
       ex.printStackTrace();
+      return Flowable.error(ex);
     })
     .subscribe();
 ```
