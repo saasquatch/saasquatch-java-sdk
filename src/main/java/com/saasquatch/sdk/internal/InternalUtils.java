@@ -316,4 +316,8 @@ public final class InternalUtils {
     return new String(bodyBytes, charset == null ? UTF_8 : charset);
   }
 
+  public static <T> T defaultIfNull(T item, T fallback) {
+    return item == null ? fallback : item;
+  }
+
 }

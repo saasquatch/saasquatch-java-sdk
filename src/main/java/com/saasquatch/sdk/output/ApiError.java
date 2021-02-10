@@ -1,5 +1,8 @@
 package com.saasquatch.sdk.output;
 
+import static com.saasquatch.sdk.internal.InternalUtils.defaultIfNull;
+
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Nonnull;
@@ -81,7 +84,8 @@ public final class ApiError {
     if (errors == null || errors.isEmpty()) {
       return null;
     }
-    final Map<String, Object> extensions = graphQLResult.getExtensions();
+    final Map<String, Object> extensions = defaultIfNull(graphQLResult.getExtensions(),
+        Collections.emptyMap());
     final Object apiErrorObj = extensions.get("apiError");
     if (apiErrorObj instanceof Map) {
       return GsonUtils.gson.fromJson(GsonUtils.gson.toJsonTree(apiErrorObj), ApiError.class);
