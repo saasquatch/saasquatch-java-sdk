@@ -169,9 +169,10 @@ public class InternalUtilsTest {
   @Test
   public void testGetNestedMapValue() {
     assertNull(getNestedMapValue(null));
-    assertNull(getNestedMapValue(null, "foo"));
+    assertNull(getNestedMapValue(null, "a", "b"));
     final Map<String, Object> m = ImmutableMap
         .of("a", ImmutableMap.of("b", ImmutableMap.of("c", true)));
+    assertSame(m, getNestedMapValue(m));
     assertEquals(true, getNestedMapValue(m, "a", "b", "c"));
     assertNull(getNestedMapValue(m, "a", "c"));
     assertThrows(ClassCastException.class, () -> getNestedMapValue(m, "a", "b", "c", "d"));
