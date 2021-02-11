@@ -117,10 +117,15 @@ public class InternalUtilsTest {
 
   @Test
   public void testStringReplace() {
-    assertThrows(IllegalArgumentException.class, () -> stringReplace("", ""));
+    assertThrows(NullPointerException.class, () -> stringReplace(null));
+    assertEquals("test", stringReplace("test"));
+    assertThrows(ArrayIndexOutOfBoundsException.class, () -> stringReplace("", ""));
     assertEquals("", stringReplace("", "", ""));
+    assertEquals("", stringReplace("", "", "a"));
+    assertEquals("abc", stringReplace("abc", "", "def"));
     assertEquals("def",
         stringReplace("a c", "abc", "foobar", "", "foobar", " ", "b", "abc", "def"));
+    assertEquals("cccccc", stringReplace("abcabc", "a", "b", "b", "c"));
     assertEquals("", stringReplace("abcdefghi", "abc", "def", "def", "ghi", "ghi", ""));
   }
 

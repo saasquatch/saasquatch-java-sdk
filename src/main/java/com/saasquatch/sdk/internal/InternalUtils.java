@@ -190,9 +190,6 @@ public final class InternalUtils {
    * More efficient String replace without regex.
    */
   public static String stringReplace(String string, String... replacements) {
-    if ((replacements.length & 1) != 0) {
-      throw new IllegalArgumentException("odd number of replacements");
-    }
     final StringBuilder sb = new StringBuilder(string);
     for (int i = 0; i < replacements.length; ) {
       final String key = replacements[i++];
