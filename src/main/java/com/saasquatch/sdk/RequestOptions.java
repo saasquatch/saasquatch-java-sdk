@@ -68,16 +68,19 @@ public final class RequestOptions {
     return authMethod;
   }
 
-  int getRequestTimeoutMillis(int defaultTimeout) {
-    return requestTimeoutMillis == null ? defaultTimeout : requestTimeoutMillis;
+  @Nullable
+  Integer getRequestTimeoutMillis() {
+    return requestTimeoutMillis;
   }
 
-  int getConnectTimeoutMillis(int defaultTimeout) {
-    return connectTimeoutMillis == null ? defaultTimeout : connectTimeoutMillis;
+  @Nullable
+  Integer getConnectTimeoutMillis() {
+    return connectTimeoutMillis;
   }
 
-  boolean isContentCompressionEnabled(boolean defaultEnabled) {
-    return contentCompressionEnabled == null ? defaultEnabled : contentCompressionEnabled;
+  @Nullable
+  Boolean getContentCompressionEnabled() {
+    return contentCompressionEnabled;
   }
 
   void mutateUrl(@Nonnull URIBuilder urlBuilder) {

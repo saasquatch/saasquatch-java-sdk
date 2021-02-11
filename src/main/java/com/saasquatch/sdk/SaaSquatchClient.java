@@ -1,5 +1,6 @@
 package com.saasquatch.sdk;
 
+import static com.saasquatch.sdk.internal.InternalUtils.defaultIfNull;
 import static com.saasquatch.sdk.internal.InternalUtils.getNestedMapValue;
 import static com.saasquatch.sdk.internal.InternalUtils.requireNotBlank;
 
@@ -430,23 +431,19 @@ public final class SaaSquatchClient implements Closeable {
       requestOptions.mutateRequest(request);
     }
     getAuthMethod(requestOptions).mutateRequest(request);
-    final int requestTimeoutMillis, connectTimeoutMillis;
-    final boolean contentCompressionEnabled;
-    if (requestOptions != null) {
-      requestTimeoutMillis =
-          requestOptions.getRequestTimeoutMillis(clientOptions.getRequestTimeoutMillis());
-      connectTimeoutMillis =
-          requestOptions.getConnectTimeoutMillis(clientOptions.getConnectTimeoutMillis());
-      contentCompressionEnabled =
-          requestOptions.isContentCompressionEnabled(clientOptions.isContentCompressionEnabled());
-    } else {
-      requestTimeoutMillis = clientOptions.getRequestTimeoutMillis();
-      connectTimeoutMillis = clientOptions.getConnectTimeoutMillis();
-      contentCompressionEnabled = clientOptions.isContentCompressionEnabled();
-    }
-    request.setConfig(
-        RequestConfig.custom().setResponseTimeout(requestTimeoutMillis, TimeUnit.MILLISECONDS)
-            .setConnectTimeout(connectTimeoutMillis, TimeUnit.MILLISECONDS).build());
+    final int requestTimeoutMillis = defaultIfNull(
+        requestOptions == null ? null : requestOptions.getRequestTimeoutMillis(),
+        clientOptions.getRequestTimeoutMillis());
+    final int connectTimeoutMillis = defaultIfNull(
+        requestOptions == null ? null : requestOptions.getConnectTimeoutMillis(),
+        clientOptions.getConnectTimeoutMillis());
+    final boolean contentCompressionEnabled = defaultIfNull(
+        requestOptions == null ? null : requestOptions.getContentCompressionEnabled(),
+        clientOptions.isContentCompressionEnabled());
+    request.setConfig(RequestConfig.custom()
+        .setResponseTimeout(requestTimeoutMillis, TimeUnit.MILLISECONDS)
+        .setConnectTimeout(connectTimeoutMillis, TimeUnit.MILLISECONDS)
+        .build());
     if (contentCompressionEnabled) {
       request.setHeader(HttpHeaders.ACCEPT_ENCODING, "gzip");
     }
