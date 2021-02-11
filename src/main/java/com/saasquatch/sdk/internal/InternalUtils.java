@@ -45,6 +45,8 @@ import io.reactivex.rxjava3.core.Single;
 
 public final class InternalUtils {
 
+  private static final int BUFFER_SIZE = 8192;
+
   private static final String[] RFC_3986_REPLACEMENTS = {"+", "%20", "*", "%2A", "%7E", "~"};
 
   private InternalUtils() {}
@@ -281,7 +283,7 @@ public final class InternalUtils {
 
   public static byte[] toByteArray(InputStream in) throws IOException {
     try (ByteArrayOutputStream baOut = new ByteArrayOutputStream()) {
-      final byte[] buf = new byte[8192];
+      final byte[] buf = new byte[BUFFER_SIZE];
       int bytesRead;
       while ((bytesRead = in.read(buf)) >= 0) {
         baOut.write(buf, 0, bytesRead);
@@ -299,7 +301,8 @@ public final class InternalUtils {
     final String contentEncoding =
         contentEncodingHeader == null ? null : contentEncodingHeader.getValue();
     if ("gzip".equalsIgnoreCase(contentEncoding)) {
-      try (GZIPInputStream gzipIn = new GZIPInputStream(new ByteArrayInputStream(bodyBytes))) {
+      try (GZIPInputStream gzipIn = new GZIPInputStream(
+          new ByteArrayInputStream(bodyBytes), BUFFER_SIZE)) {
         return toByteArray(gzipIn);
       } catch (IOException e) {
         throw new RuntimeException(e);
