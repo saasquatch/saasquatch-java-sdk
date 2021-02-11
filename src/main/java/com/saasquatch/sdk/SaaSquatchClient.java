@@ -212,14 +212,8 @@ public final class SaaSquatchClient implements Closeable {
         .doOnNext(InternalUtils::throwSquatchExceptionForPotentialGraphQLError)
         .map(graphQLApiResponse -> {
           final GraphQLResult graphQLResult = graphQLApiResponse.getData();
-          String templateString = null;
-          if (graphQLResult.getData() != null) {
-            @SuppressWarnings("unchecked") final Map<String, Object> renderWidgetMap =
-                (Map<String, Object>) graphQLResult.getData().get("renderWidget");
-            if (renderWidgetMap != null) {
-              templateString = (String) renderWidgetMap.get("template");
-            }
-          }
+          final String templateString = (String) getNestedMapValue(graphQLResult.getData(),
+              "renderWidget", "template");
           return new TextApiResponse(graphQLApiResponse.getHttpResponse(), templateString);
         });
   }
