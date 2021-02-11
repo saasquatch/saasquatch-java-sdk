@@ -111,7 +111,7 @@ public final class SaaSquatchClient implements Closeable {
    * this method simply builds a URL and does not do any I/O. Depending on the combination of
    * shareMedium and engagementMedium, the URL built may not work. And since this method does not
    * make an API call, the configured {@link AuthMethod} and HTTP headers are ignored.<br>
-   * <a href="https://docs.referralsaasquatch.com/features/message-links/">Link to official
+   * <a href="https://docs.saasquatch.com/features/message-links/">Link to official
    * docs</a>
    */
   public String buildUserMessageLink(@Nonnull UserLinkInput userLinkInput,
@@ -149,7 +149,7 @@ public final class SaaSquatchClient implements Closeable {
   /**
    * Get a user.<br> By default, the result of the response can be unmarshalled to {@link
    * User}.<br>
-   * <a href="https://docs.referralsaasquatch.com/api/methods/#open_get_user">Link to official
+   * <a href="https://docs.saasquatch.com/api/methods/#open_get_user">Link to official
    * docs</a>
    */
   public Publisher<JsonObjectApiResponse> getUser(@Nonnull String accountId, @Nonnull String userId,
@@ -269,7 +269,7 @@ public final class SaaSquatchClient implements Closeable {
   /**
    * Create or update a user.<br> By default, the result of the response can be unmarshalled to
    * {@link User}.<br>
-   * <a href="https://docs.referralsaasquatch.com/api/methods/#open_user_upsert">Link to official
+   * <a href="https://docs.saasquatch.com/api/methods/#open_user_upsert">Link to official
    * docs</a>
    */
   public Publisher<JsonObjectApiResponse> userUpsert(@Nonnull UserInput userInput,
@@ -281,7 +281,7 @@ public final class SaaSquatchClient implements Closeable {
   /**
    * Create or update a user.<br> By default, the result of the response can be unmarshalled to
    * {@link User}.<br>
-   * <a href="https://docs.referralsaasquatch.com/api/methods/#open_user_upsert">Link to official
+   * <a href="https://docs.saasquatch.com/api/methods/#open_user_upsert">Link to official
    * docs</a>
    */
   public Publisher<JsonObjectApiResponse> userUpsert(@Nonnull Map<String, Object> userInput,
@@ -332,7 +332,7 @@ public final class SaaSquatchClient implements Closeable {
 
   /**
    * Get a Map of a user's share links<br>
-   * <a href="https://docs.referralsaasquatch.com/api/methods/#lookup-a-users-share-urls">Link to
+   * <a href="https://docs.saasquatch.com/api/methods/#lookup-a-users-share-urls">Link to
    * official docs</a>
    */
   public Publisher<JsonObjectApiResponse> getUserShareLinks(@Nonnull UserLinkInput userLinkInput,
@@ -356,7 +356,7 @@ public final class SaaSquatchClient implements Closeable {
   /**
    * Log a user event.<br> By default, the result of the response can be unmarshalled to {@link
    * UserEventResult}.<br>
-   * <a href="https://docs.referralsaasquatch.com/api/methods/#trackEvent">Link to official
+   * <a href="https://docs.saasquatch.com/api/methods/#trackEvent">Link to official
    * docs</a>
    */
   public Publisher<JsonObjectApiResponse> logUserEvent(@Nonnull UserEventInput userEventInput,
@@ -368,7 +368,7 @@ public final class SaaSquatchClient implements Closeable {
   /**
    * Log a user event.<br> By default, the result of the response can be unmarshalled to {@link
    * UserEventResult}.<br>
-   * <a href="https://docs.referralsaasquatch.com/api/methods/#trackEvent">Link to official
+   * <a href="https://docs.saasquatch.com/api/methods/#trackEvent">Link to official
    * docs</a>
    */
   public Publisher<JsonObjectApiResponse> logUserEvent(@Nonnull Map<String, Object> userEventInput,
@@ -393,7 +393,7 @@ public final class SaaSquatchClient implements Closeable {
 
   /**
    * Apply a referral code.<br>
-   * <a href="https://docs.referralsaasquatch.com/api/methods/#open_apply_code">Link to official
+   * <a href="https://docs.saasquatch.com/api/methods/#open_apply_code">Link to official
    * docs</a>
    */
   public Publisher<JsonObjectApiResponse> applyReferralCode(@Nonnull String accountId,
