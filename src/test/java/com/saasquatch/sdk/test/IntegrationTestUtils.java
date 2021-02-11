@@ -55,9 +55,11 @@ public class IntegrationTestUtils {
   }
 
   public static SaaSquatchClient newTestClient() {
-    return SaaSquatchClient.create(
-        ClientOptions.newBuilder().setTenantAlias(getTenantAlias()).setAppDomain(getAppDomain())
-            .setAuthMethod(AuthMethods.ofTenantApiKey(getTenantApiKey())).build());
+    return SaaSquatchClient.create(ClientOptions.newBuilder()
+        .setTenantAlias(getTenantAlias())
+        .setAppDomain(getAppDomain())
+        .setAuthMethod(AuthMethods.ofTenantApiKey(getTenantApiKey()))
+        .build());
   }
 
 }
