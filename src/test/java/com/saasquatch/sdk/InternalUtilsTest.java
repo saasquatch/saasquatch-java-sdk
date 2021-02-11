@@ -31,8 +31,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.PropertyPermission;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import org.apache.hc.client5.http.async.methods.SimpleHttpRequest;
 import org.apache.hc.client5.http.async.methods.SimpleHttpRequests;
 import org.apache.hc.client5.http.async.methods.SimpleHttpResponse;
@@ -80,7 +78,6 @@ public class InternalUtilsTest {
 
   @Test
   public void testRxExecuteRequestWorks() throws Exception {
-    final ExecutorService executor = Executors.newCachedThreadPool();
     try (CloseableHttpAsyncClient httpAsyncClient = HttpAsyncClients.createDefault()) {
       httpAsyncClient.start();
       {
@@ -96,8 +93,6 @@ public class InternalUtilsTest {
             Mono.from(InternalUtils.executeRequest(httpAsyncClient, request)).block();
         assertEquals(200, response.getCode());
       }
-    } finally {
-      executor.shutdown();
     }
   }
 
