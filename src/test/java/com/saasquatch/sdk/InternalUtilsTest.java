@@ -18,8 +18,8 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.google.common.collect.ImmutableMap;
 import com.saasquatch.sdk.internal.InternalUtils;
-import com.saasquatch.sdk.internal.json.GsonUtils;
 import io.reactivex.rxjava3.annotations.NonNull;
 import io.reactivex.rxjava3.core.Flowable;
 import java.io.ByteArrayInputStream;
@@ -170,13 +170,14 @@ public class InternalUtilsTest {
   public void testGetNestedMapValue() {
     assertNull(getNestedMapValue(null));
     assertNull(getNestedMapValue(null, "foo"));
-    final Map<?, ?> m = gson.fromJson("{\"a\":{\"b\":true}}", Map.class);
-    assertEquals(true, getNestedMapValue(m, "a", "b"));
+    final Map<String, Object> m = ImmutableMap
+        .of("a", ImmutableMap.of("b", ImmutableMap.of("c", true)));
+    assertEquals(true, getNestedMapValue(m, "a", "b", "c"));
     assertNull(getNestedMapValue(m, "a", "c"));
-    assertThrows(ClassCastException.class, () -> getNestedMapValue(m, "a", "b", "c"));
+    assertThrows(ClassCastException.class, () -> getNestedMapValue(m, "a", "b", "c", "d"));
     {
-      final Object value = getNestedMapValue(m, "a");
-      assertEquals("{\"b\":true}", gson.toJson(value));
+      final Object value = getNestedMapValue(m, "a", "b");
+      assertEquals("{\"c\":true}", gson.toJson(value));
     }
   }
 
