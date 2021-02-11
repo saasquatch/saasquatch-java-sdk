@@ -118,10 +118,10 @@ public final class SaaSquatchClient implements Closeable {
       @Nullable RequestOptions requestOptions) {
     Objects.requireNonNull(userLinkInput, "userLinkInput");
     final URIBuilder uriBuilder = baseUriBuilder(requestOptions);
-    final List<String> pathSegs = baseTenantAPathSegs(requestOptions);
-    Collections.addAll(pathSegs, "message", "redirect",
+    final List<String> pathSegments = baseTenantAPathSegments(requestOptions);
+    Collections.addAll(pathSegments, "message", "redirect",
         requireNotBlank(userLinkInput.getShareMedium(), "shareMedium"));
-    mutateUri(uriBuilder, pathSegs, requestOptions);
+    mutateUri(uriBuilder, pathSegments, requestOptions);
     uriBuilder.addParameter("accountId", userLinkInput.getAccountId());
     uriBuilder.addParameter("userId", userLinkInput.getUserId());
     if (userLinkInput.getProgramId() != null) {
@@ -137,9 +137,9 @@ public final class SaaSquatchClient implements Closeable {
       @Nullable RequestOptions requestOptions) {
     Objects.requireNonNull(graphQLInput, "graphQLInput");
     final URIBuilder uriBuilder = baseUriBuilder(requestOptions);
-    final List<String> pathSegs = baseTenantApiPathSegs(requestOptions);
-    pathSegs.add("graphql");
-    mutateUri(uriBuilder, pathSegs, requestOptions);
+    final List<String> pathSegments = baseTenantApiPathSegments(requestOptions);
+    pathSegments.add("graphql");
+    mutateUri(uriBuilder, pathSegments, requestOptions);
     final SimpleHttpRequest request = SimpleHttpRequests.post(uriBuilder.toString());
     mutateRequest(request, requestOptions);
     setJsonPojoBody(request, graphQLInput);
@@ -162,13 +162,13 @@ public final class SaaSquatchClient implements Closeable {
       @Nullable WidgetType widgetType, @Nullable RequestOptions requestOptions,
       boolean widgetRequest) {
     final URIBuilder uriBuilder = baseUriBuilder(requestOptions);
-    final List<String> pathSegs = baseTenantApiPathSegs(requestOptions);
-    Collections.addAll(pathSegs, widgetRequest ? "widget" : "open", "account",
+    final List<String> pathSegments = baseTenantApiPathSegments(requestOptions);
+    Collections.addAll(pathSegments, widgetRequest ? "widget" : "open", "account",
         requireNotBlank(accountId, "accountId"), "user", requireNotBlank(userId, "userId"));
     if (widgetRequest) {
-      pathSegs.add("render");
+      pathSegments.add("render");
     }
-    mutateUri(uriBuilder, pathSegs, requestOptions);
+    mutateUri(uriBuilder, pathSegments, requestOptions);
     if (widgetType != null) {
       uriBuilder.addParameter("widgetType", widgetType.getWidgetType());
     }
@@ -314,13 +314,13 @@ public final class SaaSquatchClient implements Closeable {
       @Nonnull String userId, @Nonnull Object body, @Nullable WidgetType widgetType,
       @Nullable RequestOptions requestOptions, boolean widgetRequest) {
     final URIBuilder uriBuilder = baseUriBuilder(requestOptions);
-    final List<String> pathSegs = baseTenantApiPathSegs(requestOptions);
-    Collections.addAll(pathSegs, widgetRequest ? "widget" : "open", "account",
+    final List<String> pathSegments = baseTenantApiPathSegments(requestOptions);
+    Collections.addAll(pathSegments, widgetRequest ? "widget" : "open", "account",
         requireNotBlank(accountId, "accountId"), "user", requireNotBlank(userId, "userId"));
     if (widgetRequest) {
-      pathSegs.add("upsert");
+      pathSegments.add("upsert");
     }
-    mutateUri(uriBuilder, pathSegs, requestOptions);
+    mutateUri(uriBuilder, pathSegments, requestOptions);
     if (widgetType != null) {
       uriBuilder.addParameter("widgetType", widgetType.toString());
     }
@@ -338,10 +338,10 @@ public final class SaaSquatchClient implements Closeable {
   public Publisher<JsonObjectApiResponse> getUserShareLinks(@Nonnull UserLinkInput userLinkInput,
       @Nullable RequestOptions requestOptions) {
     final URIBuilder uriBuilder = baseUriBuilder(requestOptions);
-    final List<String> pathSegs = baseTenantApiPathSegs(requestOptions);
-    Collections.addAll(pathSegs, "account", userLinkInput.getAccountId(), "user",
+    final List<String> pathSegments = baseTenantApiPathSegments(requestOptions);
+    Collections.addAll(pathSegments, "account", userLinkInput.getAccountId(), "user",
         userLinkInput.getUserId(), "shareurls");
-    mutateUri(uriBuilder, pathSegs, requestOptions);
+    mutateUri(uriBuilder, pathSegments, requestOptions);
     if (userLinkInput.getShareMedium() != null) {
       uriBuilder.addParameter("shareMedium", userLinkInput.getShareMedium());
     }
@@ -382,9 +382,9 @@ public final class SaaSquatchClient implements Closeable {
   private Publisher<JsonObjectApiResponse> _logUserEvent(@Nonnull String accountId,
       @Nonnull String userId, @Nonnull Object body, @Nullable RequestOptions requestOptions) {
     final URIBuilder uriBuilder = baseUriBuilder(requestOptions);
-    final List<String> pathSegs = baseTenantApiPathSegs(requestOptions);
-    Collections.addAll(pathSegs, "open", "account", accountId, "user", userId, "events");
-    mutateUri(uriBuilder, pathSegs, requestOptions);
+    final List<String> pathSegments = baseTenantApiPathSegments(requestOptions);
+    Collections.addAll(pathSegments, "open", "account", accountId, "user", userId, "events");
+    mutateUri(uriBuilder, pathSegments, requestOptions);
     final SimpleHttpRequest request = SimpleHttpRequests.post(uriBuilder.toString());
     mutateRequest(request, requestOptions);
     setJsonPojoBody(request, body);
@@ -400,11 +400,11 @@ public final class SaaSquatchClient implements Closeable {
       @Nonnull String userId, @Nonnull String referralCode,
       @Nullable RequestOptions requestOptions) {
     final URIBuilder uriBuilder = baseUriBuilder(requestOptions);
-    final List<String> pathSegs = baseTenantApiPathSegs(requestOptions);
-    Collections.addAll(pathSegs, "open", "code", requireNotBlank(referralCode, "referralCode"),
+    final List<String> pathSegments = baseTenantApiPathSegments(requestOptions);
+    Collections.addAll(pathSegments, "open", "code", requireNotBlank(referralCode, "referralCode"),
         "account", requireNotBlank(accountId, "accountId"), "user",
         requireNotBlank(userId, "userId"));
-    mutateUri(uriBuilder, pathSegs, requestOptions);
+    mutateUri(uriBuilder, pathSegments, requestOptions);
     final SimpleHttpRequest request = SimpleHttpRequests.post(uriBuilder.toString());
     mutateRequest(request, requestOptions);
     setJsonStringBody(request, "{}");
@@ -414,9 +414,9 @@ public final class SaaSquatchClient implements Closeable {
   /**
    * All the common url mutations happen here
    */
-  private void mutateUri(@Nonnull URIBuilder uriBuilder, @Nonnull List<String> pathSegs,
+  private void mutateUri(@Nonnull URIBuilder uriBuilder, @Nonnull List<String> pathSegments,
       @Nullable RequestOptions requestOptions) {
-    uriBuilder.setPathSegments(pathSegs);
+    uriBuilder.setPathSegments(pathSegments);
     if (requestOptions != null) {
       requestOptions.mutateUrl(uriBuilder);
     }
@@ -485,10 +485,10 @@ public final class SaaSquatchClient implements Closeable {
    *
    * @return a mutable list of path segments
    */
-  private List<String> baseTenantApiPathSegs(@Nullable RequestOptions requestOptions) {
-    final List<String> pathSegs = new ArrayList<>();
-    Collections.addAll(pathSegs, "api", "v1", getTenantAlias(requestOptions));
-    return pathSegs;
+  private List<String> baseTenantApiPathSegments(@Nullable RequestOptions requestOptions) {
+    final List<String> pathSegments = new ArrayList<>();
+    Collections.addAll(pathSegments, "api", "v1", getTenantAlias(requestOptions));
+    return pathSegments;
   }
 
   /**
@@ -496,10 +496,10 @@ public final class SaaSquatchClient implements Closeable {
    *
    * @return a mutable list of path segments
    */
-  private List<String> baseTenantAPathSegs(@Nullable RequestOptions requestOptions) {
-    final List<String> pathSegs = new ArrayList<>();
-    Collections.addAll(pathSegs, "a", getTenantAlias(requestOptions));
-    return pathSegs;
+  private List<String> baseTenantAPathSegments(@Nullable RequestOptions requestOptions) {
+    final List<String> pathSegments = new ArrayList<>();
+    Collections.addAll(pathSegments, "a", getTenantAlias(requestOptions));
+    return pathSegments;
   }
 
   private void setJsonPojoBody(@Nonnull SimpleHttpRequest request, Object body) {
