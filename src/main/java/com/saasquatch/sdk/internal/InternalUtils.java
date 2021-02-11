@@ -232,11 +232,8 @@ public final class InternalUtils {
   }
 
   public static boolean isBlank(@Nullable CharSequence s) {
-    if (s == null) {
-      return true;
-    }
-    final int len = s.length();
-    if (len == 0) {
+    final int len;
+    if (s == null || (len = s.length()) == 0) {
       return true;
     }
     for (int i = 0; i < len; i++) {
