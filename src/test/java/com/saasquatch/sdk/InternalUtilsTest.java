@@ -20,7 +20,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.google.common.collect.ImmutableMap;
 import com.saasquatch.sdk.internal.InternalUtils;
-import io.reactivex.rxjava3.annotations.NonNull;
 import io.reactivex.rxjava3.core.Flowable;
 import java.io.ByteArrayInputStream;
 import java.security.Permission;
@@ -93,7 +92,7 @@ public class InternalUtilsTest {
       // Test Reactive Streams implementation agnostic
       {
         final SimpleHttpRequest request = SimpleHttpRequests.get("https://example.com");
-        final @NonNull SimpleHttpResponse response =
+        final SimpleHttpResponse response =
             Mono.from(InternalUtils.executeRequest(httpAsyncClient, request)).block();
         assertEquals(200, response.getCode());
       }
