@@ -177,7 +177,7 @@ public final class SaaSquatchClient implements Closeable {
   }
 
   /**
-   * Render a widget without a user.<br> The response is the widget HTML.
+   * Render a widget.<br> The response is the widget HTML.
    */
   public Publisher<TextApiResponse> renderWidget(
       @Nonnull RenderWidgetInput renderWidgetInput, @Nullable RequestOptions requestOptions) {
@@ -218,6 +218,10 @@ public final class SaaSquatchClient implements Closeable {
         });
   }
 
+  /**
+   * "Render" a widget by getting its widget config values. Note that this method does not work with
+   * classic widgets.
+   */
   public Publisher<JsonObjectApiResponse> getWidgetConfigValues(
       @Nonnull RenderWidgetInput renderWidgetInput, @Nullable RequestOptions requestOptions) {
     Objects.requireNonNull(renderWidgetInput, "renderWidgetInput");
