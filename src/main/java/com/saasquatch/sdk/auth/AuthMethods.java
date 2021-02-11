@@ -5,6 +5,11 @@ import java.util.Objects;
 import javax.annotation.Nonnull;
 import com.saasquatch.sdk.annotations.Beta;
 
+/**
+ * Factory methods for {@link AuthMethod}.
+ *
+ * @author sli
+ */
 public final class AuthMethods {
 
   private AuthMethods() {}
