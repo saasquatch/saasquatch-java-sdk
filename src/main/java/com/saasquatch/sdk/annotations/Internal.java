@@ -5,8 +5,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
- * Marker for things that are considered internal and are subject to change without warning, even if
- * they are public in Java.
+ * Marker for things that are considered internal and are subject to breaking changes without
+ * warning, even if they are public in Java.
  *
  * @author sli
  */

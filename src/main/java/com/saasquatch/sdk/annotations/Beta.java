@@ -5,7 +5,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
- * Marker for things that are in beta and are subject to change without warning.
+ * Marker for things that are in beta and are subject to breaking changes without warning.
  *
  * @author sli
  */

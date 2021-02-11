@@ -3,7 +3,7 @@ package com.saasquatch.sdk.internal.json;
 import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
 
-enum GsonIgnoreExlusionStrategy implements ExclusionStrategy {
+enum GsonIgnoreExclusionStrategy implements ExclusionStrategy {
 
   INSTANCE;
 

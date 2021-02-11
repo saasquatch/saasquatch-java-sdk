@@ -107,7 +107,7 @@ Flowable.fromPublisher(responsePublisher)
 
 ## Unstable APIs
 
-Anything marked with the `@Beta` or `@Internal` annotations, as well as anything under the package `com.saasquatch.sdk.internal`, are either experimental or considered private API, and can be modified or removed without warning.
+Anything marked with the `@Beta` or `@Internal` annotations, as well as anything under the package `com.saasquatch.sdk.internal`, are either experimental or considered private API, and can be modified in breaking ways or removed without warning.
 
 ## Development
 

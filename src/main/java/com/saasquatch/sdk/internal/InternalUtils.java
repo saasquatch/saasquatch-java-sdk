@@ -338,16 +338,13 @@ public final class InternalUtils {
 
   public static Object getNestedMapValue(Map<String, Object> map, String... keys) {
     Object result = map;
-    if (result == null) {
-      return null;
-    }
     for (String key : keys) {
-      @SuppressWarnings("unchecked") final Map<String, Object> resultAsMap =
-          (Map<String, Object>) result;
-      result = resultAsMap.get(key);
       if (result == null) {
         return null;
       }
+      @SuppressWarnings("unchecked") final Map<String, Object> resultAsMap =
+          (Map<String, Object>) result;
+      result = resultAsMap.get(key);
     }
     return result;
   }
