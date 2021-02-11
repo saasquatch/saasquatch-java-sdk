@@ -197,12 +197,12 @@ public final class InternalUtils {
       if (key.isEmpty()) {
         continue;
       }
-      int start = sb.indexOf(key, 0);
-      while (start > -1) {
+      int nextSearchStart = 0;
+      int start;
+      while ((start = sb.indexOf(key, nextSearchStart)) > -1) {
         final int end = start + key.length();
-        final int nextSearchStart = start + value.length();
+        nextSearchStart = start + value.length();
         sb.replace(start, end, value);
-        start = sb.indexOf(key, nextSearchStart);
       }
     }
     return sb.toString();
