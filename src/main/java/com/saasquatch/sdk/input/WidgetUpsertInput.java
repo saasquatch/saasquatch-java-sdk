@@ -1,5 +1,7 @@
 package com.saasquatch.sdk.input;
 
+import static com.saasquatch.sdk.internal.InternalUtils.requireNotBlank;
+
 import com.saasquatch.sdk.annotations.Internal;
 import java.util.Map;
 import java.util.Objects;
@@ -11,13 +13,15 @@ public final class WidgetUpsertInput {
   private final String accountId;
   private final String userId;
   private final WidgetType widgetType;
+  private final String engagementMedium;
 
   private WidgetUpsertInput(Object userInput, String accountId, String userId,
-      WidgetType widgetType) {
+      WidgetType widgetType, String engagementMedium) {
     this.userInput = userInput;
     this.accountId = accountId;
     this.userId = userId;
     this.widgetType = widgetType;
+    this.engagementMedium = engagementMedium;
   }
 
   public Object getUserInput() {
@@ -38,6 +42,10 @@ public final class WidgetUpsertInput {
     return widgetType;
   }
 
+  public String getEngagementMedium() {
+    return engagementMedium;
+  }
+
   public static Builder newBuilder() {
     return new Builder();
   }
@@ -48,6 +56,7 @@ public final class WidgetUpsertInput {
     private String accountId;
     private String userId;
     private WidgetType widgetType;
+    private String engagementMedium;
 
     private Builder() {}
 
@@ -65,13 +74,18 @@ public final class WidgetUpsertInput {
       return this;
     }
 
-    public Builder setWidgetType(WidgetType widgetType) {
+    public Builder setWidgetType(@Nonnull WidgetType widgetType) {
       this.widgetType = Objects.requireNonNull(widgetType, "widgetType");
       return this;
     }
 
+    public Builder setEngagementMedium(@Nonnull String engagementMedium) {
+      this.engagementMedium = requireNotBlank(engagementMedium, "engagementMedium");
+      return this;
+    }
+
     public WidgetUpsertInput build() {
-      return new WidgetUpsertInput(userInput, accountId, userId, widgetType);
+      return new WidgetUpsertInput(userInput, accountId, userId, widgetType, engagementMedium);
     }
 
   }

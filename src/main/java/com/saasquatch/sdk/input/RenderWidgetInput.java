@@ -70,12 +70,12 @@ public final class RenderWidgetInput {
       return this;
     }
 
-    public Builder setEngagementMedium(@Nonnull  String engagementMedium) {
+    public Builder setEngagementMedium(@Nonnull String engagementMedium) {
       this.engagementMedium = requireNotBlank(engagementMedium, "engagementMedium");
       return this;
     }
 
-    public Builder setLocale(@Nonnull  String locale) {
+    public Builder setLocale(@Nonnull String locale) {
       this.locale = requireNotBlank(locale, "locale");
       return this;
     }

@@ -8,11 +8,13 @@ import com.saasquatch.sdk.auth.AuthMethod;
 import com.saasquatch.sdk.auth.AuthMethods;
 import com.saasquatch.sdk.exceptions.SaaSquatchApiException;
 import com.saasquatch.sdk.exceptions.SaaSquatchUnhandledApiException;
+import com.saasquatch.sdk.http.Client5SaaSquatchHttpResponse;
+import com.saasquatch.sdk.http.SaaSquatchHttpResponse;
+import com.saasquatch.sdk.input.GetUserLinkInput;
 import com.saasquatch.sdk.input.GraphQLInput;
 import com.saasquatch.sdk.input.RenderWidgetInput;
 import com.saasquatch.sdk.input.UserEventInput;
 import com.saasquatch.sdk.input.UserInput;
-import com.saasquatch.sdk.input.GetUserLinkInput;
 import com.saasquatch.sdk.input.WidgetType;
 import com.saasquatch.sdk.input.WidgetUpsertInput;
 import com.saasquatch.sdk.internal.InternalUtils;
@@ -25,8 +27,6 @@ import com.saasquatch.sdk.output.GraphQLApiResponse;
 import com.saasquatch.sdk.output.GraphQLResult;
 import com.saasquatch.sdk.output.JsonObjectApiResponse;
 import com.saasquatch.sdk.output.TextApiResponse;
-import com.saasquatch.sdk.http.Client5SaaSquatchHttpResponse;
-import com.saasquatch.sdk.http.SaaSquatchHttpResponse;
 import io.reactivex.rxjava3.core.Flowable;
 import java.io.Closeable;
 import java.io.IOException;
@@ -275,8 +275,9 @@ public final class SaaSquatchClient implements Closeable {
    */
   public Publisher<JsonObjectApiResponse> userUpsert(@Nonnull UserInput userInput,
       @Nullable RequestOptions requestOptions) {
-    return _userUpsert(userInput.getAccountId(), userInput.getId(), userInput, null, requestOptions,
-        false).map(JsonObjectApiResponse::new);
+    return _userUpsert(userInput.getAccountId(), userInput.getId(), userInput, null, null,
+        requestOptions, false)
+        .map(JsonObjectApiResponse::new);
   }
 
   /**
@@ -288,7 +289,8 @@ public final class SaaSquatchClient implements Closeable {
   public Publisher<JsonObjectApiResponse> userUpsert(@Nonnull Map<String, Object> userInput,
       @Nullable RequestOptions requestOptions) {
     return _userUpsert((String) userInput.get("accountId"), (String) userInput.get("id"), userInput,
-        null, requestOptions, false).map(JsonObjectApiResponse::new);
+        null, null, requestOptions, false)
+        .map(JsonObjectApiResponse::new);
   }
 
   /**
@@ -300,14 +302,15 @@ public final class SaaSquatchClient implements Closeable {
     Objects.requireNonNull(widgetUpsertInput, "widgetUpsertInput");
     return Flowable.fromPublisher(
         _userUpsert(widgetUpsertInput.getAccountId(), widgetUpsertInput.getUserId(),
-            widgetUpsertInput.getUserInput(), widgetUpsertInput.getWidgetType(), requestOptions,
-            true))
+            widgetUpsertInput.getUserInput(), widgetUpsertInput.getWidgetType(),
+            widgetUpsertInput.getEngagementMedium(), requestOptions, true))
         .map(JsonObjectApiResponse::new);
   }
 
   private Flowable<SaaSquatchHttpResponse> _userUpsert(@Nonnull String accountId,
       @Nonnull String userId, @Nonnull Object body, @Nullable WidgetType widgetType,
-      @Nullable RequestOptions requestOptions, boolean widgetRequest) {
+      @Nullable String engagementMedium, @Nullable RequestOptions requestOptions,
+      boolean widgetRequest) {
     final URIBuilder uriBuilder = baseUriBuilder(requestOptions);
     final List<String> pathSegments = baseTenantApiPathSegments(requestOptions);
     Collections.addAll(pathSegments, widgetRequest ? "widget" : "open", "account",
@@ -318,6 +321,9 @@ public final class SaaSquatchClient implements Closeable {
     mutateUri(uriBuilder, pathSegments, requestOptions);
     if (widgetType != null) {
       uriBuilder.addParameter("widgetType", widgetType.toString());
+    }
+    if (engagementMedium != null) {
+      uriBuilder.addParameter("engagementMedium", engagementMedium);
     }
     final SimpleHttpRequest request = SimpleHttpRequests.put(uriBuilder.toString());
     mutateRequest(request, requestOptions);
