@@ -10,6 +10,7 @@ import static com.saasquatch.sdk.internal.json.GsonUtils.gson;
 import com.saasquatch.sdk.auth.AuthMethod;
 import com.saasquatch.sdk.auth.AuthMethods;
 import com.saasquatch.sdk.exceptions.SaaSquatchApiException;
+import com.saasquatch.sdk.exceptions.SaaSquatchIOException;
 import com.saasquatch.sdk.exceptions.SaaSquatchUnhandledApiException;
 import com.saasquatch.sdk.http.Client5SaaSquatchHttpResponse;
 import com.saasquatch.sdk.http.SaaSquatchHttpResponse;
@@ -557,6 +558,7 @@ public final class SaaSquatchClient implements Closeable {
 
   private Flowable<SaaSquatchHttpResponse> executeRequest(@Nonnull SimpleHttpRequest request) {
     return InternalUtils.executeRequest(httpAsyncClient, request)
+        .onErrorResumeNext(t -> Flowable.error(new SaaSquatchIOException(t.getMessage(), t)))
         .<SaaSquatchHttpResponse>map(Client5SaaSquatchHttpResponse::new)
         .doOnNext(this::httpResponseToPossibleException);
   }
