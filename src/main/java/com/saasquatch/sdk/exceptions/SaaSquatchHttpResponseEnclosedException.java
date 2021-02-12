@@ -2,7 +2,7 @@ package com.saasquatch.sdk.exceptions;
 
 import com.saasquatch.sdk.annotations.Internal;
 import com.saasquatch.sdk.annotations.NoExternalImpl;
-import com.saasquatch.sdk.util.SaaSquatchHttpResponse;
+import com.saasquatch.sdk.http.SaaSquatchHttpResponse;
 import javax.annotation.Nonnull;
 
 /**

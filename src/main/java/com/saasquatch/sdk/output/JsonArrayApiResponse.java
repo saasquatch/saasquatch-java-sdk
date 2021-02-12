@@ -5,7 +5,7 @@ import static com.saasquatch.sdk.internal.json.GsonUtils.gson;
 
 import com.google.gson.reflect.TypeToken;
 import com.saasquatch.sdk.annotations.Beta;
-import com.saasquatch.sdk.util.SaaSquatchHttpResponse;
+import com.saasquatch.sdk.http.SaaSquatchHttpResponse;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;

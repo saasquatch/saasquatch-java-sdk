@@ -2,7 +2,7 @@ package com.saasquatch.sdk.output;
 
 import static com.saasquatch.sdk.internal.json.GsonUtils.gson;
 
-import com.saasquatch.sdk.util.SaaSquatchHttpResponse;
+import com.saasquatch.sdk.http.SaaSquatchHttpResponse;
 import com.saasquatch.sdk.annotations.Internal;
 
 /**

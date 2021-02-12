@@ -1,4 +1,4 @@
-package com.saasquatch.sdk.util;
+package com.saasquatch.sdk.http;
 
 import com.saasquatch.sdk.annotations.NoExternalImpl;
 import java.util.Collections;

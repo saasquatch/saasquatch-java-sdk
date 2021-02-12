@@ -2,7 +2,7 @@ package com.saasquatch.sdk.output;
 
 import com.saasquatch.sdk.annotations.Beta;
 import com.saasquatch.sdk.annotations.Internal;
-import com.saasquatch.sdk.util.SaaSquatchHttpResponse;
+import com.saasquatch.sdk.http.SaaSquatchHttpResponse;
 
 /**
  * {@link ApiResponse} that does not have a body but may still have a {@link ApiError}.

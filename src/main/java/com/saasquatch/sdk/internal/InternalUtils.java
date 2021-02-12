@@ -182,8 +182,9 @@ public final class InternalUtils {
         return Collections.singletonMap(singleEntry.getKey(), singleEntry.getValue());
       }
       default:
-        return Collections.unmodifiableMap(new LinkedHashMap<>(map));
+        break;
     }
+    return Collections.unmodifiableMap(new LinkedHashMap<>(map));
   }
 
   /**

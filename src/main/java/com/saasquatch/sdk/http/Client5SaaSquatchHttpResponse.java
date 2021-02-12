@@ -1,4 +1,4 @@
-package com.saasquatch.sdk.util;
+package com.saasquatch.sdk.http;
 
 import static com.saasquatch.sdk.internal.InternalUtils.unmodifiableList;
 
