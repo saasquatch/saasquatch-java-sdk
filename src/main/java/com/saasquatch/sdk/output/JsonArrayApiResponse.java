@@ -26,8 +26,9 @@ public final class JsonArrayApiResponse extends ApiResponse<List<Object>> {
 
   @Override
   protected List<Object> buildData() {
-    return gson.fromJson(getHttpResponse().getBodyText(),
-        new TypeToken<List<Object>>() {}.getType());
+    @SuppressWarnings("unchecked") final List<Object> dataAsList =
+        gson.fromJson(getHttpResponse().getBodyText(), List.class);
+    return dataAsList;
   }
 
   /**

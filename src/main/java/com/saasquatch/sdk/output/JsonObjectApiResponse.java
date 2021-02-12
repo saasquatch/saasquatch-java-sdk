@@ -3,7 +3,6 @@ package com.saasquatch.sdk.output;
 import static com.saasquatch.sdk.internal.InternalUtils.format;
 import static com.saasquatch.sdk.internal.json.GsonUtils.gson;
 
-import com.google.gson.reflect.TypeToken;
 import com.saasquatch.sdk.annotations.Internal;
 import com.saasquatch.sdk.http.SaaSquatchHttpResponse;
 import java.util.Map;
@@ -32,8 +31,9 @@ public final class JsonObjectApiResponse extends ApiResponse<Map<String, Object>
 
   @Override
   protected Map<String, Object> buildData() {
-    return gson.fromJson(getHttpResponse().getBodyText(),
-        new TypeToken<Map<String, Object>>() {}.getType());
+    @SuppressWarnings("unchecked") final Map<String, Object> dataAsMap =
+        gson.fromJson(getHttpResponse().getBodyText(), Map.class);
+    return dataAsMap;
   }
 
   /**

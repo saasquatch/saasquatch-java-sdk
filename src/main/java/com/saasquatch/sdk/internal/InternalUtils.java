@@ -1,12 +1,15 @@
 package com.saasquatch.sdk.internal;
 
+import static com.saasquatch.sdk.internal.json.GsonUtils.gson;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.reflect.TypeToken;
 import com.saasquatch.sdk.exceptions.SaaSquatchApiException;
 import com.saasquatch.sdk.exceptions.SaaSquatchUnhandledApiException;
+import com.saasquatch.sdk.internal.json.GsonUtils;
 import com.saasquatch.sdk.output.ApiError;
 import com.saasquatch.sdk.output.GraphQLApiResponse;
 import com.saasquatch.sdk.output.GraphQLResult;
@@ -17,10 +20,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Type;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.Arrays;
 import java.util.Collection;
@@ -359,7 +364,7 @@ public final class InternalUtils {
   /**
    * Extract the payload as a JSON object. This method does NOT do a full JWT validation.
    */
-  public static JsonObject getJwtPayload(String jwt) {
+  public static Map<String, Object> getJwtPayload(String jwt) {
     final String[] split = jwt.split("\\.", 4);
     if (split.length != 3) {
       throw new IllegalArgumentException("Invalid JWT");
@@ -367,10 +372,12 @@ public final class InternalUtils {
     final String payloadPart = split[1];
     final byte[] payloadBytes = Base64.decodeBase64(payloadPart);
     final JsonElement json = JsonParser.parseString(new String(payloadBytes, UTF_8));
-    if (json instanceof JsonObject) {
-      return (JsonObject) json;
+    if (!(json instanceof JsonObject)) {
+      throw new IllegalArgumentException("JWT payload is not a JSON object");
     }
-    throw new IllegalArgumentException("JWT payload is not a JSON object");
+    @SuppressWarnings("unchecked") final Map<String, Object> payloadMap =
+        gson.fromJson(new String(payloadBytes, UTF_8), Map.class);
+    return payloadMap;
   }
 
 }

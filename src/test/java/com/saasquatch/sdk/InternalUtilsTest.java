@@ -190,7 +190,7 @@ public class InternalUtilsTest {
     assertThrows(IllegalArgumentException.class, () -> getJwtPayload("a.b.c"));
     assertThrows(IllegalArgumentException.class, () -> getJwtPayload("a.e30.c.d"));
     assertThrows(IllegalArgumentException.class, () -> getJwtPayload("a.e30.c.d.e"));
-    assertEquals("{}", getJwtPayload("a.e30.c").toString());
+    assertEquals(ImmutableMap.of(), getJwtPayload("a.e30.c"));
   }
 
 }
