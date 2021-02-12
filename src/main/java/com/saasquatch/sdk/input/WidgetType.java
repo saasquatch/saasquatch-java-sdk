@@ -6,11 +6,11 @@ import com.saasquatch.sdk.SaaSquatchClient;
 import com.saasquatch.sdk.annotations.NoExternalImpl;
 
 /**
- * A SaaSquatch widget type
+ * GsonSerializeNullTypeAdapterFactory SaaSquatch widget type
  *
  * @author sli
  * @see SaaSquatchClient#renderWidget(RenderWidgetInput, RequestOptions)
- * @see SaaSquatchClient#widgetUpsert(WidgetUpsertInput, RequestOptions) 
+ * @see SaaSquatchClient#widgetUpsert(WidgetUpsertInput, RequestOptions)
  * @see WidgetTypes
  */
 @NoExternalImpl

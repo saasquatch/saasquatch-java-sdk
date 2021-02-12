@@ -12,7 +12,8 @@ import com.google.gson.JsonObject;
 public final class GsonUtils {
 
   public static final Gson gson = new GsonBuilder()
-      .serializeNulls()
+//      .serializeNulls()
+      .registerTypeAdapterFactory(GsonSerializeNullTypeAdapterFactory.INSTANCE)
       .registerTypeAdapter(Date.class, DateMillisAdapter.INSTANCE)
       .addSerializationExclusionStrategy(GsonIgnoreExclusionStrategy.INSTANCE)
       .create();
