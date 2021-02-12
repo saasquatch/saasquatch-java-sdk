@@ -12,7 +12,7 @@ import com.saasquatch.sdk.input.GraphQLInput;
 import com.saasquatch.sdk.input.RenderWidgetInput;
 import com.saasquatch.sdk.input.UserEventInput;
 import com.saasquatch.sdk.input.UserInput;
-import com.saasquatch.sdk.input.UserLinkInput;
+import com.saasquatch.sdk.input.GetUserLinkInput;
 import com.saasquatch.sdk.input.WidgetType;
 import com.saasquatch.sdk.input.WidgetUpsertInput;
 import com.saasquatch.sdk.internal.InternalUtils;
@@ -115,21 +115,21 @@ public final class SaaSquatchClient implements Closeable {
    * <a href="https://docs.saasquatch.com/features/message-links/">Link to official
    * docs</a>
    */
-  public String buildUserMessageLink(@Nonnull UserLinkInput userLinkInput,
+  public String buildUserMessageLink(@Nonnull GetUserLinkInput getUserLinkInput,
       @Nullable RequestOptions requestOptions) {
-    Objects.requireNonNull(userLinkInput, "userLinkInput");
+    Objects.requireNonNull(getUserLinkInput, "getUserLinkInput");
     final URIBuilder uriBuilder = baseUriBuilder(requestOptions);
     final List<String> pathSegments = baseTenantAPathSegments(requestOptions);
     Collections.addAll(pathSegments, "message", "redirect",
-        requireNotBlank(userLinkInput.getShareMedium(), "shareMedium"));
+        requireNotBlank(getUserLinkInput.getShareMedium(), "shareMedium"));
     mutateUri(uriBuilder, pathSegments, requestOptions);
-    uriBuilder.addParameter("accountId", userLinkInput.getAccountId());
-    uriBuilder.addParameter("userId", userLinkInput.getUserId());
-    if (userLinkInput.getProgramId() != null) {
-      uriBuilder.addParameter("programId", userLinkInput.getProgramId());
+    uriBuilder.addParameter("accountId", getUserLinkInput.getAccountId());
+    uriBuilder.addParameter("userId", getUserLinkInput.getUserId());
+    if (getUserLinkInput.getProgramId() != null) {
+      uriBuilder.addParameter("programId", getUserLinkInput.getProgramId());
     }
-    if (userLinkInput.getEngagementMedium() != null) {
-      uriBuilder.addParameter("engagementMedium", userLinkInput.getEngagementMedium());
+    if (getUserLinkInput.getEngagementMedium() != null) {
+      uriBuilder.addParameter("engagementMedium", getUserLinkInput.getEngagementMedium());
     }
     return uriBuilder.toString();
   }
@@ -330,18 +330,18 @@ public final class SaaSquatchClient implements Closeable {
    * <a href="https://docs.saasquatch.com/api/methods/#lookup-a-users-share-urls">Link to
    * official docs</a>
    */
-  public Publisher<JsonObjectApiResponse> getUserShareLinks(@Nonnull UserLinkInput userLinkInput,
-      @Nullable RequestOptions requestOptions) {
+  public Publisher<JsonObjectApiResponse> getUserShareLinks(
+      @Nonnull GetUserLinkInput getUserLinkInput, @Nullable RequestOptions requestOptions) {
     final URIBuilder uriBuilder = baseUriBuilder(requestOptions);
     final List<String> pathSegments = baseTenantApiPathSegments(requestOptions);
-    Collections.addAll(pathSegments, "account", userLinkInput.getAccountId(), "user",
-        userLinkInput.getUserId(), "shareurls");
+    Collections.addAll(pathSegments, "account", getUserLinkInput.getAccountId(), "user",
+        getUserLinkInput.getUserId(), "shareurls");
     mutateUri(uriBuilder, pathSegments, requestOptions);
-    if (userLinkInput.getShareMedium() != null) {
-      uriBuilder.addParameter("shareMedium", userLinkInput.getShareMedium());
+    if (getUserLinkInput.getShareMedium() != null) {
+      uriBuilder.addParameter("shareMedium", getUserLinkInput.getShareMedium());
     }
-    if (userLinkInput.getEngagementMedium() != null) {
-      uriBuilder.addParameter("engagementMedium", userLinkInput.getEngagementMedium());
+    if (getUserLinkInput.getEngagementMedium() != null) {
+      uriBuilder.addParameter("engagementMedium", getUserLinkInput.getEngagementMedium());
     }
     final SimpleHttpRequest request = SimpleHttpRequests.get(uriBuilder.toString());
     mutateRequest(request, requestOptions);

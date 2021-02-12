@@ -1,6 +1,7 @@
 package com.saasquatch.sdk.input;
 
 import static com.saasquatch.sdk.internal.InternalUtils.requireNotBlank;
+
 import javax.annotation.Nonnull;
 import com.saasquatch.sdk.SaaSquatchClient;
 
@@ -9,9 +10,9 @@ import com.saasquatch.sdk.SaaSquatchClient;
  *
  * @author sli
  * @see #newBuilder()
- * @see SaaSquatchClient#buildUserMessageLink(UserLinkInput, com.saasquatch.sdk.RequestOptions)
+ * @see SaaSquatchClient#buildUserMessageLink(GetUserLinkInput, com.saasquatch.sdk.RequestOptions)
  */
-public final class UserLinkInput {
+public final class GetUserLinkInput {
 
   private final String accountId;
   private final String userId;
@@ -19,7 +20,7 @@ public final class UserLinkInput {
   private final String shareMedium;
   private final String engagementMedium;
 
-  UserLinkInput(String accountId, String userId, String programId, String shareMedium,
+  GetUserLinkInput(String accountId, String userId, String programId, String shareMedium,
       String engagementMedium) {
     this.accountId = accountId;
     this.userId = userId;
@@ -87,8 +88,8 @@ public final class UserLinkInput {
       return this;
     }
 
-    public UserLinkInput build() {
-      return new UserLinkInput(requireNotBlank(accountId, "accountId"),
+    public GetUserLinkInput build() {
+      return new GetUserLinkInput(requireNotBlank(accountId, "accountId"),
           requireNotBlank(userId, "userId"), programId, shareMedium, engagementMedium);
     }
 
