@@ -6,10 +6,9 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.google.gson.reflect.TypeToken;
 import com.saasquatch.sdk.exceptions.SaaSquatchApiException;
 import com.saasquatch.sdk.exceptions.SaaSquatchUnhandledApiException;
-import com.saasquatch.sdk.internal.json.GsonUtils;
+import com.saasquatch.sdk.input.UserIdInput;
 import com.saasquatch.sdk.output.ApiError;
 import com.saasquatch.sdk.output.GraphQLApiResponse;
 import com.saasquatch.sdk.output.GraphQLResult;
@@ -20,12 +19,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Type;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.Arrays;
 import java.util.Collection;
@@ -378,6 +375,14 @@ public final class InternalUtils {
     @SuppressWarnings("unchecked") final Map<String, Object> payloadMap =
         gson.fromJson(new String(payloadBytes, UTF_8), Map.class);
     return payloadMap;
+  }
+
+  @Nonnull
+  public static UserIdInput getUserIdInputFromUserJwt(String userJwt) {
+    final Map<String, Object> payload = getJwtPayload(userJwt);
+    return UserIdInput.of(
+        requireNotBlank((String) getNestedMapValue(payload, "user", "accountId"), "accountId"),
+        requireNotBlank((String) getNestedMapValue(payload, "user", "id"), "id"));
   }
 
 }

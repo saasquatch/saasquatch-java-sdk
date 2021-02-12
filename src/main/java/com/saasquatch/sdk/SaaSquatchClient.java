@@ -3,6 +3,7 @@ package com.saasquatch.sdk;
 import static com.saasquatch.sdk.internal.InternalUtils.defaultIfNull;
 import static com.saasquatch.sdk.internal.InternalUtils.getJwtPayload;
 import static com.saasquatch.sdk.internal.InternalUtils.getNestedMapValue;
+import static com.saasquatch.sdk.internal.InternalUtils.getUserIdInputFromUserJwt;
 import static com.saasquatch.sdk.internal.InternalUtils.requireNotBlank;
 import static com.saasquatch.sdk.internal.json.GsonUtils.gson;
 
@@ -17,6 +18,7 @@ import com.saasquatch.sdk.input.GetUserLinkInput;
 import com.saasquatch.sdk.input.GraphQLInput;
 import com.saasquatch.sdk.input.RenderWidgetInput;
 import com.saasquatch.sdk.input.UserEventInput;
+import com.saasquatch.sdk.input.UserIdInput;
 import com.saasquatch.sdk.input.UserInput;
 import com.saasquatch.sdk.input.WidgetType;
 import com.saasquatch.sdk.input.WidgetUpsertInput;
@@ -164,9 +166,9 @@ public final class SaaSquatchClient implements Closeable {
   public Publisher<JsonObjectApiResponse> getUserWithUserJwt(@Nonnull String userJwt,
       @Nullable RequestOptions requestOptions) {
     requireNotBlank(userJwt, "userJwt");
-    final Map<String, Object> payload = getJwtPayload(userJwt);
-    return _getUser((String) getNestedMapValue(payload, "user", "accountId"),
-        (String) getNestedMapValue(payload, "user", "id"), null, userJwt, requestOptions, false)
+    final UserIdInput userIdInput = getUserIdInputFromUserJwt(userJwt);
+    return _getUser(userIdInput.getAccountId(), userIdInput.getId(), null, userJwt, requestOptions,
+        false)
         .map(JsonObjectApiResponse::new);
   }
 
