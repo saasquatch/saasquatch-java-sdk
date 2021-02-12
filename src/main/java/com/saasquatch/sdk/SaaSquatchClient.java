@@ -1,10 +1,12 @@
 package com.saasquatch.sdk;
 
 import static com.saasquatch.sdk.internal.InternalUtils.defaultIfNull;
+import static com.saasquatch.sdk.internal.InternalUtils.getJwtPayload;
 import static com.saasquatch.sdk.internal.InternalUtils.getNestedMapValue;
 import static com.saasquatch.sdk.internal.InternalUtils.requireNotBlank;
 import static com.saasquatch.sdk.internal.json.GsonUtils.gson;
 
+import com.google.gson.JsonObject;
 import com.saasquatch.sdk.auth.AuthMethod;
 import com.saasquatch.sdk.auth.AuthMethods;
 import com.saasquatch.sdk.exceptions.SaaSquatchApiException;
@@ -155,13 +157,21 @@ public final class SaaSquatchClient implements Closeable {
    */
   public Publisher<JsonObjectApiResponse> getUser(@Nonnull String accountId, @Nonnull String userId,
       @Nullable RequestOptions requestOptions) {
-    return _getUser(accountId, userId, null, requestOptions, false).map(JsonObjectApiResponse::new);
+    return _getUser(accountId, userId, null, null, requestOptions, false)
+        .map(JsonObjectApiResponse::new);
+  }
+
+  public Publisher<JsonObjectApiResponse> getUserWithUserJwt(@Nonnull String userJwt,
+      @Nullable RequestOptions requestOptions) {
+    requireNotBlank(userJwt, "userJwt");
+    final Map<String, Object> payload = getJwtPayload(userJwt);
+    return _getUser((String) getNestedMapValue(payload, "user", "accountId"),
+        (String) getNestedMapValue(payload, "user", "id"), null, userJwt, requestOptions, false)
+        .map(JsonObjectApiResponse::new);
   }
 
   private Flowable<SaaSquatchHttpResponse> _getUser(@Nonnull String accountId,
-      @Nonnull String userId,
-      @Nullable WidgetType widgetType, @Nullable RequestOptions requestOptions,
-      boolean widgetRequest) {
+      @Nonnull String userId, @Nullable WidgetType widgetType, @Nullable String userJwt, @Nullable RequestOptions requestOptions, boolean widgetRequest) {
     final URIBuilder uriBuilder = baseUriBuilder(requestOptions);
     final List<String> pathSegments = baseTenantApiPathSegments(requestOptions);
     Collections.addAll(pathSegments, widgetRequest ? "widget" : "open", "account",
@@ -175,6 +185,9 @@ public final class SaaSquatchClient implements Closeable {
     }
     final SimpleHttpRequest request = SimpleHttpRequests.get(uriBuilder.toString());
     mutateRequest(request, requestOptions);
+    if (userJwt != null) {
+      AuthMethods.ofJwt(userJwt).mutateRequest(request);
+    }
     return executeRequest(request);
   }
 
