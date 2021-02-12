@@ -2,11 +2,16 @@ package com.saasquatch.sdk.internal;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.saasquatch.sdk.exceptions.SaaSquatchApiException;
 import com.saasquatch.sdk.exceptions.SaaSquatchUnhandledApiException;
 import com.saasquatch.sdk.output.ApiError;
 import com.saasquatch.sdk.output.GraphQLApiResponse;
 import com.saasquatch.sdk.output.GraphQLResult;
+import io.reactivex.rxjava3.core.Flowable;
+import io.reactivex.rxjava3.core.Single;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -32,6 +37,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.zip.GZIPInputStream;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import org.apache.commons.codec.binary.Base64;
 import org.apache.hc.client5.http.async.methods.SimpleHttpRequest;
 import org.apache.hc.client5.http.async.methods.SimpleHttpResponse;
 import org.apache.hc.client5.http.impl.async.CloseableHttpAsyncClient;
@@ -40,8 +46,6 @@ import org.apache.hc.core5.http.ContentType;
 import org.apache.hc.core5.http.Header;
 import org.apache.hc.core5.http.HttpHeaders;
 import org.reactivestreams.Publisher;
-import io.reactivex.rxjava3.core.Flowable;
-import io.reactivex.rxjava3.core.Single;
 
 public final class InternalUtils {
 
@@ -97,11 +101,13 @@ public final class InternalUtils {
     try {
       result = System.getProperty(key);
     } catch (Throwable t) {
+      // ignore
     }
     if (result == null) {
       try {
         result = System.getenv(key);
       } catch (Throwable t) {
+        // ignore
       }
     }
     return result;
@@ -348,6 +354,23 @@ public final class InternalUtils {
       result = resultAsMap.get(key);
     }
     return result;
+  }
+
+  /**
+   * Extract the payload as a JSON object. This method does NOT do a full JWT validation.
+   */
+  public static JsonObject getJwtPayload(String jwt) {
+    final String[] split = jwt.split("\\.", 4);
+    if (split.length != 3) {
+      throw new IllegalArgumentException("Invalid JWT");
+    }
+    final String payloadPart = split[1];
+    final byte[] payloadBytes = Base64.decodeBase64(payloadPart);
+    final JsonElement json = JsonParser.parseString(new String(payloadBytes, UTF_8));
+    if (json instanceof JsonObject) {
+      return (JsonObject) json;
+    }
+    throw new IllegalArgumentException("JWT payload is not a JSON object");
   }
 
 }

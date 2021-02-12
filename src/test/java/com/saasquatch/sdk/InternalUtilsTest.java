@@ -3,6 +3,7 @@ package com.saasquatch.sdk;
 import static com.saasquatch.sdk.internal.InternalUtils.addAllRejectingNull;
 import static com.saasquatch.sdk.internal.InternalUtils.defaultIfNull;
 import static com.saasquatch.sdk.internal.InternalUtils.entryOf;
+import static com.saasquatch.sdk.internal.InternalUtils.getJwtPayload;
 import static com.saasquatch.sdk.internal.InternalUtils.getNestedMapValue;
 import static com.saasquatch.sdk.internal.InternalUtils.isBlank;
 import static com.saasquatch.sdk.internal.InternalUtils.requireNotBlank;
@@ -19,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.gson.JsonObject;
 import com.saasquatch.sdk.internal.InternalUtils;
 import io.reactivex.rxjava3.core.Flowable;
 import java.io.ByteArrayInputStream;
@@ -179,6 +181,16 @@ public class InternalUtilsTest {
       final Object value = getNestedMapValue(m, "a", "b");
       assertEquals("{\"c\":true}", gson.toJson(value));
     }
+  }
+
+  @Test
+  public void testGetJwtPayload() {
+    assertThrows(NullPointerException.class, () -> getJwtPayload(null));
+    assertThrows(IllegalArgumentException.class, () -> getJwtPayload("foo"));
+    assertThrows(IllegalArgumentException.class, () -> getJwtPayload("a.b.c"));
+    assertThrows(IllegalArgumentException.class, () -> getJwtPayload("a.e30.c.d"));
+    assertThrows(IllegalArgumentException.class, () -> getJwtPayload("a.e30.c.d.e"));
+    assertEquals("{}", getJwtPayload("a.e30.c").toString());
   }
 
 }
