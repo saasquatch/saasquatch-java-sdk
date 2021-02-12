@@ -5,6 +5,7 @@ import static com.saasquatch.sdk.internal.InternalUtils.defaultIfNull;
 import static com.saasquatch.sdk.internal.InternalUtils.entryOf;
 import static com.saasquatch.sdk.internal.InternalUtils.getJwtPayload;
 import static com.saasquatch.sdk.internal.InternalUtils.getNestedMapValue;
+import static com.saasquatch.sdk.internal.InternalUtils.getUserIdInputFromUserJwt;
 import static com.saasquatch.sdk.internal.InternalUtils.isBlank;
 import static com.saasquatch.sdk.internal.InternalUtils.requireNotBlank;
 import static com.saasquatch.sdk.internal.InternalUtils.stringReplace;
@@ -21,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonObject;
+import com.saasquatch.sdk.input.UserIdInput;
 import com.saasquatch.sdk.internal.InternalUtils;
 import io.reactivex.rxjava3.core.Flowable;
 import java.io.ByteArrayInputStream;
@@ -191,6 +193,14 @@ public class InternalUtilsTest {
     assertThrows(IllegalArgumentException.class, () -> getJwtPayload("a.e30.c.d"));
     assertThrows(IllegalArgumentException.class, () -> getJwtPayload("a.e30.c.d.e"));
     assertEquals(ImmutableMap.of(), getJwtPayload("a.e30.c"));
+  }
+
+  @Test
+  public void testJwtToUserIdInput() {
+    final UserIdInput userIdInput = getUserIdInputFromUserJwt(
+        "a.eyJ1c2VyIjp7ImlkIjoiYiIsImFjY291bnRJZCI6ImEiLCJlbWFpbCI6ImFAZXhhbXBsZS5jb20ifX0.a");
+    assertEquals("a", userIdInput.getAccountId());
+    assertEquals("b", userIdInput.getId());
   }
 
 }
