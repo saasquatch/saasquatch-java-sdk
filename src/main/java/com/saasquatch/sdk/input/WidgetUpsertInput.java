@@ -1,5 +1,6 @@
 package com.saasquatch.sdk.input;
 
+import static com.saasquatch.sdk.internal.InternalUtils.getJwtPayload;
 import static com.saasquatch.sdk.internal.InternalUtils.requireNotBlank;
 
 import com.saasquatch.sdk.annotations.Internal;
@@ -12,14 +13,16 @@ public final class WidgetUpsertInput {
   private final Object userInput;
   private final String accountId;
   private final String userId;
+  private final String userJwt;
   private final WidgetType widgetType;
   private final String engagementMedium;
 
-  private WidgetUpsertInput(Object userInput, String accountId, String userId,
+  private WidgetUpsertInput(Object userInput, String accountId, String userId, String userJwt,
       WidgetType widgetType, String engagementMedium) {
     this.userInput = userInput;
     this.accountId = accountId;
     this.userId = userId;
+    this.userJwt = userJwt;
     this.widgetType = widgetType;
     this.engagementMedium = engagementMedium;
   }
@@ -36,6 +39,11 @@ public final class WidgetUpsertInput {
   @Internal
   public String getUserId() {
     return userId;
+  }
+
+  @Internal
+  public String getUserJwt() {
+    return userJwt;
   }
 
   public WidgetType getWidgetType() {
@@ -55,6 +63,7 @@ public final class WidgetUpsertInput {
     private Object userInput;
     private String accountId;
     private String userId;
+    private String userJwt;
     private WidgetType widgetType;
     private String engagementMedium;
 
@@ -74,6 +83,16 @@ public final class WidgetUpsertInput {
       return this;
     }
 
+    public Builder setUserInputWithUserJwt(@Nonnull String userJwt) {
+      requireNotBlank(userJwt, "userJwt");
+      final Map<String, Object> payload = getJwtPayload(userJwt);
+      @SuppressWarnings("unchecked") final Map<String, Object> userInput =
+          (Map<String, Object>) payload.get("user");
+      setUserInput(userInput);
+      this.userJwt = userJwt;
+      return this;
+    }
+
     public Builder setWidgetType(@Nonnull WidgetType widgetType) {
       this.widgetType = Objects.requireNonNull(widgetType, "widgetType");
       return this;
@@ -85,7 +104,8 @@ public final class WidgetUpsertInput {
     }
 
     public WidgetUpsertInput build() {
-      return new WidgetUpsertInput(userInput, accountId, userId, widgetType, engagementMedium);
+      return new WidgetUpsertInput(userInput, accountId, userId, userJwt, widgetType,
+          engagementMedium);
     }
 
   }

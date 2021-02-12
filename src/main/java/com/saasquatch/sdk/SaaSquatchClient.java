@@ -174,13 +174,14 @@ public final class SaaSquatchClient implements Closeable {
       @Nullable RequestOptions requestOptions) {
     requireNotBlank(userJwt, "userJwt");
     final UserIdInput userIdInput = getUserIdInputFromUserJwt(userJwt);
-    return _getUser(userIdInput.getAccountId(), userIdInput.getId(), null, userJwt, requestOptions,
+    return _getUser(userIdInput.getAccountId(), userIdInput.getId(), userJwt, null, requestOptions,
         false)
         .map(JsonObjectApiResponse::new);
   }
 
   private Flowable<SaaSquatchHttpResponse> _getUser(@Nonnull String accountId,
-      @Nonnull String userId, @Nullable WidgetType widgetType, @Nullable String userJwt, @Nullable RequestOptions requestOptions, boolean widgetRequest) {
+      @Nonnull String userId, @Nullable String userJwt, @Nullable WidgetType widgetType,
+      @Nullable RequestOptions requestOptions, boolean widgetRequest) {
     final URIBuilder uriBuilder = baseUriBuilder(requestOptions);
     final List<String> pathSegments = baseTenantApiPathSegments(requestOptions);
     Collections.addAll(pathSegments, widgetRequest ? "widget" : "open", "account",
@@ -297,7 +298,7 @@ public final class SaaSquatchClient implements Closeable {
    */
   public Publisher<JsonObjectApiResponse> userUpsert(@Nonnull UserInput userInput,
       @Nullable RequestOptions requestOptions) {
-    return _userUpsert(userInput.getAccountId(), userInput.getId(), userInput, null, null,
+    return _userUpsert(userInput.getAccountId(), userInput.getId(), userInput, null, null, null,
         requestOptions, false)
         .map(JsonObjectApiResponse::new);
   }
@@ -311,7 +312,7 @@ public final class SaaSquatchClient implements Closeable {
   public Publisher<JsonObjectApiResponse> userUpsert(@Nonnull Map<String, Object> userInput,
       @Nullable RequestOptions requestOptions) {
     return _userUpsert((String) userInput.get("accountId"), (String) userInput.get("id"), userInput,
-        null, null, requestOptions, false)
+        null, null, null, requestOptions, false)
         .map(JsonObjectApiResponse::new);
   }
 
@@ -328,7 +329,7 @@ public final class SaaSquatchClient implements Closeable {
     @SuppressWarnings("unchecked") final Map<String, Object> userInput =
         (Map<String, Object>) Objects.requireNonNull(payload.get("user"), "user");
     return _userUpsert((String) userInput.get("accountId"), (String) userInput.get("id"), userInput,
-        null, null, requestOptions, false)
+        userJwt, null, null, requestOptions, false)
         .map(JsonObjectApiResponse::new);
   }
 
@@ -341,15 +342,16 @@ public final class SaaSquatchClient implements Closeable {
     Objects.requireNonNull(widgetUpsertInput, "widgetUpsertInput");
     return Flowable.fromPublisher(
         _userUpsert(widgetUpsertInput.getAccountId(), widgetUpsertInput.getUserId(),
-            widgetUpsertInput.getUserInput(), widgetUpsertInput.getWidgetType(),
-            widgetUpsertInput.getEngagementMedium(), requestOptions, true))
+            widgetUpsertInput.getUserInput(), widgetUpsertInput.getUserJwt(),
+            widgetUpsertInput.getWidgetType(), widgetUpsertInput.getEngagementMedium(),
+            requestOptions, true))
         .map(JsonObjectApiResponse::new);
   }
 
   private Flowable<SaaSquatchHttpResponse> _userUpsert(@Nonnull String accountId,
-      @Nonnull String userId, @Nonnull Object body, @Nullable WidgetType widgetType,
-      @Nullable String engagementMedium, @Nullable RequestOptions requestOptions,
-      boolean widgetRequest) {
+      @Nonnull String userId, @Nonnull Object body, @Nullable String userJwt,
+      @Nullable WidgetType widgetType, @Nullable String engagementMedium,
+      @Nullable RequestOptions requestOptions, boolean widgetRequest) {
     final URIBuilder uriBuilder = baseUriBuilder(requestOptions);
     final List<String> pathSegments = baseTenantApiPathSegments(requestOptions);
     Collections.addAll(pathSegments, widgetRequest ? "widget" : "open", "account",
@@ -366,6 +368,9 @@ public final class SaaSquatchClient implements Closeable {
     }
     final SimpleHttpRequest request = SimpleHttpRequests.put(uriBuilder.toString());
     mutateRequest(request, requestOptions);
+    if (userJwt != null) {
+      AuthMethods.ofJwt(userJwt).mutateRequest(request);
+    }
     setJsonPojoBody(request, body);
     return executeRequest(request);
   }
