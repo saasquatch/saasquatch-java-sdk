@@ -10,7 +10,7 @@ import com.saasquatch.sdk.annotations.NoExternalImpl;
  *
  * @author sli
  * @see SaaSquatchClient#renderWidget(RenderWidgetInput, RequestOptions)
- * @see SaaSquatchClient#widgetUpsert(UserInput, WidgetType, RequestOptions)
+ * @see SaaSquatchClient#widgetUpsert(WidgetUpsertInput, RequestOptions) 
  * @see WidgetTypes
  */
 @NoExternalImpl

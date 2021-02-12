@@ -3,6 +3,8 @@ package com.saasquatch.sdk.input;
 import static com.saasquatch.sdk.internal.InternalUtils.requireNotBlank;
 import static com.saasquatch.sdk.internal.InternalUtils.unmodifiableMap;
 import static com.saasquatch.sdk.internal.InternalUtils.unmodifiableSet;
+
+import com.saasquatch.sdk.RequestOptions;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Objects;
@@ -21,7 +23,7 @@ import com.saasquatch.sdk.internal.json.HasCustomJsonSerialization;
  * @author sli
  * @see #newBuilder()
  * @see SaaSquatchClient#userUpsert(UserInput, com.saasquatch.sdk.RequestOptions)
- * @see SaaSquatchClient#widgetUpsert(UserInput, WidgetType, com.saasquatch.sdk.RequestOptions)
+ * @see SaaSquatchClient#widgetUpsert(WidgetUpsertInput, RequestOptions)
  */
 public final class UserInput implements HasCustomJsonSerialization {
 
