@@ -27,7 +27,7 @@ public final class User {
   private final Set<String> referredByCodes;
   private final Map<String, Object> referredBy;
   private final Map<String, Object> shareLinks;
-  private final Map<String, Map<String, Map<String, String>>> programShareLinks;
+  private final Map<String, Object> programShareLinks;
   private final Map<String, Object> customFields;
   private final Set<String> segments;
 
@@ -36,8 +36,8 @@ public final class User {
       Map<String, String> referralCodes, String locale, String imageUrl, Boolean referable,
       String firstSeenIP, String lastSeenIP, Date dateCreated, Date dateBlocked,
       Set<String> referredByCodes, Map<String, Object> referredBy, Map<String, Object> shareLinks,
-      Map<String, Map<String, Map<String, String>>> programShareLinks,
-      Map<String, Object> customFields, Set<String> segments) {
+      Map<String, Object> programShareLinks, Map<String, Object> customFields,
+      Set<String> segments) {
     this.accountId = accountId;
     this.id = id;
     this.firstName = firstName;
@@ -147,7 +147,7 @@ public final class User {
     return shareLinks;
   }
 
-  public Map<String, Map<String, Map<String, String>>> getProgramShareLinks() {
+  public Map<String, Object> getProgramShareLinks() {
     return programShareLinks;
   }
 
