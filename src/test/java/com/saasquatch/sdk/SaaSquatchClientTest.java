@@ -1,6 +1,8 @@
 package com.saasquatch.sdk;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import com.saasquatch.sdk.input.WidgetUpsertInput;
 import java.util.Collections;
 import org.junit.jupiter.api.Test;
 import com.google.common.collect.ImmutableMap;
@@ -28,11 +30,14 @@ public class SaaSquatchClientTest {
       assertThrows(IllegalArgumentException.class,
           () -> saasquatchClient.userUpsert(ImmutableMap.of("accountId", "foo", "id", " "), null));
       assertThrows(NullPointerException.class,
-          () -> saasquatchClient.widgetUpsert(Collections.emptyMap(), null, null));
-      assertThrows(IllegalArgumentException.class, () -> saasquatchClient
-          .widgetUpsert(Collections.singletonMap("accountId", " "), null, null));
-      assertThrows(IllegalArgumentException.class, () -> saasquatchClient
-          .widgetUpsert(ImmutableMap.of("accountId", "foo", "id", " "), null, null));
+          () -> saasquatchClient.widgetUpsert(
+              WidgetUpsertInput.newBuilder().setUserInput(Collections.emptyMap()).build(), null));
+      assertThrows(IllegalArgumentException.class, () -> saasquatchClient.widgetUpsert(
+          WidgetUpsertInput.newBuilder().setUserInput(Collections.singletonMap("accountId", " "))
+              .build(), null));
+      assertThrows(IllegalArgumentException.class, () -> saasquatchClient.widgetUpsert(
+          WidgetUpsertInput.newBuilder().setUserInput(
+              ImmutableMap.of("accountId", "foo", "id", " ")).build(), null));
     }
   }
 

@@ -9,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import com.saasquatch.sdk.exceptions.SaaSquatchApiException;
 import com.saasquatch.sdk.input.RenderWidgetInput;
 import com.saasquatch.sdk.input.UserIdInput;
+import com.saasquatch.sdk.input.WidgetUpsertInput;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -167,7 +168,8 @@ public class SaaSquatchClientIntegrationTest {
     userInput.put("firstName", "Foo");
     userInput.put("lastName", "Bar");
     try {
-      Flowable.fromPublisher(saasquatchClient.widgetUpsert(userInput, null,
+      Flowable.fromPublisher(saasquatchClient.widgetUpsert(
+          WidgetUpsertInput.newBuilder().setUserInput(userInput).build(),
           RequestOptions.newBuilder().addQueryParam("widgetType", "invalid").build()))
           .blockingSubscribe();
     } catch (SaaSquatchApiException e) {

@@ -14,6 +14,7 @@ import com.saasquatch.sdk.input.UserEventInput;
 import com.saasquatch.sdk.input.UserInput;
 import com.saasquatch.sdk.input.UserLinkInput;
 import com.saasquatch.sdk.input.WidgetType;
+import com.saasquatch.sdk.input.WidgetUpsertInput;
 import com.saasquatch.sdk.internal.InternalUtils;
 import com.saasquatch.sdk.internal.json.GsonUtils;
 import com.saasquatch.sdk.models.User;
@@ -294,20 +295,14 @@ public final class SaaSquatchClient implements Closeable {
    * Create or update a user and render the widget.<br> By default, the result of the response can
    * be unmarshalled to {@link WidgetUpsertResult}.
    */
-  public Publisher<JsonObjectApiResponse> widgetUpsert(@Nonnull UserInput userInput,
-      @Nullable WidgetType widgetType, @Nullable RequestOptions requestOptions) {
-    return _userUpsert(userInput.getAccountId(), userInput.getId(), userInput, widgetType,
-        requestOptions, true).map(JsonObjectApiResponse::new);
-  }
-
-  /**
-   * Create or update a user and render the widget.<br> By default, the result of the response can
-   * be unmarshalled to {@link WidgetUpsertResult}.
-   */
-  public Publisher<JsonObjectApiResponse> widgetUpsert(@Nonnull Map<String, Object> userInput,
-      @Nullable WidgetType widgetType, @Nullable RequestOptions requestOptions) {
-    return _userUpsert((String) userInput.get("accountId"), (String) userInput.get("id"), userInput,
-        widgetType, requestOptions, true).map(JsonObjectApiResponse::new);
+  public Publisher<JsonObjectApiResponse> widgetUpsert(@Nonnull WidgetUpsertInput widgetUpsertInput,
+      @Nullable RequestOptions requestOptions) {
+    Objects.requireNonNull(widgetUpsertInput, "widgetUpsertInput");
+    return Flowable.fromPublisher(
+        _userUpsert(widgetUpsertInput.getAccountId(), widgetUpsertInput.getUserId(),
+            widgetUpsertInput.getUserInput(), widgetUpsertInput.getWidgetType(), requestOptions,
+            true))
+        .map(JsonObjectApiResponse::new);
   }
 
   private Flowable<SaaSquatchHttpResponse> _userUpsert(@Nonnull String accountId,
