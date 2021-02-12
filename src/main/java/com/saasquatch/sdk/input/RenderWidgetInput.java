@@ -76,7 +76,7 @@ public final class RenderWidgetInput {
       return this;
     }
 
-    public Builder setUserJwt(@Nonnull String userJwt) {
+    public Builder setUserWithUserJwt(@Nonnull String userJwt) {
       requireNotBlank(userJwt, "userJwt");
       this.user = getUserIdInputFromUserJwt(userJwt);
       this.userJwt = userJwt;
