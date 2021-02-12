@@ -198,8 +198,9 @@ public class SaaSquatchClientIntegrationTest {
     final String messageLink =
         saasquatchClient.buildUserMessageLink(GetUserLinkInput.newBuilder().setAccountId("asdf")
             .setUserId("asdf").setProgramId("r1").setShareMedium("FACEBOOK").build(), null);
-    assertEquals("https://staging.referralsaasquatch.com/a/test_ayqmunvultmjb/"
-        + "message/redirect/FACEBOOK?accountId=asdf&userId=asdf&programId=r1", messageLink);
+    assertEquals("https://staging.referralsaasquatch.com/a/"
+        + IntegrationTestUtils.getTenantAlias()
+        + "/message/redirect/FACEBOOK?accountId=asdf&userId=asdf&programId=r1", messageLink);
   }
 
   private void upsertEmptyUser(String accountId, String userId) {
