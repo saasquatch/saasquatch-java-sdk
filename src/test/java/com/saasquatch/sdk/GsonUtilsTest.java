@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.saasquatch.sdk.internal.json.GsonIgnore;
 import com.saasquatch.sdk.internal.json.GsonSerializeNull;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -90,6 +91,26 @@ public class GsonUtilsTest {
       this.m2 = m2;
       this.l1 = l1;
       this.l2 = l2;
+    }
+
+  }
+
+  @Test
+  public void testIgnoreAnnotation() {
+    assertEquals("{\"s1\":\"a\"}", gson.toJson(new IgnoreAnnotationTestDto("a", "a")));
+    assertEquals("{}", gson.toJson(new IgnoreAnnotationTestDto(null, "a")));
+    assertEquals("{}", gson.toJson(new IgnoreAnnotationTestDto(null, null)));
+  }
+
+  static class IgnoreAnnotationTestDto {
+
+    public final String s1;
+    @GsonIgnore
+    public final String s2;
+
+    IgnoreAnnotationTestDto(String s1, String s2) {
+      this.s1 = s1;
+      this.s2 = s2;
     }
 
   }
