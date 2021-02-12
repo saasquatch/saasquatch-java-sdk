@@ -15,7 +15,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-public enum GsonSerializeNullTypeAdapterFactory implements TypeAdapterFactory {
+enum GsonSerializeNullTypeAdapterFactory implements TypeAdapterFactory {
 
   INSTANCE;
 

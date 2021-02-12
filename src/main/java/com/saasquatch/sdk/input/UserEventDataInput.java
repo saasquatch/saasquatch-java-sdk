@@ -2,6 +2,8 @@ package com.saasquatch.sdk.input;
 
 import static com.saasquatch.sdk.internal.InternalUtils.requireNotBlank;
 import static com.saasquatch.sdk.internal.InternalUtils.unmodifiableMap;
+
+import com.saasquatch.sdk.internal.json.GsonSerializeNull;
 import java.util.Date;
 import java.util.Map;
 import java.util.Objects;
@@ -18,6 +20,7 @@ public final class UserEventDataInput {
 
   private final String key;
   private final Date dateTriggered;
+  @GsonSerializeNull
   private final Map<String, Object> fields;
 
   private UserEventDataInput(String key, Date dateTriggered, Map<String, Object> fields) {

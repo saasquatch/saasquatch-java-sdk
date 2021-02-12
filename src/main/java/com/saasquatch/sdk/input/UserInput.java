@@ -5,17 +5,15 @@ import static com.saasquatch.sdk.internal.InternalUtils.unmodifiableMap;
 import static com.saasquatch.sdk.internal.InternalUtils.unmodifiableSet;
 
 import com.saasquatch.sdk.RequestOptions;
+import com.saasquatch.sdk.SaaSquatchClient;
+import com.saasquatch.sdk.annotations.ClassicOnly;
+import com.saasquatch.sdk.internal.json.GsonSerializeNull;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
 import javax.annotation.Nonnull;
-import com.saasquatch.sdk.SaaSquatchClient;
-import com.saasquatch.sdk.annotations.ClassicOnly;
-import com.saasquatch.sdk.annotations.Internal;
-import com.saasquatch.sdk.internal.json.GsonUtils;
-import com.saasquatch.sdk.internal.json.HasCustomJsonSerialization;
 
 /**
  * Input for a user
@@ -25,7 +23,7 @@ import com.saasquatch.sdk.internal.json.HasCustomJsonSerialization;
  * @see SaaSquatchClient#userUpsert(UserInput, com.saasquatch.sdk.RequestOptions)
  * @see SaaSquatchClient#widgetUpsert(WidgetUpsertInput, RequestOptions)
  */
-public final class UserInput implements HasCustomJsonSerialization {
+public final class UserInput {
 
   private final String accountId;
   private final String id;
@@ -40,6 +38,7 @@ public final class UserInput implements HasCustomJsonSerialization {
   private final Boolean referable;
   private final Set<String> referredByCodes;
   private final Map<String, Object> referredBy;
+  @GsonSerializeNull
   private final Map<String, Object> customFields;
   private final Set<String> segments;
 
@@ -125,12 +124,6 @@ public final class UserInput implements HasCustomJsonSerialization {
 
   public Set<String> getSegments() {
     return segments;
-  }
-
-  @Internal
-  @Override
-  public String toJsonString() {
-    return GsonUtils.toJsonExcludingNullRootLevelFields(this);
   }
 
   public static Builder newBuilder() {
