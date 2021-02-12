@@ -14,7 +14,7 @@ public final class WidgetTypes {
 
   private WidgetTypes() {}
 
-  public static ProgramWidgetType ofProgramWidget(@Nonnull String programId,
+  public static WidgetType ofProgramWidget(@Nonnull String programId,
       @Nonnull String widgetKey) {
     return new ProgramWidgetType(requireNotBlank(programId, "programId"),
         requireNotBlank(widgetKey, "widgetKey"));
@@ -31,7 +31,7 @@ public final class WidgetTypes {
   }
 
   @Beta
-  public static WidgetType of(String widgetType) {
+  public static WidgetType ofConstant(@Nonnull String widgetType) {
     return new ConstantWidgetType(requireNotBlank(widgetType, "widgetType"));
   }
 
