@@ -7,7 +7,6 @@ import static com.saasquatch.sdk.internal.InternalUtils.getUserIdInputFromUserJw
 import static com.saasquatch.sdk.internal.InternalUtils.requireNotBlank;
 import static com.saasquatch.sdk.internal.json.GsonUtils.gson;
 
-import com.google.gson.JsonObject;
 import com.saasquatch.sdk.auth.AuthMethod;
 import com.saasquatch.sdk.auth.AuthMethods;
 import com.saasquatch.sdk.exceptions.SaaSquatchApiException;
@@ -311,6 +310,23 @@ public final class SaaSquatchClient implements Closeable {
    */
   public Publisher<JsonObjectApiResponse> userUpsert(@Nonnull Map<String, Object> userInput,
       @Nullable RequestOptions requestOptions) {
+    return _userUpsert((String) userInput.get("accountId"), (String) userInput.get("id"), userInput,
+        null, null, requestOptions, false)
+        .map(JsonObjectApiResponse::new);
+  }
+
+  /**
+   * Create or update a user.<br> By default, the result of the response can be unmarshalled to
+   * {@link User}.<br>
+   * <a href="https://docs.saasquatch.com/api/methods/#open_user_upsert">Link to official
+   * docs</a>
+   */
+  public Publisher<JsonObjectApiResponse> userUpsertWithUserJwt(@Nonnull String userJwt,
+      @Nullable RequestOptions requestOptions) {
+    requireNotBlank(userJwt, "userJwt");
+    final Map<String, Object> payload = getJwtPayload(userJwt);
+    @SuppressWarnings("unchecked") final Map<String, Object> userInput =
+        (Map<String, Object>) Objects.requireNonNull(payload.get("user"), "user");
     return _userUpsert((String) userInput.get("accountId"), (String) userInput.get("id"), userInput,
         null, null, requestOptions, false)
         .map(JsonObjectApiResponse::new);
