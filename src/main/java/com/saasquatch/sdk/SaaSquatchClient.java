@@ -3,6 +3,7 @@ package com.saasquatch.sdk;
 import static com.saasquatch.sdk.internal.InternalUtils.defaultIfNull;
 import static com.saasquatch.sdk.internal.InternalUtils.getNestedMapValue;
 import static com.saasquatch.sdk.internal.InternalUtils.requireNotBlank;
+import static com.saasquatch.sdk.internal.json.GsonUtils.gson;
 
 import com.saasquatch.sdk.auth.AuthMethod;
 import com.saasquatch.sdk.auth.AuthMethods;
@@ -18,7 +19,6 @@ import com.saasquatch.sdk.input.UserInput;
 import com.saasquatch.sdk.input.WidgetType;
 import com.saasquatch.sdk.input.WidgetUpsertInput;
 import com.saasquatch.sdk.internal.InternalUtils;
-import com.saasquatch.sdk.internal.json.GsonUtils;
 import com.saasquatch.sdk.models.User;
 import com.saasquatch.sdk.models.UserEventResult;
 import com.saasquatch.sdk.models.WidgetUpsertResult;
@@ -504,7 +504,7 @@ public final class SaaSquatchClient implements Closeable {
   }
 
   private void setJsonPojoBody(@Nonnull SimpleHttpRequest request, Object body) {
-    setJsonStringBody(request, GsonUtils.toJson(body));
+    setJsonStringBody(request, gson.toJson(body));
   }
 
   private void setJsonStringBody(@Nonnull SimpleHttpRequest request, String jsonStr) {

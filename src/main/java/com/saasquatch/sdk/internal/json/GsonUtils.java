@@ -14,8 +14,4 @@ public final class GsonUtils {
 
   private GsonUtils() {}
 
-  public static String toJson(Object src) {
-    return gson.toJson(src);
-  }
-
 }

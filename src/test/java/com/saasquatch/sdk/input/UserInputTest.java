@@ -1,14 +1,15 @@
 package com.saasquatch.sdk.input;
 
+import static com.saasquatch.sdk.internal.json.GsonUtils.gson;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import com.google.common.collect.ImmutableSet;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import org.junit.jupiter.api.Test;
-import com.google.common.collect.ImmutableSet;
-import com.saasquatch.sdk.internal.json.GsonUtils;
 
 public class UserInputTest {
 
@@ -16,7 +17,7 @@ public class UserInputTest {
   public void testCustomJson() {
     final UserInput userInput = UserInput.newBuilder().setAccountId("a").setId("a")
         .setCustomFields(Collections.singletonMap("foo", null)).build();
-    final String jsonStr = GsonUtils.toJson(userInput);
+    final String jsonStr = gson.toJson(userInput);
     assertEquals("{\"accountId\":\"a\",\"id\":\"a\",\"customFields\":{\"foo\":null}}", jsonStr);
   }
 
