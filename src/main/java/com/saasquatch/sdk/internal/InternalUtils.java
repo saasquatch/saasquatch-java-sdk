@@ -380,9 +380,9 @@ public final class InternalUtils {
   @Nonnull
   public static UserIdInput getUserIdInputFromUserJwt(String userJwt) {
     final Map<String, Object> payload = getJwtPayload(userJwt);
-    return UserIdInput.of(
-        requireNotBlank((String) getNestedMapValue(payload, "user", "accountId"), "accountId"),
-        requireNotBlank((String) getNestedMapValue(payload, "user", "id"), "id"));
+    //noinspection ConstantConditions
+    return UserIdInput.of((String) getNestedMapValue(payload, "user", "accountId"),
+        (String) getNestedMapValue(payload, "user", "id"));
   }
 
 }

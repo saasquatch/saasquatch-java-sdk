@@ -140,6 +140,11 @@ public final class SaaSquatchClient implements Closeable {
 
   public Publisher<GraphQLApiResponse> graphQL(@Nonnull GraphQLInput graphQLInput,
       @Nullable RequestOptions requestOptions) {
+    return _graphQL(graphQLInput, null, requestOptions);
+  }
+
+  private Publisher<GraphQLApiResponse> _graphQL(@Nonnull GraphQLInput graphQLInput, String userJwt,
+      @Nullable RequestOptions requestOptions) {
     Objects.requireNonNull(graphQLInput, "graphQLInput");
     final URIBuilder uriBuilder = baseUriBuilder(requestOptions);
     final List<String> pathSegments = baseTenantApiPathSegments(requestOptions);
@@ -147,6 +152,9 @@ public final class SaaSquatchClient implements Closeable {
     mutateUri(uriBuilder, pathSegments, requestOptions);
     final SimpleHttpRequest request = SimpleHttpRequests.post(uriBuilder.toString());
     mutateRequest(request, requestOptions);
+    if (userJwt != null) {
+      AuthMethods.ofJwt(userJwt).mutateRequest(request);
+    }
     setJsonPojoBody(request, graphQLInput);
     return executeRequest(request).map(GraphQLApiResponse::new);
   }
@@ -222,10 +230,10 @@ public final class SaaSquatchClient implements Closeable {
     }
     variables.put("engagementMedium", renderWidgetInput.getEngagementMedium());
     variables.put("locale", renderWidgetInput.getLocale());
-    return Flowable.fromPublisher(graphQL(GraphQLInput.newBuilder()
+    return Flowable.fromPublisher(_graphQL(GraphQLInput.newBuilder()
         .setQuery(query)
         .setVariables(variables)
-        .build(), requestOptions))
+        .build(), renderWidgetInput.getUserJwt(), requestOptions))
         .doOnNext(InternalUtils::throwSquatchExceptionForPotentialGraphQLError)
         .map(graphQLApiResponse -> {
           final GraphQLResult graphQLResult = graphQLApiResponse.getData();
