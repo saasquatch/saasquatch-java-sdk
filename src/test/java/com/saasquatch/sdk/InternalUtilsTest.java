@@ -1,6 +1,5 @@
 package com.saasquatch.sdk;
 
-import static com.saasquatch.sdk.internal.InternalUtils.addAllRejectingNull;
 import static com.saasquatch.sdk.internal.InternalUtils.defaultIfNull;
 import static com.saasquatch.sdk.internal.InternalUtils.entryOf;
 import static com.saasquatch.sdk.internal.InternalUtils.getJwtPayload;
@@ -8,7 +7,6 @@ import static com.saasquatch.sdk.internal.InternalUtils.getNestedMapValue;
 import static com.saasquatch.sdk.internal.InternalUtils.getUserIdInputFromUserJwt;
 import static com.saasquatch.sdk.internal.InternalUtils.isBlank;
 import static com.saasquatch.sdk.internal.InternalUtils.requireNotBlank;
-import static com.saasquatch.sdk.internal.InternalUtils.stringReplace;
 import static com.saasquatch.sdk.internal.InternalUtils.unmodifiableList;
 import static com.saasquatch.sdk.internal.json.GsonUtils.gson;
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -21,7 +19,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.gson.JsonObject;
 import com.saasquatch.sdk.input.UserIdInput;
 import com.saasquatch.sdk.internal.InternalUtils;
 import io.reactivex.rxjava3.core.Flowable;
@@ -29,7 +26,6 @@ import java.io.ByteArrayInputStream;
 import java.security.Permission;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.AbstractMap.SimpleImmutableEntry;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -114,20 +110,6 @@ public class InternalUtilsTest {
   }
 
   @Test
-  public void testStringReplace() {
-    assertThrows(NullPointerException.class, () -> stringReplace(null));
-    assertEquals("test", stringReplace("test"));
-    assertThrows(ArrayIndexOutOfBoundsException.class, () -> stringReplace("", ""));
-    assertEquals("", stringReplace("", "", ""));
-    assertEquals("", stringReplace("", "", "a"));
-    assertEquals("abc", stringReplace("abc", "", "def"));
-    assertEquals("def",
-        stringReplace("a c", "abc", "foobar", "", "foobar", " ", "b", "abc", "def"));
-    assertEquals("cccccc", stringReplace("abcabc", "a", "b", "b", "c"));
-    assertEquals("", stringReplace("abcdefghi", "abc", "def", "def", "ghi", "ghi", ""));
-  }
-
-  @Test
   public void testRequireNotBlank() {
     assertThrows(NullPointerException.class, () -> requireNotBlank(null, ""));
     assertDoesNotThrow(() -> requireNotBlank("foo", null));
@@ -140,14 +122,6 @@ public class InternalUtilsTest {
     assertTrue(isBlank(""));
     assertTrue(isBlank(" \t"));
     assertFalse(isBlank(" a \r"));
-  }
-
-  @Test
-  public void testAddAll() {
-    final List<Integer> l = new ArrayList<>();
-    addAllRejectingNull(null, l, 1, 2, 3);
-    assertEquals(Arrays.asList(1, 2, 3), l);
-    assertThrows(NullPointerException.class, () -> addAllRejectingNull(null, l, 1, 2, null));
   }
 
   @Test

@@ -20,12 +20,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.Arrays;
-import java.util.Collection;
+import java.util.BitSet;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -40,6 +39,7 @@ import java.util.zip.GZIPInputStream;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.codec.net.URLCodec;
 import org.apache.hc.client5.http.async.methods.SimpleHttpRequest;
 import org.apache.hc.client5.http.async.methods.SimpleHttpResponse;
 import org.apache.hc.client5.http.impl.async.CloseableHttpAsyncClient;
@@ -53,7 +53,22 @@ public final class InternalUtils {
 
   private static final int BUFFER_SIZE = 8192;
 
-  private static final String[] RFC_3986_REPLACEMENTS = {"+", "%20", "*", "%2A", "%7E", "~"};
+  /**
+   * RFC-3986 unreserved characters used for standard URL encoding.<br>
+   * <a href="https://tools.ietf.org/html/rfc3986#section-2.3">Source</a>
+   */
+  private static final BitSet RFC_3986_SAFE_CHARS;
+
+  static {
+    RFC_3986_SAFE_CHARS = new BitSet(256);
+    RFC_3986_SAFE_CHARS.set('a', 'z' + 1);
+    RFC_3986_SAFE_CHARS.set('A', 'Z' + 1);
+    RFC_3986_SAFE_CHARS.set('0', '9' + 1);
+    RFC_3986_SAFE_CHARS.set('-');
+    RFC_3986_SAFE_CHARS.set('_');
+    RFC_3986_SAFE_CHARS.set('.');
+    RFC_3986_SAFE_CHARS.set('~');
+  }
 
   private InternalUtils() {}
 
@@ -196,36 +211,10 @@ public final class InternalUtils {
   }
 
   /**
-   * More efficient String replace without regex.
-   */
-  public static String stringReplace(String string, String... replacements) {
-    final StringBuilder sb = new StringBuilder(string);
-    for (int i = 0; i < replacements.length; ) {
-      final String key = replacements[i++];
-      final String value = replacements[i++];
-      if (key.isEmpty()) {
-        continue;
-      }
-      int nextSearchStart = 0;
-      int start;
-      while ((start = sb.indexOf(key, nextSearchStart)) > -1) {
-        final int end = start + key.length();
-        nextSearchStart = start + value.length();
-        sb.replace(start, end, value);
-      }
-    }
-    return sb.toString();
-  }
-
-  /**
    * RFC3986 URL encode
    */
   public static String urlEncode(@Nonnull String s) {
-    try {
-      return stringReplace(URLEncoder.encode(s, UTF_8.name()), RFC_3986_REPLACEMENTS);
-    } catch (UnsupportedEncodingException e) {
-      throw new RuntimeException(e); // Seriously Java?
-    }
+    return new String(URLCodec.encodeUrl(RFC_3986_SAFE_CHARS, s.getBytes(UTF_8)), UTF_8);
   }
 
   /**
@@ -276,15 +265,6 @@ public final class InternalUtils {
     }
     buf.flip();
     return buf.toString();
-  }
-
-  @SafeVarargs
-  public static <T> void addAllRejectingNull(@Nullable String msg, Collection<T> col,
-      T... elements) {
-    Objects.requireNonNull(elements, msg);
-    for (T element : elements) {
-      col.add(Objects.requireNonNull(element, msg));
-    }
   }
 
   public static byte[] toByteArray(InputStream in) throws IOException {
