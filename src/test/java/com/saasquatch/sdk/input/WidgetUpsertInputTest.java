@@ -3,7 +3,6 @@ package com.saasquatch.sdk.input;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.google.common.collect.ImmutableMap;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class WidgetUpsertInputTest {
