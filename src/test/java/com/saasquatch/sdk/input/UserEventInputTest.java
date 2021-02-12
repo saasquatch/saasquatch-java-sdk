@@ -22,7 +22,7 @@ public class UserEventInputTest {
   public void testBasic() {
     final UserEventInput userEventInput = UserEventInput.newBuilder().setAccountId("a")
         .setUserId("u")
-        .setEvents(Arrays.asList(UserEventDataInput.newBuilder().setKey("key").build())).build();
+        .addEvents(UserEventDataInput.newBuilder().setKey("key").build()).build();
     assertEquals("a", userEventInput.getAccountId());
     assertEquals("u", userEventInput.getUserId());
     assertEquals(1, userEventInput.getEvents().size());

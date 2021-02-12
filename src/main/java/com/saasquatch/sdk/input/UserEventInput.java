@@ -2,12 +2,12 @@ package com.saasquatch.sdk.input;
 
 import static com.saasquatch.sdk.internal.InternalUtils.requireNotBlank;
 import static com.saasquatch.sdk.internal.InternalUtils.unmodifiableList;
+
+import com.saasquatch.sdk.SaaSquatchClient;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import javax.annotation.Nonnull;
-import com.saasquatch.sdk.SaaSquatchClient;
 
 /**
  * Input for log user event API
@@ -59,17 +59,6 @@ public final class UserEventInput {
 
     public Builder setUserId(@Nonnull String userId) {
       this.userId = requireNotBlank(userId, "userId");
-      return this;
-    }
-
-    public Builder setEvents(@Nonnull List<UserEventDataInput> events) {
-      Objects.requireNonNull(events, "events");
-      // Ensure mutability
-      if (events instanceof ArrayList || events instanceof LinkedList) {
-        this.events = events;
-      } else {
-        this.events = new ArrayList<>(events);
-      }
       return this;
     }
 

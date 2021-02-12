@@ -6,9 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.google.common.collect.ImmutableSet;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.LinkedHashSet;
 import org.junit.jupiter.api.Test;
 
 public class UserInputTest {
@@ -38,9 +36,7 @@ public class UserInputTest {
         .setReferralCodes(Collections.singletonMap("foo", "code2"))
         .setReferredBy(Collections.emptyMap()).setReferredByCodes(Collections.singleton("code3"))
         .setCustomFields(Collections.singletonMap("foo", "bar"))
-        .setSegments(Collections.singleton("seg1"))
-        .setSegments(new LinkedHashSet<>(Arrays.asList("seg1"))).addToSegments("seg2")
-        .removeFromSegments("seg3").build();
+        .addToSegments("seg1", "seg2").removeFromSegments("seg3").build();
     assertEquals("a", userInput.getAccountId());
     assertEquals("u", userInput.getId());
     assertEquals("foo@example.com", userInput.getEmail());

@@ -223,17 +223,6 @@ public final class UserInput {
       return this;
     }
 
-    public Builder setSegments(@Nonnull Set<String> segments) {
-      Objects.requireNonNull(segments, "segments");
-      // Ensure mutability and ordering
-      if (segments instanceof LinkedHashSet || segments instanceof TreeSet) {
-        this.segments = segments;
-      } else {
-        this.segments = new LinkedHashSet<>(segments);
-      }
-      return this;
-    }
-
     public Builder addToSegments(@Nonnull String... segments) {
       if (this.segments == null) {
         this.segments = new LinkedHashSet<>();
