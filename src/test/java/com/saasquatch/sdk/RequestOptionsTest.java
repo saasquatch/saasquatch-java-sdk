@@ -1,17 +1,17 @@
 package com.saasquatch.sdk;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import com.saasquatch.sdk.auth.AuthMethod;
 import java.util.concurrent.TimeUnit;
 import org.apache.hc.client5.http.async.methods.SimpleHttpRequest;
 import org.apache.hc.client5.http.async.methods.SimpleHttpRequests;
 import org.apache.hc.core5.net.URIBuilder;
 import org.junit.jupiter.api.Test;
-import com.saasquatch.sdk.auth.AuthMethods;
 
 public class RequestOptionsTest {
 
@@ -41,7 +41,7 @@ public class RequestOptionsTest {
   public void testBasic() {
     final RequestOptions requestOptions =
         RequestOptions.newBuilder().setTenantAlias("aaaaaaaaaaaaaaaa")
-            .setAuthMethod(AuthMethods.ofTenantApiKey("dfsajkglhrejlghdfslghsd"))
+            .setAuthMethod(AuthMethod.ofTenantApiKey("dfsajkglhrejlghdfslghsd"))
             .setRequestTimeout(5, TimeUnit.SECONDS).setConnectTimeout(500, TimeUnit.MILLISECONDS)
             .addHeader("foo", "bar").addHeaders("a", "b", "c", "d").addQueryParam("foo", "bar")
             .addQueryParams("a", "b", "c", "d").setContentCompressionEnabled(true).build();

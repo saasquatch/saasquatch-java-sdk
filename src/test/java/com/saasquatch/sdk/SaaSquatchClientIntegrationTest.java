@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.saasquatch.sdk.auth.AuthMethods;
+import com.saasquatch.sdk.auth.AuthMethod;
 import com.saasquatch.sdk.exceptions.SaaSquatchApiException;
 import com.saasquatch.sdk.input.GetUserLinkInput;
 import com.saasquatch.sdk.input.GraphQLInput;
@@ -80,7 +80,7 @@ public class SaaSquatchClientIntegrationTest {
     try {
       Flowable.fromPublisher(saasquatchClient.userUpsert(
           userInput,
-          RequestOptions.newBuilder().setAuthMethod(AuthMethods.ofTenantApiKey("fake")).build()))
+          RequestOptions.newBuilder().setAuthMethod(AuthMethod.ofTenantApiKey("fake")).build()))
           .blockingSubscribe();
     } catch (SaaSquatchApiException e) {
       final ApiError apiError = e.getApiError();

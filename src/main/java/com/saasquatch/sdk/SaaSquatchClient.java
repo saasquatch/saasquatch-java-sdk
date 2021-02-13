@@ -8,7 +8,6 @@ import static com.saasquatch.sdk.internal.InternalUtils.requireNotBlank;
 import static com.saasquatch.sdk.internal.json.GsonUtils.gson;
 
 import com.saasquatch.sdk.auth.AuthMethod;
-import com.saasquatch.sdk.auth.AuthMethods;
 import com.saasquatch.sdk.exceptions.SaaSquatchApiException;
 import com.saasquatch.sdk.exceptions.SaaSquatchIOException;
 import com.saasquatch.sdk.exceptions.SaaSquatchUnhandledApiException;
@@ -155,7 +154,7 @@ public final class SaaSquatchClient implements Closeable {
     final SimpleHttpRequest request = SimpleHttpRequests.post(uriBuilder.toString());
     mutateRequest(request, requestOptions);
     if (userJwt != null) {
-      AuthMethods.ofJwt(userJwt).mutateRequest(request);
+      AuthMethod.ofJwt(userJwt).mutateRequest(request);
     }
     setJsonPojoBody(request, graphQLInput);
     return executeRequest(request).map(GraphQLApiResponse::new);
@@ -199,7 +198,7 @@ public final class SaaSquatchClient implements Closeable {
     final SimpleHttpRequest request = SimpleHttpRequests.get(uriBuilder.toString());
     mutateRequest(request, requestOptions);
     if (userJwt != null) {
-      AuthMethods.ofJwt(userJwt).mutateRequest(request);
+      AuthMethod.ofJwt(userJwt).mutateRequest(request);
     }
     return executeRequest(request);
   }
@@ -372,7 +371,7 @@ public final class SaaSquatchClient implements Closeable {
     final SimpleHttpRequest request = SimpleHttpRequests.put(uriBuilder.toString());
     mutateRequest(request, requestOptions);
     if (userJwt != null) {
-      AuthMethods.ofJwt(userJwt).mutateRequest(request);
+      AuthMethod.ofJwt(userJwt).mutateRequest(request);
     }
     setJsonPojoBody(request, body);
     return executeRequest(request);
@@ -518,7 +517,7 @@ public final class SaaSquatchClient implements Closeable {
     if (authMethod == null) {
       authMethod = this.clientOptions.getAuthMethod();
     }
-    return authMethod == null ? AuthMethods.noAuth() : authMethod;
+    return authMethod == null ? AuthMethod.noAuth() : authMethod;
   }
 
   /**

@@ -3,14 +3,14 @@ package com.saasquatch.sdk.test;
 import static com.saasquatch.sdk.internal.InternalUtils.getSysPropOrEnv;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
+import com.google.common.collect.ImmutableSet;
+import com.saasquatch.sdk.ClientOptions;
+import com.saasquatch.sdk.SaaSquatchClient;
+import com.saasquatch.sdk.auth.AuthMethod;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Stream;
-import com.google.common.collect.ImmutableSet;
-import com.saasquatch.sdk.ClientOptions;
-import com.saasquatch.sdk.SaaSquatchClient;
-import com.saasquatch.sdk.auth.AuthMethods;
 
 public class IntegrationTestUtils {
 
@@ -58,7 +58,7 @@ public class IntegrationTestUtils {
     return SaaSquatchClient.create(ClientOptions.newBuilder()
         .setTenantAlias(getTenantAlias())
         .setAppDomain(getAppDomain())
-        .setAuthMethod(AuthMethods.ofTenantApiKey(getTenantApiKey()))
+        .setAuthMethod(AuthMethod.ofTenantApiKey(getTenantApiKey()))
         .build());
   }
 

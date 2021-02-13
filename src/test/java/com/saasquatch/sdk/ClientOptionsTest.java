@@ -5,9 +5,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import com.saasquatch.sdk.auth.AuthMethod;
 import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.Test;
-import com.saasquatch.sdk.auth.AuthMethods;
 
 public class ClientOptionsTest {
 
@@ -39,14 +40,14 @@ public class ClientOptionsTest {
     assertThrows(IllegalArgumentException.class, () -> builder.setMaxConcurrentRequests(100));
     assertThrows(IllegalArgumentException.class, () -> builder.setMaxConcurrentRequests(0));
     assertThrows(IllegalArgumentException.class,
-        () -> ClientOptions.newBuilder().setAuthMethod(AuthMethods.ofTenantApiKey("foo")).build());
+        () -> ClientOptions.newBuilder().setAuthMethod(AuthMethod.ofTenantApiKey("foo")).build());
   }
 
   @Test
   public void testBasic() {
     final ClientOptions clientOptions =
         ClientOptions.newBuilder().setAppDomain("www.example.com").setTenantAlias("aaaaaaaaaaaaa")
-            .setAuthMethod(AuthMethods.ofTenantApiKey("dasfjklagrhwejklhfjk"))
+            .setAuthMethod(AuthMethod.ofTenantApiKey("dasfjklagrhwejklhfjk"))
             .setConnectTimeout(500, TimeUnit.MILLISECONDS).setRequestTimeout(5, TimeUnit.SECONDS)
             .setMaxConcurrentRequests(10).setContentCompressionEnabled(false).build();
     assertEquals("www.example.com", clientOptions.getAppDomain());
