@@ -11,7 +11,7 @@ import com.saasquatch.sdk.input.UserInput;
 public class SaaSquatchClientTest {
 
   @Test
-  public void testNull() {
+  public void testNull() throws Exception {
     assertThrows(NullPointerException.class, () -> SaaSquatchClient.createForTenant(null));
     assertThrows(IllegalArgumentException.class, () -> SaaSquatchClient.createForTenant(" "));
     assertThrows(NullPointerException.class, () -> SaaSquatchClient.create(null));

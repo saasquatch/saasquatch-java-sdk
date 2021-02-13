@@ -71,12 +71,8 @@ class SaaSquatchClientImpl implements SaaSquatchClient {
   }
 
   @Override
-  public void close() {
-    try {
-      this.httpAsyncClient.close();
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
+  public void close() throws IOException {
+    this.httpAsyncClient.close();
   }
 
   @Nonnull

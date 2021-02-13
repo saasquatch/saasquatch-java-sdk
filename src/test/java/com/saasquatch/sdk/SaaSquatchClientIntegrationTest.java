@@ -48,7 +48,7 @@ public class SaaSquatchClientIntegrationTest {
   }
 
   @AfterAll
-  public static void afterAll() {
+  public static void afterAll() throws Exception {
     if (saasquatchClient != null) {
       saasquatchClient.close();
     }

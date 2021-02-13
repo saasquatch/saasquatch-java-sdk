@@ -28,9 +28,6 @@ import org.reactivestreams.Publisher;
  */
 public interface SaaSquatchClient extends Closeable {
 
-  @Override
-  void close();
-
   /**
    * Initialize a {@link SaaSquatchClient} with a tenantAlias and default options.
    *
