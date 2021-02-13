@@ -1,6 +1,10 @@
 package com.saasquatch.sdk.input;
 
+import static com.saasquatch.sdk.internal.InternalUtils.requireNotBlank;
+
 import com.saasquatch.sdk.RequestOptions;
+import com.saasquatch.sdk.annotations.Beta;
+import com.saasquatch.sdk.annotations.ClassicOnly;
 import javax.annotation.Nonnull;
 import com.saasquatch.sdk.SaaSquatchClient;
 import com.saasquatch.sdk.annotations.NoExternalImpl;
@@ -11,12 +15,32 @@ import com.saasquatch.sdk.annotations.NoExternalImpl;
  * @author sli
  * @see SaaSquatchClient#renderWidget(RenderWidgetInput, RequestOptions)
  * @see SaaSquatchClient#widgetUpsert(WidgetUpsertInput, RequestOptions)
- * @see WidgetTypes
  */
 @NoExternalImpl
 public interface WidgetType {
 
   @Nonnull
   String getWidgetType();
+
+  static WidgetType ofProgramWidget(@Nonnull String programId,
+      @Nonnull String widgetKey) {
+    return new ProgramWidgetType(requireNotBlank(programId, "programId"),
+        requireNotBlank(widgetKey, "widgetKey"));
+  }
+
+  @ClassicOnly
+  static WidgetType classicReferrerWidget() {
+    return ClassicWidgetType.REFERRER_WIDGET;
+  }
+
+  @ClassicOnly
+  static WidgetType classicConversionWidget() {
+    return ClassicWidgetType.CONVERSION_WIDGET;
+  }
+
+  @Beta
+  static WidgetType ofConstant(@Nonnull String widgetType) {
+    return new ConstantWidgetType(requireNotBlank(widgetType, "widgetType"));
+  }
 
 }

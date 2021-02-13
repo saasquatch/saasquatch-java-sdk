@@ -6,26 +6,17 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import com.saasquatch.sdk.exceptions.SaaSquatchApiException;
-import com.saasquatch.sdk.input.RenderWidgetInput;
-import com.saasquatch.sdk.input.UserIdInput;
-import com.saasquatch.sdk.input.WidgetUpsertInput;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.saasquatch.sdk.auth.AuthMethods;
-import com.saasquatch.sdk.input.GraphQLInput;
+import com.saasquatch.sdk.exceptions.SaaSquatchApiException;
 import com.saasquatch.sdk.input.GetUserLinkInput;
-import com.saasquatch.sdk.input.WidgetTypes;
+import com.saasquatch.sdk.input.GraphQLInput;
+import com.saasquatch.sdk.input.RenderWidgetInput;
+import com.saasquatch.sdk.input.UserIdInput;
+import com.saasquatch.sdk.input.WidgetType;
+import com.saasquatch.sdk.input.WidgetUpsertInput;
 import com.saasquatch.sdk.models.User;
 import com.saasquatch.sdk.models.UserEventData;
 import com.saasquatch.sdk.models.UserEventResult;
@@ -36,6 +27,15 @@ import com.saasquatch.sdk.output.JsonObjectApiResponse;
 import com.saasquatch.sdk.output.TextApiResponse;
 import com.saasquatch.sdk.test.IntegrationTestUtils;
 import io.reactivex.rxjava3.core.Flowable;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 public class SaaSquatchClientIntegrationTest {
 
@@ -128,7 +128,7 @@ public class SaaSquatchClientIntegrationTest {
     {
       final TextApiResponse response = Flowable
           .fromPublisher(saasquatchClient.renderWidget(RenderWidgetInput.newBuilder().setUser(
-              UserIdInput.of("asdf", "asdf")).setWidgetType(WidgetTypes.classicConversionWidget())
+              UserIdInput.of("asdf", "asdf")).setWidgetType(WidgetType.classicConversionWidget())
               .build(), null)).blockingSingle();
       assertEquals(200, response.getHttpResponse().getStatusCode());
     }
