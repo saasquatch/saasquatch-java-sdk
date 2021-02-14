@@ -133,8 +133,8 @@ public interface SaaSquatchClient extends Closeable {
    * <a href="https://docs.saasquatch.com/api/methods/#lookup-a-users-share-urls">Link to
    * official docs</a>
    */
-  Publisher<JsonObjectApiResponse> getUserShareLinks(
-      @Nonnull GetUserLinkInput getUserLinkInput, @Nullable RequestOptions requestOptions);
+  Publisher<JsonObjectApiResponse> getUserShareLinks(@Nonnull GetUserLinkInput getUserLinkInput,
+      @Nullable RequestOptions requestOptions);
 
   /**
    * Log a user event.<br> By default, the result of the response can be unmarshalled to {@link
