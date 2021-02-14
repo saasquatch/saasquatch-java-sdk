@@ -49,7 +49,7 @@ import org.apache.hc.core5.http.HttpHeaders;
 import org.apache.hc.core5.net.URIBuilder;
 import org.reactivestreams.Publisher;
 
-class SaaSquatchClientImpl implements SaaSquatchClient {
+final class SaaSquatchClientImpl implements SaaSquatchClient {
 
   private final ClientOptions clientOptions;
   private final String scheme;
