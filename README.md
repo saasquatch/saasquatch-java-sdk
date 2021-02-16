@@ -39,6 +39,8 @@ This library aims to abstract away the I/O layer and [Reactive Streams](https://
 
 SaaSquatch Java SDK works on Java 8+ and Android API level 21+. To use this library on Android, you'll need to configure your project to use Java 8 by adding the following to `build.gradle` (see [Android official docs](https://developer.android.com/studio/write/java8-support) for more information).
 
+[Squatch Android](https://github.com/saasquatch/squatch-android) is an Android wrapper of this library with Android specific features.
+
 ## Using the SDK
 
 The entry point of the SDK is `SaaSquatchClient`. To create a `SaaSquatchClient` for your tenant with default options, use:
