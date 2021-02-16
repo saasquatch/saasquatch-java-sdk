@@ -10,7 +10,7 @@ import com.saasquatch.sdk.SaaSquatchClient;
 import com.saasquatch.sdk.annotations.NoExternalImpl;
 
 /**
- * GsonSerializeNullTypeAdapterFactory SaaSquatch widget type
+ * SaaSquatch widget type
  *
  * @author sli
  * @see SaaSquatchClient#renderWidget(RenderWidgetInput, RequestOptions)
