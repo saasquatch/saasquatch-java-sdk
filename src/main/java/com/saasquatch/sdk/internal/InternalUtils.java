@@ -134,6 +134,7 @@ public final class InternalUtils {
    */
   public static Flowable<SimpleHttpResponse> executeRequest(
       @Nonnull CloseableHttpAsyncClient httpAsyncClient, @Nonnull SimpleHttpRequest request) {
+    //noinspection CodeBlock2Expr
     return Single.<SimpleHttpResponse>create(emitter -> {
       httpAsyncClient.execute(request, new FutureCallback<SimpleHttpResponse>() {
 
