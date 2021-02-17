@@ -56,6 +56,7 @@ public final class Client5SaaSquatchHttpResponse implements SaaSquatchHttpRespon
     while (headerIterator.hasNext()) {
       final Header header = headerIterator.next();
       List<String> values = result.get(header.getName());
+      // For Android
       //noinspection Java8MapApi
       if (values == null) {
         values = new ArrayList<>();

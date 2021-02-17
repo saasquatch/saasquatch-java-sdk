@@ -5,7 +5,8 @@ import java.util.Map;
 import javax.annotation.Nullable;
 
 /**
- * The result of a standard GraphQL request
+ * The result of a GraphQL request in the <a href="https://graphql.org/learn/serving-over-http/">
+ * standard GraphQL over HTTP format</a>
  *
  * @author sli
  */
