@@ -339,10 +339,9 @@ final class SaaSquatchClientImpl implements SaaSquatchClient {
   @Override
   public Publisher<JsonObjectApiResponse> logUserEvent(@Nonnull Map<String, Object> userEventInput,
       @Nullable RequestOptions requestOptions) {
-    final Map<String, Object> body = userEventInput;
-    final String accountId = requireNotBlank((String) body.get("accountId"), "accountId");
-    final String userId = requireNotBlank((String) body.get("userId"), "userId");
-    return _logUserEvent(accountId, userId, body, requestOptions);
+    final String accountId = requireNotBlank((String) userEventInput.get("accountId"), "accountId");
+    final String userId = requireNotBlank((String) userEventInput.get("userId"), "userId");
+    return _logUserEvent(accountId, userId, userEventInput, requestOptions);
   }
 
   private Publisher<JsonObjectApiResponse> _logUserEvent(@Nonnull String accountId,
