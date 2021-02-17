@@ -12,6 +12,8 @@ SaaSquatch Java SDK is hosted on JitPack.
 
 Add JitPack repository:
 
+### Maven
+
 ```xml
 <repositories>
   <repository>
@@ -21,7 +23,20 @@ Add JitPack repository:
 </repositories>
 ```
 
+### Gradle
+
+```gradle
+allprojects {
+    repositories {
+        ...
+        maven { url 'https://jitpack.io' }
+    }
+}
+```
+
 Add the dependency:
+
+### Maven
 
 ```xml
 <dependency>
@@ -29,6 +44,14 @@ Add the dependency:
   <artifactId>saasquatch-java-sdk</artifactId>
   <version>TODO</version>
 </dependency>
+```
+
+### Gradle
+
+```gradle
+dependencies {
+    implementation 'com.github.saasquatch:saasquatch-java-sdk:TODO'
+}
 ```
 
 For more information and other built tools, [please refer to the JitPack page](https://jitpack.io/#saasquatch/saasquatch-java-sdk).
