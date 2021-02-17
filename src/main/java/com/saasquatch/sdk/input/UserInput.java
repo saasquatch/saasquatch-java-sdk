@@ -32,6 +32,7 @@ public final class UserInput {
   private final String paymentProviderId;
   private final String referralCode;
   private final Map<String, String> referralCodes;
+  private final Map<String, String> shareLinks;
   private final String locale;
   private final String countryCode;
   private final String imageUrl;
@@ -45,9 +46,9 @@ public final class UserInput {
 
   private UserInput(String accountId, String id, String firstName, String lastName, String email,
       String paymentProviderId, String referralCode, Map<String, String> referralCodes,
-      String locale, String countryCode, String imageUrl, Boolean referable,
-      Set<String> referredByCodes, Map<String, Object> referredBy, Map<String, Object> customFields,
-      Set<String> segments, String cookies) {
+      Map<String, String> shareLinks, String locale, String countryCode, String imageUrl,
+      Boolean referable, Set<String> referredByCodes, Map<String, Object> referredBy,
+      Map<String, Object> customFields, Set<String> segments, String cookies) {
     this.accountId = accountId;
     this.id = id;
     this.firstName = firstName;
@@ -56,6 +57,7 @@ public final class UserInput {
     this.paymentProviderId = paymentProviderId;
     this.referralCode = referralCode;
     this.referralCodes = referralCodes;
+    this.shareLinks = shareLinks;
     this.locale = locale;
     this.countryCode = countryCode;
     this.imageUrl = imageUrl;
@@ -95,6 +97,10 @@ public final class UserInput {
   @ClassicOnly
   public String getReferralCode() {
     return referralCode;
+  }
+
+  public Map<String, String> getShareLinks() {
+    return shareLinks;
   }
 
   public Map<String, String> getReferralCodes() {
@@ -152,6 +158,7 @@ public final class UserInput {
     private String paymentProviderId;
     private String referralCode;
     private Map<String, String> referralCodes;
+    private Map<String, String> shareLinks;
     private String locale;
     private String countryCode;
     private String imageUrl;
@@ -203,6 +210,11 @@ public final class UserInput {
 
     public Builder setReferralCodes(@Nonnull Map<String, String> referralCodes) {
       this.referralCodes = Objects.requireNonNull(referralCodes, "referralCodes");
+      return this;
+    }
+
+    public Builder setShareLinks(@Nonnull Map<String, String> shareLinks) {
+      this.shareLinks = Objects.requireNonNull(shareLinks, "shareLinks");
       return this;
     }
 
@@ -270,7 +282,7 @@ public final class UserInput {
     public UserInput build() {
       return new UserInput(requireNotBlank(accountId, "accountId"), requireNotBlank(id, "id"),
           firstName, lastName, email, paymentProviderId, referralCode,
-          referralCodes == null ? null : unmodifiableMap(referralCodes), locale, countryCode,
+          referralCodes == null ? null : unmodifiableMap(referralCodes), shareLinks == null ? null : unmodifiableMap(shareLinks), locale, countryCode,
           imageUrl, referable, referredByCodes == null ? null : unmodifiableSet(referredByCodes),
           referredBy == null ? null : unmodifiableMap(referredBy),
           customFields == null ? null : unmodifiableMap(customFields),
