@@ -17,6 +17,9 @@ public class WidgetTypeTest {
     assertThrows(IllegalArgumentException.class, () -> WidgetType.ofProgramWidget("", ""));
     assertEquals("p/a%20b%20%26%2A~/w/%7B%3APG_%2B%24%23T%25%24%29",
         WidgetType.ofProgramWidget("a b &*~", "{:PG_+$#T%$)").getWidgetType());
+    assertThrows(IllegalArgumentException.class, () -> WidgetType.ofGlobalWidget(""));
+    assertEquals("w/%7B%3APG_%2B%24%23T%25%24%29",
+        WidgetType.ofGlobalWidget("{:PG_+$#T%$)").getWidgetType());
   }
 
   @Test

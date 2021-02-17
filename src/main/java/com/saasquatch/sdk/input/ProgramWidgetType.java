@@ -8,11 +8,11 @@ final class ProgramWidgetType implements WidgetType {
   // Lazy init
   private String widgetType;
   private final String programId;
-  private final String widgetKey;
+  private final String programWidgetKey;
 
-  ProgramWidgetType(@Nonnull String programId, @Nonnull String widgetKey) {
+  ProgramWidgetType(@Nonnull String programId, @Nonnull String programWidgetKey) {
     this.programId = programId;
-    this.widgetKey = widgetKey;
+    this.programWidgetKey = programWidgetKey;
   }
 
   @Nonnull
@@ -20,7 +20,7 @@ final class ProgramWidgetType implements WidgetType {
   public String getWidgetType() {
     String t = widgetType;
     if (t == null) {
-      widgetType = t = "p/" + urlEncode(programId) + "/w/" + urlEncode(widgetKey);
+      widgetType = t = "p/" + urlEncode(programId) + "/w/" + urlEncode(programWidgetKey);
     }
     return t;
   }

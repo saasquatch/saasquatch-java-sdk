@@ -23,9 +23,13 @@ public interface WidgetType {
   String getWidgetType();
 
   static WidgetType ofProgramWidget(@Nonnull String programId,
-      @Nonnull String widgetKey) {
+      @Nonnull String programWidgetKey) {
     return new ProgramWidgetType(requireNotBlank(programId, "programId"),
-        requireNotBlank(widgetKey, "widgetKey"));
+        requireNotBlank(programWidgetKey, "programWidgetKey"));
+  }
+
+  static WidgetType ofGlobalWidget(@Nonnull String globalWidgetKey) {
+    return new GlobalWidgetType(requireNotBlank(globalWidgetKey, "globalWidgetKey"));
   }
 
   @ClassicOnly
