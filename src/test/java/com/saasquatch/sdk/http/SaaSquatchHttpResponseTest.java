@@ -22,6 +22,8 @@ public class SaaSquatchHttpResponseTest {
     assertEquals("3", response.getLastHeader("aBC"));
     assertEquals(Arrays.asList("1", "2", "3"), response.getHeaders("AbC"));
     assertEquals(ImmutableMap.of("abc", Arrays.asList("1", "2", "3")), response.getAllHeaders());
+    assertEquals(200, response.getStatusCode());
+    assertEquals("foo", response.getBodyText());
   }
 
 }
