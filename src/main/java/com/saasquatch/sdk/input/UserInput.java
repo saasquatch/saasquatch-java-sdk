@@ -12,7 +12,6 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.TreeSet;
 import javax.annotation.Nonnull;
 
 /**
@@ -34,6 +33,7 @@ public final class UserInput {
   private final String referralCode;
   private final Map<String, String> referralCodes;
   private final String locale;
+  private final String countryCode;
   private final String imageUrl;
   private final Boolean referable;
   private final Set<String> referredByCodes;
@@ -44,8 +44,9 @@ public final class UserInput {
 
   private UserInput(String accountId, String id, String firstName, String lastName, String email,
       String paymentProviderId, String referralCode, Map<String, String> referralCodes,
-      String locale, String imageUrl, Boolean referable, Set<String> referredByCodes,
-      Map<String, Object> referredBy, Map<String, Object> customFields, Set<String> segments) {
+      String locale, String countryCode, String imageUrl, Boolean referable,
+      Set<String> referredByCodes, Map<String, Object> referredBy, Map<String, Object> customFields,
+      Set<String> segments) {
     this.accountId = accountId;
     this.id = id;
     this.firstName = firstName;
@@ -55,6 +56,7 @@ public final class UserInput {
     this.referralCode = referralCode;
     this.referralCodes = referralCodes;
     this.locale = locale;
+    this.countryCode = countryCode;
     this.imageUrl = imageUrl;
     this.referable = referable;
     this.referredByCodes = referredByCodes;
@@ -101,6 +103,10 @@ public final class UserInput {
     return locale;
   }
 
+  public String getCountryCode() {
+    return countryCode;
+  }
+
   public String getImageUrl() {
     return imageUrl;
   }
@@ -141,6 +147,7 @@ public final class UserInput {
     private String referralCode;
     private Map<String, String> referralCodes;
     private String locale;
+    private String countryCode;
     private String imageUrl;
     private Boolean referable;
     private Set<String> referredByCodes;
@@ -197,6 +204,11 @@ public final class UserInput {
       return this;
     }
 
+    public Builder setCountryCode(String countryCode) {
+      this.countryCode = requireNotBlank(countryCode, "countryCode");
+      return this;
+    }
+
     public Builder setImageUrl(@Nonnull String imageUrl) {
       this.imageUrl = requireNotBlank(imageUrl, "imageUrl");
       return this;
@@ -246,8 +258,8 @@ public final class UserInput {
     public UserInput build() {
       return new UserInput(requireNotBlank(accountId, "accountId"), requireNotBlank(id, "id"),
           firstName, lastName, email, paymentProviderId, referralCode,
-          referralCodes == null ? null : unmodifiableMap(referralCodes), locale, imageUrl,
-          referable, referredByCodes == null ? null : unmodifiableSet(referredByCodes),
+          referralCodes == null ? null : unmodifiableMap(referralCodes), locale, countryCode,
+          imageUrl, referable, referredByCodes == null ? null : unmodifiableSet(referredByCodes),
           referredBy == null ? null : unmodifiableMap(referredBy),
           customFields == null ? null : unmodifiableMap(customFields),
           segments == null ? null : unmodifiableSet(segments));

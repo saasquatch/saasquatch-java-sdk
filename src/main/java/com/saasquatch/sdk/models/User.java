@@ -18,6 +18,7 @@ public final class User {
   private final String referralCode;
   private final Map<String, String> referralCodes;
   private final String locale;
+  private final String countryCode;
   private final String imageUrl;
   private final Boolean referable;
   private final String firstSeenIP;
@@ -33,8 +34,8 @@ public final class User {
 
   private User(String accountId, String id, String firstName, String lastName, String email,
       String emailHash, String cookieId, String paymentProviderId, String referralCode,
-      Map<String, String> referralCodes, String locale, String imageUrl, Boolean referable,
-      String firstSeenIP, String lastSeenIP, Date dateCreated, Date dateBlocked,
+      Map<String, String> referralCodes, String locale, String countryCode, String imageUrl,
+      Boolean referable, String firstSeenIP, String lastSeenIP, Date dateCreated, Date dateBlocked,
       Set<String> referredByCodes, Map<String, Object> referredBy, Map<String, Object> shareLinks,
       Map<String, Object> programShareLinks, Map<String, Object> customFields,
       Set<String> segments) {
@@ -49,6 +50,7 @@ public final class User {
     this.referralCode = referralCode;
     this.referralCodes = referralCodes;
     this.locale = locale;
+    this.countryCode = countryCode;
     this.imageUrl = imageUrl;
     this.referable = referable;
     this.firstSeenIP = firstSeenIP;
@@ -107,6 +109,10 @@ public final class User {
 
   public String getLocale() {
     return locale;
+  }
+
+  public String getCountryCode() {
+    return countryCode;
   }
 
   public String getImageUrl() {
