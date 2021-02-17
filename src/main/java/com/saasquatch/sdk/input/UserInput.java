@@ -41,12 +41,13 @@ public final class UserInput {
   @GsonSerializeNull
   private final Map<String, Object> customFields;
   private final Set<String> segments;
+  private final String cookies;
 
   private UserInput(String accountId, String id, String firstName, String lastName, String email,
       String paymentProviderId, String referralCode, Map<String, String> referralCodes,
       String locale, String countryCode, String imageUrl, Boolean referable,
       Set<String> referredByCodes, Map<String, Object> referredBy, Map<String, Object> customFields,
-      Set<String> segments) {
+      Set<String> segments, String cookies) {
     this.accountId = accountId;
     this.id = id;
     this.firstName = firstName;
@@ -63,6 +64,7 @@ public final class UserInput {
     this.referredBy = referredBy;
     this.customFields = customFields;
     this.segments = segments;
+    this.cookies = cookies;
   }
 
   public String getAccountId() {
@@ -132,6 +134,10 @@ public final class UserInput {
     return segments;
   }
 
+  public String getCookies() {
+    return cookies;
+  }
+
   public static Builder newBuilder() {
     return new Builder();
   }
@@ -154,6 +160,7 @@ public final class UserInput {
     private Map<String, Object> referredBy;
     private Map<String, Object> customFields;
     private Set<String> segments;
+    private String cookies;
 
     private Builder() {}
 
@@ -255,6 +262,11 @@ public final class UserInput {
       return this;
     }
 
+    public Builder setCookies(@Nonnull String cookies) {
+      this.cookies = requireNotBlank(cookies, "cookies");
+      return this;
+    }
+
     public UserInput build() {
       return new UserInput(requireNotBlank(accountId, "accountId"), requireNotBlank(id, "id"),
           firstName, lastName, email, paymentProviderId, referralCode,
@@ -262,7 +274,7 @@ public final class UserInput {
           imageUrl, referable, referredByCodes == null ? null : unmodifiableSet(referredByCodes),
           referredBy == null ? null : unmodifiableMap(referredBy),
           customFields == null ? null : unmodifiableMap(customFields),
-          segments == null ? null : unmodifiableSet(segments));
+          segments == null ? null : unmodifiableSet(segments), cookies);
     }
 
   }
