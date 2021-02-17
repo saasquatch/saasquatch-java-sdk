@@ -228,10 +228,10 @@ final class SaaSquatchClientImpl implements SaaSquatchClient {
     }
     variables.put("engagementMedium", renderWidgetInput.getEngagementMedium());
     variables.put("locale", renderWidgetInput.getLocale());
-    return Flowable.fromPublisher(graphQL(GraphQLInput.newBuilder()
+    return Flowable.fromPublisher(_graphQL(GraphQLInput.newBuilder()
         .setQuery(query)
         .setVariables(variables)
-        .build(), requestOptions))
+        .build(), renderWidgetInput.getUserJwt(), requestOptions))
         .doOnNext(InternalUtils::throwSquatchExceptionForPotentialGraphQLError)
         .map(graphQLApiResponse -> {
           final GraphQLResult graphQLResult = graphQLApiResponse.getData();

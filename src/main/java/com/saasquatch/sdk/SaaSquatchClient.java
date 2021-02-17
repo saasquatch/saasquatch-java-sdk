@@ -96,6 +96,7 @@ public interface SaaSquatchClient extends Closeable {
    * "Render" a widget by getting its widget config values. Note that this method does not work with
    * classic widgets.
    */
+  @Beta
   Publisher<JsonObjectApiResponse> getWidgetConfigValues(
       @Nonnull RenderWidgetInput renderWidgetInput, @Nullable RequestOptions requestOptions);
 
