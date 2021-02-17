@@ -312,7 +312,8 @@ public final class InternalUtils {
     return item == null ? fallback : item;
   }
 
-  public static void throwSquatchExceptionForPotentialGraphQLError(GraphQLApiResponse graphQLApiResponse) {
+  public static void throwSquatchExceptionForPotentialGraphQLError(
+      @Nonnull GraphQLApiResponse graphQLApiResponse) {
     final GraphQLResult graphQLResult = graphQLApiResponse.getData();
     if (graphQLResult == null) {
       throw new SaaSquatchUnhandledApiException(graphQLApiResponse.getHttpResponse());
