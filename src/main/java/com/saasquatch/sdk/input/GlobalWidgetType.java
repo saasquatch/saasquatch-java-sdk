@@ -4,7 +4,7 @@ import static com.saasquatch.sdk.internal.InternalUtils.urlEncode;
 
 import javax.annotation.Nonnull;
 
-class GlobalWidgetType implements WidgetType {
+final class GlobalWidgetType implements WidgetType {
 
   // Lazy init
   private String widgetType;
