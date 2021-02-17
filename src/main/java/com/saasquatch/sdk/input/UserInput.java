@@ -282,8 +282,9 @@ public final class UserInput {
     public UserInput build() {
       return new UserInput(requireNotBlank(accountId, "accountId"), requireNotBlank(id, "id"),
           firstName, lastName, email, paymentProviderId, referralCode,
-          referralCodes == null ? null : unmodifiableMap(referralCodes), shareLinks == null ? null : unmodifiableMap(shareLinks), locale, countryCode,
-          imageUrl, referable, referredByCodes == null ? null : unmodifiableSet(referredByCodes),
+          referralCodes == null ? null : unmodifiableMap(referralCodes),
+          shareLinks == null ? null : unmodifiableMap(shareLinks), locale, countryCode, imageUrl,
+          referable, referredByCodes == null ? null : unmodifiableSet(referredByCodes),
           referredBy == null ? null : unmodifiableMap(referredBy),
           customFields == null ? null : unmodifiableMap(customFields),
           segments == null ? null : unmodifiableSet(segments), cookies);
