@@ -8,6 +8,7 @@ import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
 import java.util.zip.GZIPOutputStream;
 import org.apache.hc.client5.http.async.methods.SimpleHttpResponse;
+import org.apache.hc.core5.http.HttpHeaders;
 import org.junit.jupiter.api.Test;
 
 public class SaaSquatchHttpResponseTest {
@@ -38,7 +39,7 @@ public class SaaSquatchHttpResponseTest {
       gzipBytes = baOut.toByteArray();
     }
     final SimpleHttpResponse r1 = SimpleHttpResponse.create(400, gzipBytes);
-    r1.addHeader("content-encoding", "gzip");
+    r1.addHeader(HttpHeaders.CONTENT_ENCODING, "gzip");
     final SaaSquatchHttpResponse response = new Client5SaaSquatchHttpResponse(r1);
     assertEquals(bodyText, response.getBodyText());
   }
