@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.Map;
 import java.util.Objects;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * Input for a single instance of user event data
@@ -29,14 +30,17 @@ public final class UserEventDataInput {
     this.fields = fields;
   }
 
+  @Nonnull
   public String getKey() {
     return key;
   }
 
+  @Nullable
   public Date getDateTriggered() {
     return dateTriggered;
   }
 
+  @Nullable
   public Map<String, Object> getFields() {
     return fields;
   }

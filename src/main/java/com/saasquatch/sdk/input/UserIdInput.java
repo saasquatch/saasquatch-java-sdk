@@ -20,10 +20,12 @@ public final class UserIdInput {
     this.id = id;
   }
 
+  @Nonnull
   public String getAccountId() {
     return accountId;
   }
 
+  @Nonnull
   public String getId() {
     return id;
   }

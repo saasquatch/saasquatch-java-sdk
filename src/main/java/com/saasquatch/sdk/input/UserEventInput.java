@@ -28,14 +28,17 @@ public final class UserEventInput {
     this.events = events;
   }
 
+  @Nonnull
   public String getAccountId() {
     return accountId;
   }
 
+  @Nonnull
   public String getUserId() {
     return userId;
   }
 
+  @Nonnull
   public List<UserEventDataInput> getEvents() {
     return events;
   }

@@ -7,6 +7,7 @@ import com.saasquatch.sdk.annotations.Internal;
 import java.util.Map;
 import java.util.Objects;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public final class WidgetUpsertInput {
 
@@ -27,29 +28,36 @@ public final class WidgetUpsertInput {
     this.engagementMedium = engagementMedium;
   }
 
+  @Nonnull
+  @Internal
   public Object getUserInput() {
     return userInput;
   }
 
+  @Nonnull
   @Internal
   public String getAccountId() {
     return accountId;
   }
 
+  @Nonnull
   @Internal
   public String getUserId() {
     return userId;
   }
 
+  @Nullable
   @Internal
   public String getUserJwt() {
     return userJwt;
   }
 
+  @Nullable
   public WidgetType getWidgetType() {
     return widgetType;
   }
 
+  @Nullable
   public String getEngagementMedium() {
     return engagementMedium;
   }

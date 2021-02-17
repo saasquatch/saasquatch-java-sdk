@@ -32,6 +32,7 @@ public final class RenderWidgetInput {
   }
 
   @Nullable
+  @Internal
   public UserIdInput getUser() {
     return user;
   }
