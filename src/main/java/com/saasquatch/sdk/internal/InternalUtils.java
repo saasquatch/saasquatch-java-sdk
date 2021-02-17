@@ -83,18 +83,15 @@ public final class InternalUtils {
     final String javaVersion = getSysProp("java.version", "");
     final String osStr = getSysProp("os.name", "") + ' ' + getSysProp("os.version", "");
     final String osArch = getSysProp("os.arch", "");
-    final StringBuilder uaBuilder = new StringBuilder(128);
-    uaBuilder.append("SaaSquatch SDK");
-    uaBuilder.append(" (");
-    uaBuilder.append(isBlank(javaVersion) ? "Unknown Java version" : "Java " + javaVersion);
-    uaBuilder.append("; ");
-    uaBuilder.append(isBlank(osStr) ? "Unknown OS" : osStr.trim());
-    uaBuilder.append("; ");
-    uaBuilder.append(isBlank(osArch) ? "Unknown Arch" : osArch);
-    uaBuilder.append("; ");
-    uaBuilder.append(clientId);
-    uaBuilder.append(')');
-    return uaBuilder.toString();
+    return "SaaSquatch SDK ("
+        + (isBlank(javaVersion) ? "Unknown Java version" : "Java " + javaVersion)
+        + "; "
+        + (isBlank(osStr) ? "Unknown OS" : osStr.trim())
+        + "; "
+        + (isBlank(osArch) ? "Unknown Arch" : osArch)
+        + "; "
+        + clientId
+        + ')';
   }
 
   /**
