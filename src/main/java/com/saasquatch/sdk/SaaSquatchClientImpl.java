@@ -161,7 +161,8 @@ final class SaaSquatchClientImpl implements SaaSquatchClient {
   public Publisher<TextApiResponse> renderWidget(
       @Nonnull RenderWidgetInput renderWidgetInput, @Nullable RequestOptions requestOptions) {
     Objects.requireNonNull(renderWidgetInput, "renderWidgetInput");
-    final String query = "query renderWidget(\n"
+    final String query = ""
+        + "query renderWidget(\n"
         + "  $user: UserIdInput\n"
         + "  $widgetType: WidgetType\n"
         + "  $engagementMedium: UserEngagementMedium\n"
@@ -201,7 +202,8 @@ final class SaaSquatchClientImpl implements SaaSquatchClient {
   public Publisher<JsonObjectApiResponse> getWidgetConfigValues(
       @Nonnull RenderWidgetInput renderWidgetInput, @Nullable RequestOptions requestOptions) {
     Objects.requireNonNull(renderWidgetInput, "renderWidgetInput");
-    final String query = "query renderWidget(\n"
+    final String query = ""
+        + "query renderWidget(\n"
         + "  $user: UserIdInput\n"
         + "  $widgetType: WidgetType\n"
         + "  $engagementMedium: UserEngagementMedium\n"

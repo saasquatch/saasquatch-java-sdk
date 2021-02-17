@@ -78,6 +78,10 @@ public interface SaaSquatchClient extends Closeable {
   Publisher<JsonObjectApiResponse> getUser(@Nonnull String accountId, @Nonnull String userId,
       @Nullable RequestOptions requestOptions);
 
+  /**
+   * Convenience method for {@link #getUser(String, String, RequestOptions)} that simply accepts a
+   * user JWT.
+   */
   Publisher<JsonObjectApiResponse> getUserWithUserJwt(@Nonnull String userJwt,
       @Nullable RequestOptions requestOptions);
 

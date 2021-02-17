@@ -71,11 +71,17 @@ public final class RenderWidgetInput {
 
     private Builder() {}
 
+    /**
+     * Set the user IDs with a {@link UserIdInput}
+     */
     public Builder setUser(@Nonnull UserIdInput user) {
       this.user = Objects.requireNonNull(user, "user");
       return this;
     }
 
+    /**
+     * Convenience method for {@link #setUser(UserIdInput)} that accepts a user JWT
+     */
     public Builder setUserWithUserJwt(@Nonnull String userJwt) {
       requireNotBlank(userJwt, "userJwt");
       this.user = getUserIdInputFromUserJwt(userJwt);
@@ -83,6 +89,9 @@ public final class RenderWidgetInput {
       return this;
     }
 
+    /**
+     * Set the {@link WidgetType} to be rendered
+     */
     public Builder setWidgetType(@Nonnull WidgetType widgetType) {
       this.widgetType = Objects.requireNonNull(widgetType, "widgetType");
       return this;
