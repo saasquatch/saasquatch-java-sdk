@@ -1,5 +1,6 @@
 package com.saasquatch.sdk;
 
+import com.saasquatch.sdk.annotations.Beta;
 import com.saasquatch.sdk.auth.AuthMethod;
 import com.saasquatch.sdk.input.GetUserLinkInput;
 import com.saasquatch.sdk.input.GraphQLInput;
@@ -163,6 +164,7 @@ public interface SaaSquatchClient extends Closeable {
    * <a href="https://docs.saasquatch.com/api/methods/#open_apply_code">Link to official
    * docs</a>
    */
+  @Beta
   Publisher<JsonObjectApiResponse> applyReferralCode(@Nonnull String accountId,
       @Nonnull String userId, @Nonnull String referralCode,
       @Nullable RequestOptions requestOptions);
