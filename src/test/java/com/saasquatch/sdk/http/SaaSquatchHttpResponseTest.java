@@ -2,6 +2,7 @@ package com.saasquatch.sdk.http;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.google.common.collect.ImmutableMap;
 import java.io.ByteArrayOutputStream;
@@ -26,6 +27,10 @@ public class SaaSquatchHttpResponseTest {
     assertEquals(ImmutableMap.of("abc", Arrays.asList("1", "2", "3")), response.getAllHeaders());
     assertEquals(200, response.getStatusCode());
     assertEquals("foo", response.getBodyText());
+    assertThrows(UnsupportedOperationException.class,
+        () -> response.getAllHeaders().put("foo", Arrays.asList("a", "b")));
+    assertThrows(UnsupportedOperationException.class,
+        () -> response.getHeaders("abc").add("test"));
   }
 
   @Test
