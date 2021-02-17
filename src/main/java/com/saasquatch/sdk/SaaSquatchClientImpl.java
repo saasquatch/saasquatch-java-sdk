@@ -85,13 +85,13 @@ final class SaaSquatchClientImpl implements SaaSquatchClient {
     Collections.addAll(pathSegments, "message", "redirect",
         requireNotBlank(getUserLinkInput.getShareMedium(), "shareMedium"));
     mutateUri(uriBuilder, pathSegments, requestOptions);
-    uriBuilder.addParameter("accountId", getUserLinkInput.getAccountId());
-    uriBuilder.addParameter("userId", getUserLinkInput.getUserId());
+    uriBuilder.setParameter("accountId", getUserLinkInput.getAccountId());
+    uriBuilder.setParameter("userId", getUserLinkInput.getUserId());
     if (getUserLinkInput.getProgramId() != null) {
-      uriBuilder.addParameter("programId", getUserLinkInput.getProgramId());
+      uriBuilder.setParameter("programId", getUserLinkInput.getProgramId());
     }
     if (getUserLinkInput.getEngagementMedium() != null) {
-      uriBuilder.addParameter("engagementMedium", getUserLinkInput.getEngagementMedium());
+      uriBuilder.setParameter("engagementMedium", getUserLinkInput.getEngagementMedium());
     }
     return uriBuilder.toString();
   }
@@ -110,10 +110,10 @@ final class SaaSquatchClientImpl implements SaaSquatchClient {
     pathSegments.add("graphql");
     mutateUri(uriBuilder, pathSegments, requestOptions);
     final SimpleHttpRequest request = SimpleHttpRequests.post(uriBuilder.toString());
+    mutateRequest(request, requestOptions);
     if (userJwt != null) {
       AuthMethod.ofJwt(userJwt).mutateRequest(request);
     }
-    mutateRequest(request, requestOptions);
     setJsonPojoBody(request, graphQLInput);
     return executeRequest(request).map(GraphQLApiResponse::new);
   }
@@ -145,15 +145,15 @@ final class SaaSquatchClientImpl implements SaaSquatchClient {
     if (widgetRequest) {
       pathSegments.add("render");
     }
-    if (widgetType != null) {
-      uriBuilder.addParameter("widgetType", widgetType.getWidgetType());
-    }
     mutateUri(uriBuilder, pathSegments, requestOptions);
+    if (widgetType != null) {
+      uriBuilder.setParameter("widgetType", widgetType.getWidgetType());
+    }
     final SimpleHttpRequest request = SimpleHttpRequests.get(uriBuilder.toString());
+    mutateRequest(request, requestOptions);
     if (userJwt != null) {
       AuthMethod.ofJwt(userJwt).mutateRequest(request);
     }
-    mutateRequest(request, requestOptions);
     return executeRequest(request);
   }
 
@@ -294,18 +294,18 @@ final class SaaSquatchClientImpl implements SaaSquatchClient {
     if (widgetRequest) {
       pathSegments.add("upsert");
     }
+    mutateUri(uriBuilder, pathSegments, requestOptions);
     if (widgetType != null) {
-      uriBuilder.addParameter("widgetType", widgetType.toString());
+      uriBuilder.setParameter("widgetType", widgetType.toString());
     }
     if (engagementMedium != null) {
-      uriBuilder.addParameter("engagementMedium", engagementMedium);
+      uriBuilder.setParameter("engagementMedium", engagementMedium);
     }
-    mutateUri(uriBuilder, pathSegments, requestOptions);
     final SimpleHttpRequest request = SimpleHttpRequests.put(uriBuilder.toString());
+    mutateRequest(request, requestOptions);
     if (userJwt != null) {
       AuthMethod.ofJwt(userJwt).mutateRequest(request);
     }
-    mutateRequest(request, requestOptions);
     setJsonPojoBody(request, body);
     return executeRequest(request);
   }
@@ -317,13 +317,13 @@ final class SaaSquatchClientImpl implements SaaSquatchClient {
     final List<String> pathSegments = baseTenantApiPathSegments(requestOptions);
     Collections.addAll(pathSegments, "account", getUserLinkInput.getAccountId(), "user",
         getUserLinkInput.getUserId(), "shareurls");
+    mutateUri(uriBuilder, pathSegments, requestOptions);
     if (getUserLinkInput.getShareMedium() != null) {
-      uriBuilder.addParameter("shareMedium", getUserLinkInput.getShareMedium());
+      uriBuilder.setParameter("shareMedium", getUserLinkInput.getShareMedium());
     }
     if (getUserLinkInput.getEngagementMedium() != null) {
-      uriBuilder.addParameter("engagementMedium", getUserLinkInput.getEngagementMedium());
+      uriBuilder.setParameter("engagementMedium", getUserLinkInput.getEngagementMedium());
     }
-    mutateUri(uriBuilder, pathSegments, requestOptions);
     final SimpleHttpRequest request = SimpleHttpRequests.get(uriBuilder.toString());
     mutateRequest(request, requestOptions);
     return executeRequest(request).map(JsonObjectApiResponse::new);
