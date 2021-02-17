@@ -1,5 +1,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.saasquatch</groupId>
@@ -20,7 +21,7 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <junit.version>5.5.2</junit.version>
+    <junit.version>5.7.1</junit.version>
   </properties>
 
   <repositories>
@@ -49,14 +50,14 @@
       <version>3.0.2</version>
     </dependency>
     <dependency>
-      <groupId>com.squareup.okhttp3</groupId>
-      <artifactId>okhttp</artifactId>
-      <version>4.2.2</version>
+      <groupId>org.apache.httpcomponents.client5</groupId>
+      <artifactId>httpclient5</artifactId>
+      <version>5.0.3</version>
     </dependency>
     <dependency>
-      <groupId>io.reactivex.rxjava2</groupId>
+      <groupId>io.reactivex.rxjava3</groupId>
       <artifactId>rxjava</artifactId>
-      <version>2.2.13</version>
+      <version>3.0.10</version>
     </dependency>
     <dependency>
       <groupId>com.google.code.gson</groupId>
@@ -66,13 +67,13 @@
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>28.1-jre</version>
+      <version>30.1-jre</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>io.projectreactor</groupId>
       <artifactId>reactor-core</artifactId>
-      <version>3.3.0.RELEASE</version>
+      <version>3.4.2</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -91,7 +92,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-source-plugin</artifactId>
-        <version>3.1.0</version>
+        <version>3.2.0</version>
         <executions>
           <execution>
             <id>attach-sources</id>
@@ -104,9 +105,10 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>3.1.1</version>
+        <version>3.2.0</version>
         <configuration>
           <doclint>none</doclint>
+          <source>8</source>
         </configuration>
         <executions>
           <execution>
@@ -120,7 +122,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>3.0.0-M3</version>
+        <version>3.0.0-M5</version>
         <!-- <configuration>
           <groups>acceptance | !feature-a</groups>
           <excludedGroups>integration, regression</excludedGroups>

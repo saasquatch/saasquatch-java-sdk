@@ -1,11 +1,13 @@
 package com.saasquatch.sdk;
 
-import static com.saasquatch.sdk.InternalUtils.requireNotBlank;
+import static com.saasquatch.sdk.internal.InternalUtils.format;
+import static com.saasquatch.sdk.internal.InternalUtils.requireNotBlank;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.annotation.concurrent.Immutable;
+import com.saasquatch.sdk.annotations.Beta;
+import com.saasquatch.sdk.auth.AuthMethod;
 
 /**
  * Options for a {@link SaaSquatchClient}
@@ -13,16 +15,15 @@ import javax.annotation.concurrent.Immutable;
  * @author sli
  * @see #newBuilder()
  */
-@Immutable
-public class ClientOptions {
+public final class ClientOptions {
 
   private static final String DEFAULT_APP_DOMAIN = "app.referralsaasquatch.com";
-  private static final int DEFAULT_REQUEST_TIMEOUT_MILLIS = 10000;
-  private static final int MAX_REQUEST_TIMEOUT_MILLIS = 30000;
-  private static final int DEFAULT_CONNECT_TIMOEUT_MILLIS = 2500;
-  private static final int MAX_CONNECT_TIMEOUT_MILLIS = 15000;
   private static final int DEFAULT_MAX_CONCURRENT_REQUESTS = 2;
-  private static final int MAX_MAX_CONCURRENT_REQUESTS = 20;
+  private static final int MAX_MAX_CONCURRENT_REQUESTS = 32;
+  static final int DEFAULT_REQUEST_TIMEOUT_MILLIS = 10000;
+  static final int MAX_REQUEST_TIMEOUT_MILLIS = 60000;
+  static final int DEFAULT_CONNECT_TIMEOUT_MILLIS = 5000;
+  static final int MAX_CONNECT_TIMEOUT_MILLIS = 30000;
 
   private final String tenantAlias;
   private final AuthMethod authMethod;
@@ -30,16 +31,18 @@ public class ClientOptions {
   private final int maxConcurrentRequests;
   private final int requestTimeoutMillis;
   private final int connectTimeoutMillis;
+  private final boolean contentCompressionEnabled;
 
   private ClientOptions(@Nullable String tenantAlias, @Nullable AuthMethod authMethod,
       @Nonnull String appDomain, int maxConcurrentRequests, int requestTimeoutMillis,
-      int connectTimeoutMillis) {
+      int connectTimeoutMillis, boolean contentCompressionEnabled) {
     this.tenantAlias = tenantAlias;
     this.authMethod = authMethod;
     this.appDomain = appDomain;
     this.maxConcurrentRequests = maxConcurrentRequests;
     this.requestTimeoutMillis = requestTimeoutMillis;
     this.connectTimeoutMillis = connectTimeoutMillis;
+    this.contentCompressionEnabled = contentCompressionEnabled;
   }
 
   @Nullable
@@ -69,18 +72,47 @@ public class ClientOptions {
     return connectTimeoutMillis;
   }
 
+  boolean isContentCompressionEnabled() {
+    return contentCompressionEnabled;
+  }
+
   public static Builder newBuilder() {
     return new Builder();
   }
 
-  public static class Builder {
+  static int validateRequestTimeout(long duration, @Nonnull TimeUnit timeUnit) {
+    final int millis = (int) timeUnit.toMillis(duration);
+    if (millis <= 0) {
+      throw new IllegalArgumentException("non-positive timeout");
+    }
+    if (millis > MAX_REQUEST_TIMEOUT_MILLIS) {
+      throw new IllegalArgumentException(format("requestTimeout cannot be greater than %d seconds",
+          TimeUnit.MILLISECONDS.toSeconds(MAX_REQUEST_TIMEOUT_MILLIS)));
+    }
+    return millis;
+  }
+
+  static int validateConnectTimeout(long duration, @Nonnull TimeUnit timeUnit) {
+    final int millis = (int) timeUnit.toMillis(duration);
+    if (millis <= 0) {
+      throw new IllegalArgumentException("non-positive timeout");
+    }
+    if (millis > MAX_CONNECT_TIMEOUT_MILLIS) {
+      throw new IllegalArgumentException(format("connectTimeout cannot be greater than %d seconds",
+          TimeUnit.MILLISECONDS.toSeconds(MAX_CONNECT_TIMEOUT_MILLIS)));
+    }
+    return millis;
+  }
+
+  public static final class Builder {
 
     private String tenantAlias;
     private AuthMethod authMethod;
     private String appDomain = DEFAULT_APP_DOMAIN;
     private int maxConcurrentRequests = DEFAULT_MAX_CONCURRENT_REQUESTS;
     private int requestTimeoutMillis = DEFAULT_REQUEST_TIMEOUT_MILLIS;
-    private int connectTimeoutMillis = DEFAULT_CONNECT_TIMOEUT_MILLIS;
+    private int connectTimeoutMillis = DEFAULT_CONNECT_TIMEOUT_MILLIS;
+    private boolean contentCompressionEnabled = true;
 
     private Builder() {}
 
@@ -97,12 +129,7 @@ public class ClientOptions {
      * {@link AuthMethod}, a default tenantAlias is required.
      */
     public Builder setAuthMethod(@Nonnull AuthMethod authMethod) {
-      Objects.requireNonNull(authMethod, "authMethod");
-      if (!authMethod.canBeClientDefault()) {
-        throw new IllegalArgumentException(
-            "The authMethod you have specified cannot be used as the client default");
-      }
-      this.authMethod = authMethod;
+      this.authMethod = Objects.requireNonNull(authMethod, "authMethod");
       return this;
     }
 
@@ -120,9 +147,6 @@ public class ClientOptions {
       if (appDomain.startsWith("/") || appDomain.endsWith("/")) {
         throw new IllegalArgumentException("appDomain should not start or end with a slash");
       }
-      if (!appDomain.matches("[a-zA-Z0-9\\.\\/:]+")) {
-        throw new IllegalArgumentException("appDomain contains invalid characters");
-      }
       this.appDomain = appDomain;
       return this;
     }
@@ -132,33 +156,26 @@ public class ClientOptions {
         throw new IllegalArgumentException("non-positive maxConcurrentRequests");
       }
       if (maxConcurrentRequests > MAX_MAX_CONCURRENT_REQUESTS) {
-        throw new IllegalArgumentException("maxConcurrentRequests too large");
+        throw new IllegalArgumentException(
+            "maxConcurrentRequests cannot be greater than " + MAX_MAX_CONCURRENT_REQUESTS);
       }
       this.maxConcurrentRequests = maxConcurrentRequests;
       return this;
     }
 
     public Builder setRequestTimeout(long duration, @Nonnull TimeUnit timeUnit) {
-      final int millis = (int) timeUnit.toMillis(duration);
-      if (millis <= 0) {
-        throw new IllegalArgumentException("non-positive timeout");
-      }
-      if (millis > MAX_REQUEST_TIMEOUT_MILLIS) {
-        throw new IllegalArgumentException("timeout too large");
-      }
-      this.requestTimeoutMillis = millis;
+      this.requestTimeoutMillis = validateRequestTimeout(duration, timeUnit);
       return this;
     }
 
     public Builder setConnectTimeout(long duration, @Nonnull TimeUnit timeUnit) {
-      final int millis = (int) timeUnit.toMillis(duration);
-      if (millis <= 0) {
-        throw new IllegalArgumentException("non-positive timeout");
-      }
-      if (millis > MAX_CONNECT_TIMEOUT_MILLIS) {
-        throw new IllegalArgumentException("timeout too large");
-      }
-      this.connectTimeoutMillis = millis;
+      this.connectTimeoutMillis = validateConnectTimeout(duration, timeUnit);
+      return this;
+    }
+
+    @Beta
+    public Builder setContentCompressionEnabled(boolean contentCompressionEnabled) {
+      this.contentCompressionEnabled = contentCompressionEnabled;
       return this;
     }
 
@@ -170,7 +187,7 @@ public class ClientOptions {
         throw new IllegalArgumentException("tenantAlias is required if you set the authMethod");
       }
       return new ClientOptions(tenantAlias, authMethod, appDomain, maxConcurrentRequests,
-          requestTimeoutMillis, connectTimeoutMillis);
+          requestTimeoutMillis, connectTimeoutMillis, contentCompressionEnabled);
     }
 
   }

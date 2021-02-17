@@ -3,7 +3,7 @@ package com.saasquatch.sdk.models;
 import java.util.Date;
 import java.util.Map;
 
-public class UserEventData implements Model {
+public final class UserEventData {
 
   private final String id;
   private final String key;
@@ -12,7 +12,7 @@ public class UserEventData implements Model {
   private final Date dateReceived;
   private final Date dateProcessed;
 
-  public UserEventData(String id, String key, Map<String, Object> fields, Date dateTriggered,
+  private UserEventData(String id, String key, Map<String, Object> fields, Date dateTriggered,
       Date dateReceived, Date dateProcessed) {
     this.id = id;
     this.key = key;
