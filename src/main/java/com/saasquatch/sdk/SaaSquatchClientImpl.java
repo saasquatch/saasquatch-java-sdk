@@ -378,27 +378,27 @@ final class SaaSquatchClientImpl implements SaaSquatchClient {
   @Override
   public Publisher<StatusOnlyApiResponse> deleteUser(@Nonnull DeleteUserInput deleteUserInput,
       @Nullable RequestOptions requestOptions) {
-    final URIBuilder uriBuilder = baseUriBuilder(requestOptions);
-    final List<String> pathSegments = baseTenantApiPathSegments(requestOptions);
-    Collections.addAll(pathSegments, "open", "account", deleteUserInput.getAccountId(), "user",
-        deleteUserInput.getUserId());
-    mutateUri(uriBuilder, pathSegments, requestOptions);
-    if (deleteUserInput.isDoNotTrack()) {
-      uriBuilder.setParameter("doNotTrack", Boolean.TRUE.toString());
-    }
-    final SimpleHttpRequest request = SimpleHttpRequests.delete(uriBuilder.toString());
-    mutateRequest(request, requestOptions);
-    return executeRequest(request).map(StatusOnlyApiResponse::new);
+    return _deleteUserOrAccount(deleteUserInput.getAccountId(), deleteUserInput.getUserId(),
+        deleteUserInput.isDoNotTrack(), requestOptions);
   }
 
   @Override
   public Publisher<StatusOnlyApiResponse> deleteAccount(
       @Nonnull DeleteAccountInput deleteAccountInput, @Nullable RequestOptions requestOptions) {
+    return _deleteUserOrAccount(deleteAccountInput.getAccountId(), null,
+        deleteAccountInput.isDoNotTrack(), requestOptions);
+  }
+
+  private Publisher<StatusOnlyApiResponse> _deleteUserOrAccount(@Nonnull String accountId,
+      @Nullable String userId, boolean doNotTrack, @Nullable RequestOptions requestOptions) {
     final URIBuilder uriBuilder = baseUriBuilder(requestOptions);
     final List<String> pathSegments = baseTenantApiPathSegments(requestOptions);
-    Collections.addAll(pathSegments, "open", "account", deleteAccountInput.getAccountId());
+    Collections.addAll(pathSegments, "open", "account", accountId);
+    if (userId != null) {
+      Collections.addAll(pathSegments, "user", userId);
+    }
     mutateUri(uriBuilder, pathSegments, requestOptions);
-    if (deleteAccountInput.isDoNotTrack()) {
+    if (doNotTrack) {
       uriBuilder.setParameter("doNotTrack", Boolean.TRUE.toString());
     }
     final SimpleHttpRequest request = SimpleHttpRequests.delete(uriBuilder.toString());

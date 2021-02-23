@@ -23,10 +23,12 @@ public final class DeleteUserInput {
     this.doNotTrack = doNotTrack;
   }
 
+  @Nonnull
   public String getAccountId() {
     return accountId;
   }
 
+  @Nonnull
   public String getUserId() {
     return userId;
   }

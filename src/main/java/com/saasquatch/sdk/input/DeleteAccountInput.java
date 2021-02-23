@@ -20,6 +20,7 @@ public final class DeleteAccountInput {
     this.doNotTrack = doNotTrack;
   }
 
+  @Nonnull
   public String getAccountId() {
     return accountId;
   }
