@@ -13,6 +13,8 @@ import com.saasquatch.sdk.exceptions.SaaSquatchIOException;
 import com.saasquatch.sdk.exceptions.SaaSquatchUnhandledApiException;
 import com.saasquatch.sdk.http.Client5SaaSquatchHttpResponse;
 import com.saasquatch.sdk.http.SaaSquatchHttpResponse;
+import com.saasquatch.sdk.input.DeleteAccountInput;
+import com.saasquatch.sdk.input.DeleteUserInput;
 import com.saasquatch.sdk.input.GetUserLinkInput;
 import com.saasquatch.sdk.input.GraphQLInput;
 import com.saasquatch.sdk.input.RenderWidgetInput;
@@ -26,6 +28,7 @@ import com.saasquatch.sdk.output.ApiError;
 import com.saasquatch.sdk.output.GraphQLApiResponse;
 import com.saasquatch.sdk.output.GraphQLResult;
 import com.saasquatch.sdk.output.JsonObjectApiResponse;
+import com.saasquatch.sdk.output.StatusOnlyApiResponse;
 import com.saasquatch.sdk.output.TextApiResponse;
 import io.reactivex.rxjava3.core.Flowable;
 import java.io.IOException;
@@ -370,6 +373,37 @@ final class SaaSquatchClientImpl implements SaaSquatchClient {
     mutateRequest(request, requestOptions);
     setJsonStringBody(request, "{}");
     return executeRequest(request).map(JsonObjectApiResponse::new);
+  }
+
+  @Override
+  public Publisher<StatusOnlyApiResponse> deleteUser(@Nonnull DeleteUserInput deleteUserInput,
+      @Nullable RequestOptions requestOptions) {
+    final URIBuilder uriBuilder = baseUriBuilder(requestOptions);
+    final List<String> pathSegments = baseTenantApiPathSegments(requestOptions);
+    Collections.addAll(pathSegments, "open", "account", deleteUserInput.getAccountId(), "user",
+        deleteUserInput.getUserId());
+    mutateUri(uriBuilder, pathSegments, requestOptions);
+    if (deleteUserInput.isDoNotTrack()) {
+      uriBuilder.setParameter("doNotTrack", Boolean.TRUE.toString());
+    }
+    final SimpleHttpRequest request = SimpleHttpRequests.delete(uriBuilder.toString());
+    mutateRequest(request, requestOptions);
+    return executeRequest(request).map(StatusOnlyApiResponse::new);
+  }
+
+  @Override
+  public Publisher<StatusOnlyApiResponse> deleteAccount(
+      @Nonnull DeleteAccountInput deleteAccountInput, @Nullable RequestOptions requestOptions) {
+    final URIBuilder uriBuilder = baseUriBuilder(requestOptions);
+    final List<String> pathSegments = baseTenantApiPathSegments(requestOptions);
+    Collections.addAll(pathSegments, "open", "account", deleteAccountInput.getAccountId());
+    mutateUri(uriBuilder, pathSegments, requestOptions);
+    if (deleteAccountInput.isDoNotTrack()) {
+      uriBuilder.setParameter("doNotTrack", Boolean.TRUE.toString());
+    }
+    final SimpleHttpRequest request = SimpleHttpRequests.delete(uriBuilder.toString());
+    mutateRequest(request, requestOptions);
+    return executeRequest(request).map(StatusOnlyApiResponse::new);
   }
 
   /**
