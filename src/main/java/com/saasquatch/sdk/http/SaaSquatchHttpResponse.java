@@ -4,6 +4,7 @@ import com.saasquatch.sdk.annotations.NoExternalImpl;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -30,8 +31,8 @@ public interface SaaSquatchHttpResponse {
    * immutable.
    */
   @Nonnull
-  default List<String> getHeaders(String headerName) {
-    final List<String> headers = getAllHeaders().get(headerName);
+  default List<String> getHeaders(@Nonnull String headerName) {
+    final List<String> headers = getAllHeaders().get(Objects.requireNonNull(headerName));
     return headers == null ? Collections.emptyList() : headers;
   }
 
@@ -39,7 +40,7 @@ public interface SaaSquatchHttpResponse {
    * @return The first header value for the given header name
    */
   @Nullable
-  default String getFirstHeader(String headerName) {
+  default String getFirstHeader(@Nonnull String headerName) {
     final List<String> headers = getHeaders(headerName);
     return headers.isEmpty() ? null : headers.get(0);
   }
@@ -48,7 +49,7 @@ public interface SaaSquatchHttpResponse {
    * @return The last header value for the given header name
    */
   @Nullable
-  default String getLastHeader(String headerName) {
+  default String getLastHeader(@Nonnull String headerName) {
     final List<String> headers = getHeaders(headerName);
     return headers.isEmpty() ? null : headers.get(headers.size() - 1);
   }
