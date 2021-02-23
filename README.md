@@ -90,7 +90,7 @@ SaaSquatchClient.create(ClientOptions.newBuilder()
      * if you are using this SDK on the server side. Use this with caution if you are
      * building an Android app.
      */
-    .setAuthMethod(AuthMethod.ofApiKey("yourApiKey"))
+    .setAuthMethod(AuthMethod.ofTenantApiKey("yourApiKey"))
     .setRequestTimeout(5, TimeUnit.SECONDS)
     // etc.
     .build());
