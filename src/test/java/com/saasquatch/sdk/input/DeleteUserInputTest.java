@@ -1,5 +1,6 @@
 package com.saasquatch.sdk.input;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -15,6 +16,7 @@ public class DeleteUserInputTest {
         () -> DeleteUserInput.newBuilder().setUserId("a").build());
     assertThrows(NullPointerException.class,
         () -> DeleteUserInput.newBuilder().setAccountId("a").build());
+    assertDoesNotThrow(() -> DeleteUserInput.newBuilder().setAccountId("a").setUserId("a").build());
   }
 
   @Test
