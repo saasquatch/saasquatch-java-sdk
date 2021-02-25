@@ -185,6 +185,15 @@ public interface SaaSquatchClient extends Closeable {
       @Nullable RequestOptions requestOptions);
 
   /**
+   * Validate and get the basic info of a referral code.<br>
+   * <a href="https://docs.saasquatch.com/api/methods/#open_validate_code">Link to official
+   * docs</a>
+   */
+  @Beta
+  Publisher<JsonObjectApiResponse> validateReferralCode(@Nonnull String referralCode,
+      @Nullable RequestOptions requestOptions);
+
+  /**
    * Delete a user.<br>
    * <a href="https://docs.saasquatch.com/api/methods/#open_delete_user">Link to official docs</a>
    */

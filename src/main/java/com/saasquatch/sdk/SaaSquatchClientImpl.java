@@ -378,6 +378,18 @@ final class SaaSquatchClientImpl implements SaaSquatchClient {
   }
 
   @Override
+  public Publisher<JsonObjectApiResponse> validateReferralCode(@Nonnull String referralCode,
+      @Nullable RequestOptions requestOptions) {
+    final URIBuilder uriBuilder = baseUriBuilder(requestOptions);
+    final List<String> pathSegments = baseTenantApiPathSegments(requestOptions);
+    Collections.addAll(pathSegments, "open", "code", requireNotBlank(referralCode, "referralCode"));
+    mutateUri(uriBuilder, pathSegments, requestOptions);
+    final SimpleHttpRequest request = SimpleHttpRequests.get(uriBuilder.toString());
+    mutateRequest(request, requestOptions);
+    return executeRequest(request).map(JsonObjectApiResponse::new);
+  }
+
+  @Override
   public Publisher<StatusOnlyApiResponse> deleteUser(@Nonnull DeleteUserInput deleteUserInput,
       @Nullable RequestOptions requestOptions) {
     return _deleteUserOrAccount(deleteUserInput.getAccountId(), deleteUserInput.getUserId(),
