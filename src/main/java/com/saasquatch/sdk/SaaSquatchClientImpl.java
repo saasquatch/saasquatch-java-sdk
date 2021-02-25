@@ -25,6 +25,7 @@ import com.saasquatch.sdk.input.UserIdInput;
 import com.saasquatch.sdk.input.UserInput;
 import com.saasquatch.sdk.input.WidgetType;
 import com.saasquatch.sdk.input.WidgetUpsertInput;
+import com.saasquatch.sdk.internal.GraphQLQueries;
 import com.saasquatch.sdk.internal.InternalUtils;
 import com.saasquatch.sdk.output.ApiError;
 import com.saasquatch.sdk.output.GraphQLApiResponse;
@@ -166,22 +167,6 @@ final class SaaSquatchClientImpl implements SaaSquatchClient {
   public Publisher<TextApiResponse> renderWidget(
       @Nonnull RenderWidgetInput renderWidgetInput, @Nullable RequestOptions requestOptions) {
     Objects.requireNonNull(renderWidgetInput, "renderWidgetInput");
-    final String query = ""
-        + "query renderWidget(\n"
-        + "  $user: UserIdInput\n"
-        + "  $widgetType: WidgetType\n"
-        + "  $engagementMedium: UserEngagementMedium\n"
-        + "  $locale: RSLocale\n"
-        + ") {\n"
-        + "  renderWidget(\n"
-        + "    user: $user\n"
-        + "    widgetType: $widgetType\n"
-        + "    engagementMedium: $engagementMedium\n"
-        + "    locale: $locale\n"
-        + "  ) {\n"
-        + "    template\n"
-        + "  }\n"
-        + "}";
     final Map<String, Object> variables = new HashMap<>();
     variables.put("user", renderWidgetInput.getUser());
     final WidgetType widgetType = renderWidgetInput.getWidgetType();
@@ -191,7 +176,7 @@ final class SaaSquatchClientImpl implements SaaSquatchClient {
     variables.put("engagementMedium", renderWidgetInput.getEngagementMedium());
     variables.put("locale", renderWidgetInput.getLocale());
     return Flowable.fromPublisher(_graphQL(GraphQLInput.newBuilder()
-        .setQuery(query)
+        .setQuery(GraphQLQueries.RENDER_WIDGET)
         .setVariables(variables)
         .build(), renderWidgetInput.getUserJwt(), requestOptions))
         .doOnNext(InternalUtils::throwSquatchExceptionForPotentialGraphQLError)
@@ -207,24 +192,6 @@ final class SaaSquatchClientImpl implements SaaSquatchClient {
   public Publisher<JsonObjectApiResponse> getWidgetConfigValues(
       @Nonnull RenderWidgetInput renderWidgetInput, @Nullable RequestOptions requestOptions) {
     Objects.requireNonNull(renderWidgetInput, "renderWidgetInput");
-    final String query = ""
-        + "query renderWidget(\n"
-        + "  $user: UserIdInput\n"
-        + "  $widgetType: WidgetType\n"
-        + "  $engagementMedium: UserEngagementMedium\n"
-        + "  $locale: RSLocale\n"
-        + ") {\n"
-        + "  renderWidget(\n"
-        + "    user: $user\n"
-        + "    widgetType: $widgetType\n"
-        + "    engagementMedium: $engagementMedium\n"
-        + "    locale: $locale\n"
-        + "  ) {\n"
-        + "    widgetConfig {\n"
-        + "      values\n"
-        + "    }\n"
-        + "  }\n"
-        + "}";
     final Map<String, Object> variables = new HashMap<>();
     variables.put("user", renderWidgetInput.getUser());
     final WidgetType widgetType = renderWidgetInput.getWidgetType();
@@ -234,7 +201,7 @@ final class SaaSquatchClientImpl implements SaaSquatchClient {
     variables.put("engagementMedium", renderWidgetInput.getEngagementMedium());
     variables.put("locale", renderWidgetInput.getLocale());
     return Flowable.fromPublisher(_graphQL(GraphQLInput.newBuilder()
-        .setQuery(query)
+        .setQuery(GraphQLQueries.GET_WIDGET_CONFIG_VALUES)
         .setVariables(variables)
         .build(), renderWidgetInput.getUserJwt(), requestOptions))
         .doOnNext(InternalUtils::throwSquatchExceptionForPotentialGraphQLError)
