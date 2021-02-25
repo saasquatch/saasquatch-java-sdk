@@ -167,13 +167,9 @@ public interface SaaSquatchClient extends Closeable {
    */
   @Beta
   @Deprecated
-  default Publisher<JsonObjectApiResponse> applyReferralCode(@Nonnull String accountId,
+  Publisher<JsonObjectApiResponse> applyReferralCode(@Nonnull String accountId,
       @Nonnull String userId, @Nonnull String referralCode,
-      @Nullable RequestOptions requestOptions) {
-    return applyReferralCode(
-        ApplyReferralCodeInput.newBuilder().setAccountId(accountId).setUserId(userId)
-            .setReferralCode(referralCode).build(), requestOptions);
-  }
+      @Nullable RequestOptions requestOptions);
 
   /**
    * Apply a referral code.<br>
@@ -206,5 +202,19 @@ public interface SaaSquatchClient extends Closeable {
    */
   Publisher<StatusOnlyApiResponse> deleteAccount(@Nonnull DeleteAccountInput deleteAccountInput,
       @Nullable RequestOptions requestOptions);
+
+  /**
+   * Block a user.<br>
+   * <a href="https://docs.saasquatch.com/api/methods/#block_user">Link to official docs</a>
+   */
+  Publisher<JsonObjectApiResponse> blockUser(@Nonnull String accountId,
+      @Nonnull String userId, @Nullable RequestOptions requestOptions);
+
+  /**
+   * Unblock a user.<br>
+   * <a href="https://docs.saasquatch.com/api/methods/#unblock_user">Link to official docs</a>
+   */
+  Publisher<JsonObjectApiResponse> unblockUser(@Nonnull String accountId,
+      @Nonnull String userId, @Nullable RequestOptions requestOptions);
 
 }

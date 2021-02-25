@@ -328,6 +328,15 @@ final class SaaSquatchClientImpl implements SaaSquatchClient {
     return executeRequest(request).map(JsonObjectApiResponse::new);
   }
 
+  public Publisher<JsonObjectApiResponse> applyReferralCode(@Nonnull String accountId,
+      @Nonnull String userId, @Nonnull String referralCode,
+      @Nullable RequestOptions requestOptions) {
+    return applyReferralCode(
+        ApplyReferralCodeInput.newBuilder().setAccountId(accountId).setUserId(userId)
+            .setReferralCode(referralCode).build(),
+        requestOptions);
+  }
+
   @Override
   public Publisher<JsonObjectApiResponse> applyReferralCode(
       @Nonnull ApplyReferralCodeInput applyReferralCodeInput,
@@ -386,6 +395,30 @@ final class SaaSquatchClientImpl implements SaaSquatchClient {
     final SimpleHttpRequest request = SimpleHttpRequests.delete(uriBuilder.toString());
     mutateRequest(request, requestOptions);
     return executeRequest(request).map(StatusOnlyApiResponse::new);
+  }
+
+  @Override
+  public Publisher<JsonObjectApiResponse> blockUser(@Nonnull String accountId,
+      @Nonnull String userId, @Nullable RequestOptions requestOptions) {
+    return _blockOrUnblockUser(accountId, userId, true, requestOptions);
+  }
+
+  @Override
+  public Publisher<JsonObjectApiResponse> unblockUser(@Nonnull String accountId,
+      @Nonnull String userId, @Nullable RequestOptions requestOptions) {
+    return _blockOrUnblockUser(accountId, userId, false, requestOptions);
+  }
+
+  private Publisher<JsonObjectApiResponse> _blockOrUnblockUser(@Nonnull String accountId,
+      @Nonnull String userId, boolean block, @Nullable RequestOptions requestOptions) {
+    final URIBuilder uriBuilder = baseUriBuilder(requestOptions);
+    final List<String> pathSegments = baseTenantApiPathSegments(requestOptions);
+    Collections
+        .addAll(pathSegments, "account", accountId, "user", userId, block ? "block" : "unblock");
+    mutateUri(uriBuilder, pathSegments, requestOptions);
+    final SimpleHttpRequest request = SimpleHttpRequests.post(uriBuilder.toString());
+    mutateRequest(request, requestOptions);
+    return executeRequest(request).map(JsonObjectApiResponse::new);
   }
 
   /**
