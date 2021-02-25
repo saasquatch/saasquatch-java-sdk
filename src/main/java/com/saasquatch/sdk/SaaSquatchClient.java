@@ -163,7 +163,7 @@ public interface SaaSquatchClient extends Closeable {
    * <a href="https://docs.saasquatch.com/api/methods/#open_apply_code">Link to official docs</a>
    *
    * @deprecated Use {@link #applyReferralCode(ApplyReferralCodeInput, RequestOptions)} instead.
-   * This beta method will be removed in the next release.
+   * This beta method will be removed in a future release.
    */
   @Beta
   @Deprecated
