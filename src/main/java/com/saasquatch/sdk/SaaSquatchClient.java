@@ -2,6 +2,7 @@ package com.saasquatch.sdk;
 
 import com.saasquatch.sdk.annotations.Beta;
 import com.saasquatch.sdk.auth.AuthMethod;
+import com.saasquatch.sdk.input.ApplyReferralCodeInput;
 import com.saasquatch.sdk.input.DeleteAccountInput;
 import com.saasquatch.sdk.input.DeleteUserInput;
 import com.saasquatch.sdk.input.GetUserLinkInput;
@@ -160,10 +161,27 @@ public interface SaaSquatchClient extends Closeable {
   /**
    * Apply a referral code.<br>
    * <a href="https://docs.saasquatch.com/api/methods/#open_apply_code">Link to official docs</a>
+   *
+   * @deprecated Use {@link #applyReferralCode(ApplyReferralCodeInput, RequestOptions)} instead.
+   * This beta method will be removed in the next release.
    */
   @Beta
-  Publisher<JsonObjectApiResponse> applyReferralCode(@Nonnull String accountId,
+  @Deprecated
+  default Publisher<JsonObjectApiResponse> applyReferralCode(@Nonnull String accountId,
       @Nonnull String userId, @Nonnull String referralCode,
+      @Nullable RequestOptions requestOptions) {
+    return applyReferralCode(
+        ApplyReferralCodeInput.newBuilder().setAccountId(accountId).setUserId(userId)
+            .setReferralCode(referralCode).build(), requestOptions);
+  }
+
+  /**
+   * Apply a referral code.<br>
+   * <a href="https://docs.saasquatch.com/api/methods/#open_apply_code">Link to official docs</a>
+   */
+  @Beta
+  Publisher<JsonObjectApiResponse> applyReferralCode(
+      @Nonnull ApplyReferralCodeInput applyReferralCodeInput,
       @Nullable RequestOptions requestOptions);
 
   /**

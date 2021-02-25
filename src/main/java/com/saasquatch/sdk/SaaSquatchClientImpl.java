@@ -13,6 +13,7 @@ import com.saasquatch.sdk.exceptions.SaaSquatchIOException;
 import com.saasquatch.sdk.exceptions.SaaSquatchUnhandledApiException;
 import com.saasquatch.sdk.http.Client5SaaSquatchHttpResponse;
 import com.saasquatch.sdk.http.SaaSquatchHttpResponse;
+import com.saasquatch.sdk.input.ApplyReferralCodeInput;
 import com.saasquatch.sdk.input.DeleteAccountInput;
 import com.saasquatch.sdk.input.DeleteUserInput;
 import com.saasquatch.sdk.input.GetUserLinkInput;
@@ -360,14 +361,14 @@ final class SaaSquatchClientImpl implements SaaSquatchClient {
   }
 
   @Override
-  public Publisher<JsonObjectApiResponse> applyReferralCode(@Nonnull String accountId,
-      @Nonnull String userId, @Nonnull String referralCode,
+  public Publisher<JsonObjectApiResponse> applyReferralCode(
+      @Nonnull ApplyReferralCodeInput applyReferralCodeInput,
       @Nullable RequestOptions requestOptions) {
     final URIBuilder uriBuilder = baseUriBuilder(requestOptions);
     final List<String> pathSegments = baseTenantApiPathSegments(requestOptions);
-    Collections.addAll(pathSegments, "open", "code", requireNotBlank(referralCode, "referralCode"),
-        "account", requireNotBlank(accountId, "accountId"), "user",
-        requireNotBlank(userId, "userId"));
+    Collections.addAll(pathSegments, "open", "code", applyReferralCodeInput.getReferralCode(),
+        "account", applyReferralCodeInput.getAccountId(), "user",
+        applyReferralCodeInput.getUserId());
     mutateUri(uriBuilder, pathSegments, requestOptions);
     final SimpleHttpRequest request = SimpleHttpRequests.post(uriBuilder.toString());
     mutateRequest(request, requestOptions);
