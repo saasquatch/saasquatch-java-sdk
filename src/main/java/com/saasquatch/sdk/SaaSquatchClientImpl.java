@@ -332,6 +332,7 @@ final class SaaSquatchClientImpl implements SaaSquatchClient {
   public Publisher<JsonObjectApiResponse> applyReferralCode(
       @Nonnull ApplyReferralCodeInput applyReferralCodeInput,
       @Nullable RequestOptions requestOptions) {
+    Objects.requireNonNull(applyReferralCodeInput, "applyReferralCodeInput");
     final URIBuilder uriBuilder = baseUriBuilder(requestOptions);
     final List<String> pathSegments = baseTenantApiPathSegments(requestOptions);
     Collections.addAll(pathSegments, "open", "code", applyReferralCodeInput.getReferralCode(),
