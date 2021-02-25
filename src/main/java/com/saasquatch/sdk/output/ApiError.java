@@ -54,6 +54,9 @@ public final class ApiError {
 
   @Nullable
   public static ApiError fromBodyText(String bodyText) {
+    if (bodyText == null) {
+      return null;
+    }
     /*
      * Doing this because in case of a catastrophic failure, we may not be able to get an actual
      * ApiError from SaaSquatch.
