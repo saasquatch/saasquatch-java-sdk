@@ -1,8 +1,5 @@
 package com.saasquatch.sdk.internal;
 
-import com.saasquatch.sdk.annotations.Internal;
-
-@Internal
 public interface GraphQLQueries {
 
   String RENDER_WIDGET = ""
