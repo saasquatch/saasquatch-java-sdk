@@ -3,6 +3,7 @@ package com.saasquatch.sdk.output;
 import static com.saasquatch.sdk.internal.InternalUtils.defaultIfNull;
 import static com.saasquatch.sdk.internal.json.GsonUtils.gson;
 
+import com.saasquatch.sdk.annotations.Internal;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -53,7 +54,8 @@ public final class ApiError {
   }
 
   @Nullable
-  public static ApiError fromBodyText(String bodyText) {
+  @Internal
+  public static ApiError fromBodyText(@Nullable String bodyText) {
     if (bodyText == null) {
       return null;
     }
@@ -82,6 +84,7 @@ public final class ApiError {
   }
 
   @Nullable
+  @Internal
   static ApiError fromGraphQLResult(@Nonnull GraphQLResult graphQLResult) {
     final List<Object> errors = graphQLResult.getErrors();
     if (errors == null || errors.isEmpty()) {
