@@ -51,6 +51,7 @@ import org.reactivestreams.Publisher;
 
 public final class InternalUtils {
 
+  public static final String GZIP = "gzip";
   private static final int BUFFER_SIZE = 8192;
 
   /**
@@ -284,7 +285,7 @@ public final class InternalUtils {
     final Header contentEncodingHeader = response.getFirstHeader(HttpHeaders.CONTENT_ENCODING);
     final String contentEncoding =
         contentEncodingHeader == null ? null : contentEncodingHeader.getValue();
-    if ("gzip".equalsIgnoreCase(contentEncoding)) {
+    if (GZIP.equalsIgnoreCase(contentEncoding)) {
       try (GZIPInputStream gzipIn = new GZIPInputStream(
           new ByteArrayInputStream(bodyBytes), BUFFER_SIZE)) {
         return toByteArray(gzipIn);

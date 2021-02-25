@@ -1,5 +1,6 @@
 package com.saasquatch.sdk;
 
+import static com.saasquatch.sdk.internal.InternalUtils.GZIP;
 import static com.saasquatch.sdk.internal.InternalUtils.defaultIfNull;
 import static com.saasquatch.sdk.internal.InternalUtils.getJwtPayload;
 import static com.saasquatch.sdk.internal.InternalUtils.getNestedMapValue;
@@ -441,7 +442,7 @@ final class SaaSquatchClientImpl implements SaaSquatchClient {
         .setConnectTimeout(connectTimeoutMillis, TimeUnit.MILLISECONDS)
         .build());
     if (contentCompressionEnabled) {
-      request.setHeader(HttpHeaders.ACCEPT_ENCODING, "gzip");
+      request.setHeader(HttpHeaders.ACCEPT_ENCODING, GZIP);
     }
   }
 
