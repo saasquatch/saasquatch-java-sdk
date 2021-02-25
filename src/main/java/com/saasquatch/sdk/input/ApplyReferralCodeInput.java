@@ -2,8 +2,10 @@ package com.saasquatch.sdk.input;
 
 import static com.saasquatch.sdk.internal.InternalUtils.requireNotBlank;
 
+import com.saasquatch.sdk.annotations.Beta;
 import javax.annotation.Nonnull;
 
+@Beta
 public final class ApplyReferralCodeInput {
 
   private final String accountId;
