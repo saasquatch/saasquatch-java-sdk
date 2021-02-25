@@ -2,6 +2,7 @@ package com.saasquatch.sdk.input;
 
 import static com.saasquatch.sdk.internal.InternalUtils.requireNotBlank;
 
+import com.saasquatch.sdk.annotations.Beta;
 import javax.annotation.Nonnull;
 
 /**
@@ -25,6 +26,7 @@ public final class DeleteAccountInput {
     return accountId;
   }
 
+  @Beta
   public boolean isDoNotTrack() {
     return doNotTrack;
   }
