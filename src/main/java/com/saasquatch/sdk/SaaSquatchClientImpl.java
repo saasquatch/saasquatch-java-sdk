@@ -107,8 +107,8 @@ final class SaaSquatchClientImpl implements SaaSquatchClient {
     return _graphQL(graphQLInput, null, requestOptions);
   }
 
-  private Publisher<GraphQLApiResponse> _graphQL(@Nonnull GraphQLInput graphQLInput, String userJwt,
-      @Nullable RequestOptions requestOptions) {
+  private Publisher<GraphQLApiResponse> _graphQL(@Nonnull GraphQLInput graphQLInput,
+      @Nullable String userJwt, @Nullable RequestOptions requestOptions) {
     Objects.requireNonNull(graphQLInput, "graphQLInput");
     final URIBuilder uriBuilder = baseUriBuilder(requestOptions);
     final List<String> pathSegments = baseTenantApiPathSegments(requestOptions);
