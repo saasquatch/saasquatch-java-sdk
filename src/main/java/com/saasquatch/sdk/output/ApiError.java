@@ -74,7 +74,7 @@ public final class ApiError {
      * actual ApiError.
      */
     if (jsonElement instanceof JsonObject) {
-      final JsonObject jsonObject = ((JsonObject) jsonElement);
+      final JsonObject jsonObject = (JsonObject) jsonElement;
       if (jsonObject.has("message") && jsonObject.has("statusCode")) {
         return gson.fromJson(jsonObject, ApiError.class);
       }
