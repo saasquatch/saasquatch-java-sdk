@@ -328,15 +328,6 @@ final class SaaSquatchClientImpl implements SaaSquatchClient {
     return executeRequest(request).map(JsonObjectApiResponse::new);
   }
 
-  public Publisher<JsonObjectApiResponse> applyReferralCode(@Nonnull String accountId,
-      @Nonnull String userId, @Nonnull String referralCode,
-      @Nullable RequestOptions requestOptions) {
-    return applyReferralCode(
-        ApplyReferralCodeInput.newBuilder().setAccountId(accountId).setUserId(userId)
-            .setReferralCode(referralCode).build(),
-        requestOptions);
-  }
-
   @Override
   public Publisher<JsonObjectApiResponse> applyReferralCode(
       @Nonnull ApplyReferralCodeInput applyReferralCodeInput,

@@ -167,9 +167,14 @@ public interface SaaSquatchClient extends Closeable {
    */
   @Beta
   @Deprecated
-  Publisher<JsonObjectApiResponse> applyReferralCode(@Nonnull String accountId,
+  default Publisher<JsonObjectApiResponse> applyReferralCode(@Nonnull String accountId,
       @Nonnull String userId, @Nonnull String referralCode,
-      @Nullable RequestOptions requestOptions);
+      @Nullable RequestOptions requestOptions) {
+    return applyReferralCode(
+        ApplyReferralCodeInput.newBuilder().setAccountId(accountId).setUserId(userId)
+            .setReferralCode(referralCode).build(),
+        requestOptions);
+  }
 
   /**
    * Apply a referral code.<br>
