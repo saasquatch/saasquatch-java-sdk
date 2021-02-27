@@ -423,7 +423,7 @@ final class SaaSquatchClientImpl implements SaaSquatchClient {
       @Nullable RequestOptions requestOptions) {
     uriBuilder.setPathSegments(pathSegments);
     if (requestOptions != null) {
-      requestOptions.mutateUrl(uriBuilder);
+      requestOptions.mutateUri(uriBuilder);
     }
   }
 

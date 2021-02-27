@@ -83,7 +83,7 @@ public final class RequestOptions {
     return contentCompressionEnabled;
   }
 
-  void mutateUrl(@Nonnull URIBuilder urlBuilder) {
+  void mutateUri(@Nonnull URIBuilder urlBuilder) {
     for (final Map.Entry<String, String> e : queryParams) {
       urlBuilder.addParameter(e.getKey(), e.getValue());
     }
