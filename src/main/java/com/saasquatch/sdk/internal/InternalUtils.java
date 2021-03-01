@@ -41,6 +41,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.zip.GZIPInputStream;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.WillNotClose;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.net.URLCodec;
 import org.apache.hc.client5.http.async.methods.SimpleHttpRequest;
@@ -296,7 +297,7 @@ public final class InternalUtils {
     return buf.toString();
   }
 
-  public static byte[] toByteArray(InputStream in) throws IOException {
+  public static byte[] toByteArray(@WillNotClose InputStream in) throws IOException {
     try (ByteArrayOutputStream baOut = new ByteArrayOutputStream()) {
       final byte[] buf = new byte[BUFFER_SIZE];
       int bytesRead;
