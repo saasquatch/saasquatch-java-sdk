@@ -372,11 +372,11 @@ public final class InternalUtils {
    * Extract the payload as a JSON object. This method does NOT do a full JWT validation.
    */
   public static Map<String, Object> getJwtPayload(String jwt) {
-    final String[] split = jwt.split("\\.", 4);
-    if (split.length != 3) {
+    final String[] jwtParts = jwt.split("\\.", 4);
+    if (jwtParts.length != 3) {
       throw new IllegalArgumentException("Invalid JWT");
     }
-    final String payloadPart = split[1];
+    final String payloadPart = jwtParts[1];
     final byte[] payloadBytes = Base64.decodeBase64(payloadPart);
     final JsonElement jsonElement = JsonParser.parseString(new String(payloadBytes, UTF_8));
     if (!(jsonElement instanceof JsonObject)) {
