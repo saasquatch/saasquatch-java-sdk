@@ -164,8 +164,8 @@ final class SaaSquatchClientImpl implements SaaSquatchClient {
   }
 
   @Override
-  public Publisher<TextApiResponse> renderWidget(
-      @Nonnull RenderWidgetInput renderWidgetInput, @Nullable RequestOptions requestOptions) {
+  public Publisher<TextApiResponse> renderWidget(@Nonnull RenderWidgetInput renderWidgetInput,
+      @Nullable RequestOptions requestOptions) {
     Objects.requireNonNull(renderWidgetInput, "renderWidgetInput");
     final Map<String, Object> variables = new HashMap<>();
     variables.put("user", renderWidgetInput.getUser());

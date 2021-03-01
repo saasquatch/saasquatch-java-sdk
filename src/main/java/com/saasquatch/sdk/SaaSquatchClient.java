@@ -92,8 +92,8 @@ public interface SaaSquatchClient extends Closeable {
   /**
    * Render a widget.<br> The response is the widget HTML.
    */
-  Publisher<TextApiResponse> renderWidget(
-      @Nonnull RenderWidgetInput renderWidgetInput, @Nullable RequestOptions requestOptions);
+  Publisher<TextApiResponse> renderWidget(@Nonnull RenderWidgetInput renderWidgetInput,
+      @Nullable RequestOptions requestOptions);
 
   /**
    * "Render" a widget by getting its widget config values. Note that this method does not work with
@@ -212,14 +212,14 @@ public interface SaaSquatchClient extends Closeable {
    * Block a user.<br>
    * <a href="https://docs.saasquatch.com/api/methods/#block_user">Link to official docs</a>
    */
-  Publisher<JsonObjectApiResponse> blockUser(@Nonnull String accountId,
-      @Nonnull String userId, @Nullable RequestOptions requestOptions);
+  Publisher<JsonObjectApiResponse> blockUser(@Nonnull String accountId, @Nonnull String userId,
+      @Nullable RequestOptions requestOptions);
 
   /**
    * Unblock a user.<br>
    * <a href="https://docs.saasquatch.com/api/methods/#unblock_user">Link to official docs</a>
    */
-  Publisher<JsonObjectApiResponse> unblockUser(@Nonnull String accountId,
-      @Nonnull String userId, @Nullable RequestOptions requestOptions);
+  Publisher<JsonObjectApiResponse> unblockUser(@Nonnull String accountId, @Nonnull String userId,
+      @Nullable RequestOptions requestOptions);
 
 }
