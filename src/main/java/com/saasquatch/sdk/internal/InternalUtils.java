@@ -378,12 +378,12 @@ public final class InternalUtils {
     }
     final String payloadPart = split[1];
     final byte[] payloadBytes = Base64.decodeBase64(payloadPart);
-    final JsonElement json = JsonParser.parseString(new String(payloadBytes, UTF_8));
-    if (!(json instanceof JsonObject)) {
+    final JsonElement jsonElement = JsonParser.parseString(new String(payloadBytes, UTF_8));
+    if (!(jsonElement instanceof JsonObject)) {
       throw new IllegalArgumentException("JWT payload is not a JSON object");
     }
     @SuppressWarnings("unchecked") final Map<String, Object> payloadMap =
-        gson.fromJson(new String(payloadBytes, UTF_8), Map.class);
+        gson.fromJson(jsonElement, Map.class);
     return payloadMap;
   }
 
