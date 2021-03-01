@@ -23,9 +23,11 @@ import java.net.URLDecoder;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 import java.util.AbstractMap.SimpleImmutableEntry;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -33,6 +35,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.zip.GZIPInputStream;
@@ -47,6 +50,7 @@ import org.apache.hc.core5.concurrent.FutureCallback;
 import org.apache.hc.core5.http.ContentType;
 import org.apache.hc.core5.http.Header;
 import org.apache.hc.core5.http.HttpHeaders;
+import org.apache.hc.core5.http.MessageHeaders;
 import org.reactivestreams.Publisher;
 
 public final class InternalUtils {
@@ -159,6 +163,32 @@ public final class InternalUtils {
   }
 
   /**
+   * Collect all the headers in the given {@link MessageHeaders} into an immutable {@link Map} where
+   * the values are also immutable.
+   */
+  public static Map<String, List<String>> collectHeaders(@Nonnull MessageHeaders messageHeaders) {
+    final Map<String, List<String>> result = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+    final Iterator<Header> headerIterator = messageHeaders.headerIterator();
+    while (headerIterator.hasNext()) {
+      final Header header = headerIterator.next();
+      List<String> values = result.get(header.getName());
+      // For Android
+      //noinspection Java8MapApi
+      if (values == null) {
+        values = new ArrayList<>();
+        result.put(header.getName(), values);
+      }
+      values.add(header.getValue());
+    }
+    final Map<String, List<String>> resultCopy = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+    for (Map.Entry<String, List<String>> e : result.entrySet()) {
+      resultCopy.put(e.getKey(), unmodifiableList(e.getValue()));
+    }
+    // DO NOT use InternalUtils.unmodifiableMap
+    return Collections.unmodifiableMap(resultCopy);
+  }
+
+  /**
    * Convenience method for {@link SimpleImmutableEntry}
    */
   public static <K, V> Map.Entry<K, V> entryOf(@Nullable K k, @Nullable V v) {
@@ -178,8 +208,8 @@ public final class InternalUtils {
       default:
         break;
     }
-    @SuppressWarnings("unchecked")
-    final List<T> defensiveCopy = (List<T>) Arrays.asList(list.toArray());
+    @SuppressWarnings("unchecked") final List<T> defensiveCopy =
+        (List<T>) Arrays.asList(list.toArray());
     return Collections.unmodifiableList(defensiveCopy);
   }
 
