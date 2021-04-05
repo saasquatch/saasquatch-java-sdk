@@ -20,6 +20,7 @@ import com.saasquatch.sdk.input.DeleteUserInput;
 import com.saasquatch.sdk.input.GetUserLinkInput;
 import com.saasquatch.sdk.input.GraphQLInput;
 import com.saasquatch.sdk.input.RenderWidgetInput;
+import com.saasquatch.sdk.input.UserAnalyticsEventInput;
 import com.saasquatch.sdk.input.UserEventInput;
 import com.saasquatch.sdk.input.UserIdInput;
 import com.saasquatch.sdk.input.UserInput;
@@ -108,7 +109,7 @@ final class SaaSquatchClientImpl implements SaaSquatchClient {
     return _graphQL(graphQLInput, null, requestOptions);
   }
 
-  private Publisher<GraphQLApiResponse> _graphQL(@Nonnull GraphQLInput graphQLInput,
+  private Flowable<GraphQLApiResponse> _graphQL(@Nonnull GraphQLInput graphQLInput,
       @Nullable String userJwt, @Nullable RequestOptions requestOptions) {
     Objects.requireNonNull(graphQLInput, "graphQLInput");
     final URIBuilder uriBuilder = baseUriBuilder(requestOptions);
@@ -175,10 +176,10 @@ final class SaaSquatchClientImpl implements SaaSquatchClient {
     }
     variables.put("engagementMedium", renderWidgetInput.getEngagementMedium());
     variables.put("locale", renderWidgetInput.getLocale());
-    return Flowable.fromPublisher(_graphQL(GraphQLInput.newBuilder()
+    return _graphQL(GraphQLInput.newBuilder()
         .setQuery(GraphQLQueries.RENDER_WIDGET)
         .setVariables(variables)
-        .build(), renderWidgetInput.getUserJwt(), requestOptions))
+        .build(), renderWidgetInput.getUserJwt(), requestOptions)
         .doOnNext(InternalUtils::throwSquatchExceptionForPotentialGraphQLError)
         .map(graphQLApiResponse -> {
           final GraphQLResult graphQLResult = graphQLApiResponse.getData();
@@ -200,10 +201,10 @@ final class SaaSquatchClientImpl implements SaaSquatchClient {
     }
     variables.put("engagementMedium", renderWidgetInput.getEngagementMedium());
     variables.put("locale", renderWidgetInput.getLocale());
-    return Flowable.fromPublisher(_graphQL(GraphQLInput.newBuilder()
+    return _graphQL(GraphQLInput.newBuilder()
         .setQuery(GraphQLQueries.GET_WIDGET_CONFIG_VALUES)
         .setVariables(variables)
-        .build(), renderWidgetInput.getUserJwt(), requestOptions))
+        .build(), renderWidgetInput.getUserJwt(), requestOptions)
         .doOnNext(InternalUtils::throwSquatchExceptionForPotentialGraphQLError)
         .map(graphQLApiResponse -> {
           final GraphQLResult graphQLResult = graphQLApiResponse.getData();
@@ -410,6 +411,21 @@ final class SaaSquatchClientImpl implements SaaSquatchClient {
     final SimpleHttpRequest request = SimpleHttpRequests.post(uriBuilder.toString());
     mutateRequest(request, requestOptions);
     return executeRequest(request).map(JsonObjectApiResponse::new);
+  }
+
+  @Override
+  public Publisher<StatusOnlyApiResponse> createUserAnalyticsEvent(
+      @Nonnull UserAnalyticsEventInput userAnalyticsEventInput,
+      @Nullable RequestOptions requestOptions) {
+    Objects.requireNonNull(userAnalyticsEventInput, "userAnalyticsEventInput");
+    final Map<String, Object> variables = new HashMap<>();
+    variables.put("eventMeta", userAnalyticsEventInput);
+    return _graphQL(GraphQLInput.newBuilder()
+        .setQuery(GraphQLQueries.CREATE_USER_ANALYTICS_EVENT)
+        .setVariables(variables)
+        .build(), userAnalyticsEventInput.getUserJwt(), requestOptions)
+        .doOnNext(InternalUtils::throwSquatchExceptionForPotentialGraphQLError)
+        .map(graphQLApiResponse -> new StatusOnlyApiResponse(graphQLApiResponse.getHttpResponse()));
   }
 
   ////////////////////////////////////////////////////////////////////////////////
