@@ -2,7 +2,7 @@ package com.saasquatch.sdk.input;
 
 import static com.saasquatch.sdk.internal.InternalUtils.requireNotBlank;
 
-import com.saasquatch.sdk.internal.InternalUtils;
+import com.saasquatch.sdk.annotations.Internal;
 import java.util.Map;
 import java.util.Objects;
 import javax.annotation.Nonnull;
@@ -11,13 +11,15 @@ public final class UserAnalyticsEventInput {
 
   private final String id;
   private final String accountId;
+  private final String userJwt;
   private final String programId;
   private final String type;
   private final Map<String, Object> meta;
 
-  private UserAnalyticsEventInput(String id, String accountId, String programId, String type, Map<String, Object> meta) {
+  private UserAnalyticsEventInput(String id, String accountId, String userJwt, String programId, String type, Map<String, Object> meta) {
     this.id = id;
     this.accountId = accountId;
+    this.userJwt = userJwt;
     this.programId = programId;
     this.type = type;
     this.meta = meta;
@@ -29,6 +31,11 @@ public final class UserAnalyticsEventInput {
 
   public String getAccountId() {
     return accountId;
+  }
+
+  @Internal
+  public String getUserJwt() {
+    return userJwt;
   }
 
   public String getProgramId() {
@@ -51,6 +58,7 @@ public final class UserAnalyticsEventInput {
 
     private String id;
     private String accountId;
+    private String userJwt;
     private String programId;
     private String type;
     private Map<String, Object> meta;
@@ -64,6 +72,11 @@ public final class UserAnalyticsEventInput {
 
     public Builder setAccountId(@Nonnull String accountId) {
       this.accountId = requireNotBlank(accountId, "accountId");
+      return this;
+    }
+
+    public Builder setUserJwt(@Nonnull String userJwt) {
+      this.userJwt = requireNotBlank(userJwt, "userJwt");
       return this;
     }
 
@@ -83,7 +96,7 @@ public final class UserAnalyticsEventInput {
     }
 
     public UserAnalyticsEventInput build() {
-      return new UserAnalyticsEventInput(id, accountId, programId, type, meta);
+      return new UserAnalyticsEventInput(id, accountId, userJwt, programId, type, meta);
     }
 
   }
