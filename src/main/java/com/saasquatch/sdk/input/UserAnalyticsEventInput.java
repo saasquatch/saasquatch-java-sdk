@@ -11,12 +11,17 @@ import javax.annotation.Nonnull;
 
 public final class UserAnalyticsEventInput {
 
+  @SuppressWarnings({"unused", "FieldCanBeLocal"})
   private final String id;
+  @SuppressWarnings({"unused", "FieldCanBeLocal"})
   private final String accountId;
   @GsonIgnore
   private final String userJwt;
+  @SuppressWarnings({"unused", "FieldCanBeLocal"})
   private final String programId;
+  @SuppressWarnings({"unused", "FieldCanBeLocal"})
   private final String type;
+  @SuppressWarnings({"unused", "FieldCanBeLocal"})
   private final Map<String, Object> meta;
 
   private UserAnalyticsEventInput(String id, String accountId, String userJwt, String programId,
@@ -29,29 +34,9 @@ public final class UserAnalyticsEventInput {
     this.meta = meta;
   }
 
-  public String getId() {
-    return id;
-  }
-
-  public String getAccountId() {
-    return accountId;
-  }
-
   @Internal
   public String getUserJwt() {
     return userJwt;
-  }
-
-  public String getProgramId() {
-    return programId;
-  }
-
-  public String getType() {
-    return type;
-  }
-
-  public Map<String, Object> getMeta() {
-    return meta;
   }
 
   public static Builder newBuilder() {
@@ -83,11 +68,6 @@ public final class UserAnalyticsEventInput {
       requireNotBlank(userJwt, "userJwt");
       this.user = getUserIdInputFromUserJwt(userJwt);
       this.userJwt = userJwt;
-      return this;
-    }
-
-    public Builder setUserJwt(@Nonnull String userJwt) {
-      this.userJwt = requireNotBlank(userJwt, "userJwt");
       return this;
     }
 
