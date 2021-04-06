@@ -204,7 +204,8 @@ public interface SaaSquatchClient extends Closeable {
 
   /**
    * Delete an account.<br>
-   * <a href="https://docs.saasquatch.com/api/methods/#open_delete_account">Link to official docs</a>
+   * <a href="https://docs.saasquatch.com/api/methods/#open_delete_account">Link to official
+   * docs</a>
    */
   Publisher<StatusOnlyApiResponse> deleteAccount(@Nonnull DeleteAccountInput deleteAccountInput,
       @Nullable RequestOptions requestOptions);
@@ -224,14 +225,16 @@ public interface SaaSquatchClient extends Closeable {
       @Nullable RequestOptions requestOptions);
 
   /**
-   * Push a widget loaded analytics event. Used by widgets.
+   * Push a widget loaded analytics event. Note that this method is not a regular public API and is
+   * only supposed to be used by widgets.
    */
   Publisher<StatusOnlyApiResponse> pushWidgetLoadedAnalyticsEvent(
       @Nonnull PushWidgetAnalyticsEventInput pushWidgetAnalyticsEventInput,
       @Nullable RequestOptions requestOptions);
 
   /**
-   * Push a widget shared analytics event. Used by widgets.
+   * Push a widget shared analytics event. Note that this method is not a regular public API and is
+   * only supposed to be used by widgets.
    */
   Publisher<StatusOnlyApiResponse> pushWidgetSharedAnalyticsEvent(
       @Nonnull PushWidgetAnalyticsEventInput pushWidgetAnalyticsEventInput,
