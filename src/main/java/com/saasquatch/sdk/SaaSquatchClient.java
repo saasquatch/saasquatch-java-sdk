@@ -230,14 +230,14 @@ public interface SaaSquatchClient extends Closeable {
       @Nullable RequestOptions requestOptions);
 
   /**
-   * Push a widget loaded analytics event. Used by the widget.
+   * Push a widget loaded analytics event. Used by widgets.
    */
   Publisher<StatusOnlyApiResponse> pushWidgetLoadedAnalyticsEvent(
       @Nonnull PushWidgetAnalyticsEventInput pushWidgetAnalyticsEventInput,
       @Nullable RequestOptions requestOptions);
 
   /**
-   * Push a widget shared analytics event. Used by the widget.
+   * Push a widget shared analytics event. Used by widgets.
    */
   Publisher<StatusOnlyApiResponse> pushWidgetSharedAnalyticsEvent(
       @Nonnull PushWidgetAnalyticsEventInput pushWidgetAnalyticsEventInput,
