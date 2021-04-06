@@ -428,6 +428,10 @@ final class SaaSquatchClientImpl implements SaaSquatchClient {
         .map(graphQLApiResponse -> new StatusOnlyApiResponse(graphQLApiResponse.getHttpResponse()));
   }
 
+  private void _pushWidgetAnalyticsEvent(@Nonnull String type) {
+    // /a/:tenantAlias/widgets/analytics/loaded or shared
+  }
+
   ////////////////////////////////////////////////////////////////////////////////
   /////////////////////// Utility methods below this point ///////////////////////
   ////////////////////////////////////////////////////////////////////////////////

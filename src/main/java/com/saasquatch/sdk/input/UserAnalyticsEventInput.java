@@ -3,18 +3,20 @@ package com.saasquatch.sdk.input;
 import static com.saasquatch.sdk.internal.InternalUtils.getUserIdInputFromUserJwt;
 import static com.saasquatch.sdk.internal.InternalUtils.requireNotBlank;
 
+import com.saasquatch.sdk.annotations.Beta;
 import com.saasquatch.sdk.annotations.Internal;
 import com.saasquatch.sdk.internal.json.GsonIgnore;
 import java.util.Map;
 import java.util.Objects;
 import javax.annotation.Nonnull;
 
+@Beta
 public final class UserAnalyticsEventInput {
 
   @SuppressWarnings({"unused", "FieldCanBeLocal"})
-  private final String id;
-  @SuppressWarnings({"unused", "FieldCanBeLocal"})
   private final String accountId;
+  @SuppressWarnings({"unused", "FieldCanBeLocal"})
+  private final String id;
   @GsonIgnore
   private final String userJwt;
   @SuppressWarnings({"unused", "FieldCanBeLocal"})
@@ -24,10 +26,10 @@ public final class UserAnalyticsEventInput {
   @SuppressWarnings({"unused", "FieldCanBeLocal"})
   private final Map<String, Object> meta;
 
-  private UserAnalyticsEventInput(String id, String accountId, String userJwt, String programId,
+  private UserAnalyticsEventInput(String accountId, String id, String userJwt, String programId,
       String type, Map<String, Object> meta) {
-    this.id = id;
     this.accountId = accountId;
+    this.id = id;
     this.userJwt = userJwt;
     this.programId = programId;
     this.type = type;
@@ -87,7 +89,7 @@ public final class UserAnalyticsEventInput {
     }
 
     public UserAnalyticsEventInput build() {
-      return new UserAnalyticsEventInput(user.getId(), user.getAccountId(), userJwt, programId,
+      return new UserAnalyticsEventInput(user.getAccountId(), user.getId(), userJwt, programId,
           type, meta);
     }
 

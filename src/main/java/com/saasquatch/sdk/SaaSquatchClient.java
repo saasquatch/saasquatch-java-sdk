@@ -223,6 +223,7 @@ public interface SaaSquatchClient extends Closeable {
   Publisher<JsonObjectApiResponse> unblockUser(@Nonnull String accountId, @Nonnull String userId,
       @Nullable RequestOptions requestOptions);
 
+  @Beta
   Publisher<StatusOnlyApiResponse> createUserAnalyticsEvent(
       @Nonnull UserAnalyticsEventInput userAnalyticsEventInput,
       @Nullable RequestOptions requestOptions);
