@@ -19,6 +19,7 @@ import com.saasquatch.sdk.input.DeleteAccountInput;
 import com.saasquatch.sdk.input.DeleteUserInput;
 import com.saasquatch.sdk.input.GetUserLinkInput;
 import com.saasquatch.sdk.input.GraphQLInput;
+import com.saasquatch.sdk.input.PushWidgetAnalyticsEventInput;
 import com.saasquatch.sdk.input.RenderWidgetInput;
 import com.saasquatch.sdk.input.UserAnalyticsEventInput;
 import com.saasquatch.sdk.input.UserEventInput;
@@ -428,8 +429,19 @@ final class SaaSquatchClientImpl implements SaaSquatchClient {
         .map(graphQLApiResponse -> new StatusOnlyApiResponse(graphQLApiResponse.getHttpResponse()));
   }
 
-  private void _pushWidgetAnalyticsEvent(@Nonnull String type) {
+  private Publisher<StatusOnlyApiResponse> _pushWidgetAnalyticsEvent(@Nonnull String type,
+      @Nonnull PushWidgetAnalyticsEventInput pushWidgetAnalyticsEventInput,
+      @Nullable RequestOptions requestOptions) {
     // /a/:tenantAlias/widgets/analytics/loaded or shared
+    Objects.requireNonNull(pushWidgetAnalyticsEventInput, "pushWidgetAnalyticsEventInput");
+    final URIBuilder uriBuilder = baseUriBuilder(requestOptions);
+    final List<String> pathSegments = baseTenantAPathSegments(requestOptions);
+    Collections.addAll(pathSegments, "widgets", "analytics", type);
+    mutateUri(uriBuilder, pathSegments, requestOptions);
+    final SimpleHttpRequest request = SimpleHttpRequests.post(uriBuilder.toString());
+    mutateRequest(request, requestOptions);
+    setJsonStringBody(request, "{}");
+    return executeRequest(request).map(StatusOnlyApiResponse::new);
   }
 
   ////////////////////////////////////////////////////////////////////////////////
