@@ -8,6 +8,7 @@ import com.saasquatch.sdk.annotations.ClassicOnly;
 import javax.annotation.Nonnull;
 import com.saasquatch.sdk.SaaSquatchClient;
 import com.saasquatch.sdk.annotations.NoExternalImpl;
+import javax.annotation.Nullable;
 
 /**
  * SaaSquatch widget type
@@ -21,6 +22,9 @@ public interface WidgetType {
 
   @Nonnull
   String getWidgetType();
+
+  @Nullable
+  String getProgramId();
 
   static WidgetType ofProgramWidget(@Nonnull String programId,
       @Nonnull String programWidgetKey) {

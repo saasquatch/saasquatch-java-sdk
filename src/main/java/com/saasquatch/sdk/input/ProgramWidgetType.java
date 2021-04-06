@@ -2,6 +2,7 @@ package com.saasquatch.sdk.input;
 
 import static com.saasquatch.sdk.internal.InternalUtils.urlEncode;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 final class ProgramWidgetType implements WidgetType {
 
@@ -23,6 +24,12 @@ final class ProgramWidgetType implements WidgetType {
       widgetType = t = "p/" + urlEncode(programId) + "/w/" + urlEncode(programWidgetKey);
     }
     return t;
+  }
+
+  @Nonnull
+  @Override
+  public String getProgramId() {
+    return programId;
   }
 
 }

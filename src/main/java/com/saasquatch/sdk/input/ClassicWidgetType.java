@@ -1,6 +1,7 @@
 package com.saasquatch.sdk.input;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 enum ClassicWidgetType implements WidgetType {
 
@@ -10,6 +11,12 @@ enum ClassicWidgetType implements WidgetType {
   @Override
   public String getWidgetType() {
     return name();
+  }
+
+  @Nullable
+  @Override
+  public String getProgramId() {
+    return null;
   }
 
 }
