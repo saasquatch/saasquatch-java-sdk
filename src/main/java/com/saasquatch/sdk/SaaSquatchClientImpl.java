@@ -447,6 +447,9 @@ final class SaaSquatchClientImpl implements SaaSquatchClient {
           pushWidgetAnalyticsEventInput.getEngagementMedium());
     }
     if (pushWidgetAnalyticsEventInput.getShareMedium() != null) {
+      if (type.equals("loaded")) {
+        throw new IllegalArgumentException("shareMedium cannot be set for loaded event");
+      }
       uriBuilder.setParameter("shareMedium", pushWidgetAnalyticsEventInput.getShareMedium());
     }
     final SimpleHttpRequest request = SimpleHttpRequests.post(uriBuilder.toString());
