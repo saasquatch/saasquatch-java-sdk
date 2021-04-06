@@ -430,12 +430,25 @@ final class SaaSquatchClientImpl implements SaaSquatchClient {
   private Publisher<StatusOnlyApiResponse> _pushWidgetAnalyticsEvent(@Nonnull String type,
       @Nonnull PushWidgetAnalyticsEventInput pushWidgetAnalyticsEventInput,
       @Nullable RequestOptions requestOptions) {
-    // /a/:tenantAlias/widgets/analytics/loaded or shared
     Objects.requireNonNull(pushWidgetAnalyticsEventInput, "pushWidgetAnalyticsEventInput");
     final URIBuilder uriBuilder = baseUriBuilder(requestOptions);
     final List<String> pathSegments = baseTenantAPathSegments(requestOptions);
     Collections.addAll(pathSegments, "widgets", "analytics", type);
     mutateUri(uriBuilder, pathSegments, requestOptions);
+    Objects.requireNonNull(pushWidgetAnalyticsEventInput.getUser(), "user");
+    uriBuilder.setParameter("externalUserId", pushWidgetAnalyticsEventInput.getUser().getId());
+    uriBuilder.setParameter("externalAccountId",
+        pushWidgetAnalyticsEventInput.getUser().getAccountId());
+    if (pushWidgetAnalyticsEventInput.getProgramId() != null) {
+      uriBuilder.setParameter("programId", pushWidgetAnalyticsEventInput.getProgramId());
+    }
+    if (pushWidgetAnalyticsEventInput.getEngagementMedium() != null) {
+      uriBuilder.setParameter("engagementMedium",
+          pushWidgetAnalyticsEventInput.getEngagementMedium());
+    }
+    if (pushWidgetAnalyticsEventInput.getShareMedium() != null) {
+      uriBuilder.setParameter("shareMedium", pushWidgetAnalyticsEventInput.getShareMedium());
+    }
     final SimpleHttpRequest request = SimpleHttpRequests.post(uriBuilder.toString());
     mutateRequest(request, requestOptions);
     setJsonPojoBody(request, Collections.emptyMap());
