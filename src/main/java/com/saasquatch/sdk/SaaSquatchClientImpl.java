@@ -343,7 +343,7 @@ final class SaaSquatchClientImpl implements SaaSquatchClient {
     mutateUri(uriBuilder, pathSegments, requestOptions);
     final SimpleHttpRequest request = SimpleHttpRequests.post(uriBuilder.toString());
     mutateRequest(request, requestOptions);
-    setJsonStringBody(request, "{}");
+    setJsonPojoBody(request, Collections.emptyMap());
     return executeRequest(request).map(JsonObjectApiResponse::new);
   }
 
@@ -429,6 +429,20 @@ final class SaaSquatchClientImpl implements SaaSquatchClient {
         .map(graphQLApiResponse -> new StatusOnlyApiResponse(graphQLApiResponse.getHttpResponse()));
   }
 
+  @Override
+  public Publisher<StatusOnlyApiResponse> pushWidgetLoadedAnalyticsEvent(
+      @Nonnull PushWidgetAnalyticsEventInput pushWidgetAnalyticsEventInput,
+      @Nullable RequestOptions requestOptions) {
+    return _pushWidgetAnalyticsEvent("loaded", pushWidgetAnalyticsEventInput, requestOptions);
+  }
+
+  @Override
+  public Publisher<StatusOnlyApiResponse> pushWidgetSharedAnalyticsEvent(
+      @Nonnull PushWidgetAnalyticsEventInput pushWidgetAnalyticsEventInput,
+      @Nullable RequestOptions requestOptions) {
+    return _pushWidgetAnalyticsEvent("shared", pushWidgetAnalyticsEventInput, requestOptions);
+  }
+
   private Publisher<StatusOnlyApiResponse> _pushWidgetAnalyticsEvent(@Nonnull String type,
       @Nonnull PushWidgetAnalyticsEventInput pushWidgetAnalyticsEventInput,
       @Nullable RequestOptions requestOptions) {
@@ -440,7 +454,7 @@ final class SaaSquatchClientImpl implements SaaSquatchClient {
     mutateUri(uriBuilder, pathSegments, requestOptions);
     final SimpleHttpRequest request = SimpleHttpRequests.post(uriBuilder.toString());
     mutateRequest(request, requestOptions);
-    setJsonStringBody(request, "{}");
+    setJsonPojoBody(request, Collections.emptyMap());
     return executeRequest(request).map(StatusOnlyApiResponse::new);
   }
 

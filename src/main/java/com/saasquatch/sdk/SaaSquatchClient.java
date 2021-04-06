@@ -7,6 +7,7 @@ import com.saasquatch.sdk.input.DeleteAccountInput;
 import com.saasquatch.sdk.input.DeleteUserInput;
 import com.saasquatch.sdk.input.GetUserLinkInput;
 import com.saasquatch.sdk.input.GraphQLInput;
+import com.saasquatch.sdk.input.PushWidgetAnalyticsEventInput;
 import com.saasquatch.sdk.input.RenderWidgetInput;
 import com.saasquatch.sdk.input.UserAnalyticsEventInput;
 import com.saasquatch.sdk.input.UserEventInput;
@@ -226,6 +227,20 @@ public interface SaaSquatchClient extends Closeable {
   @Beta
   Publisher<StatusOnlyApiResponse> createUserAnalyticsEvent(
       @Nonnull UserAnalyticsEventInput userAnalyticsEventInput,
+      @Nullable RequestOptions requestOptions);
+
+  /**
+   * Push a widget loaded analytics event. Used by the widget.
+   */
+  Publisher<StatusOnlyApiResponse> pushWidgetLoadedAnalyticsEvent(
+      @Nonnull PushWidgetAnalyticsEventInput pushWidgetAnalyticsEventInput,
+      @Nullable RequestOptions requestOptions);
+
+  /**
+   * Push a widget shared analytics event. Used by the widget.
+   */
+  Publisher<StatusOnlyApiResponse> pushWidgetSharedAnalyticsEvent(
+      @Nonnull PushWidgetAnalyticsEventInput pushWidgetAnalyticsEventInput,
       @Nullable RequestOptions requestOptions);
 
 }
