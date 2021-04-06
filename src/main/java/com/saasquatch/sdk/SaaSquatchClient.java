@@ -9,7 +9,6 @@ import com.saasquatch.sdk.input.GetUserLinkInput;
 import com.saasquatch.sdk.input.GraphQLInput;
 import com.saasquatch.sdk.input.PushWidgetAnalyticsEventInput;
 import com.saasquatch.sdk.input.RenderWidgetInput;
-import com.saasquatch.sdk.input.UserAnalyticsEventInput;
 import com.saasquatch.sdk.input.UserEventInput;
 import com.saasquatch.sdk.input.UserInput;
 import com.saasquatch.sdk.input.WidgetUpsertInput;
@@ -222,11 +221,6 @@ public interface SaaSquatchClient extends Closeable {
    * <a href="https://docs.saasquatch.com/api/methods/#unblock_user">Link to official docs</a>
    */
   Publisher<JsonObjectApiResponse> unblockUser(@Nonnull String accountId, @Nonnull String userId,
-      @Nullable RequestOptions requestOptions);
-
-  @Beta
-  Publisher<StatusOnlyApiResponse> createUserAnalyticsEvent(
-      @Nonnull UserAnalyticsEventInput userAnalyticsEventInput,
       @Nullable RequestOptions requestOptions);
 
   /**
