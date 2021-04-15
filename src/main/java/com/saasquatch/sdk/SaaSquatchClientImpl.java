@@ -60,6 +60,7 @@ final class SaaSquatchClientImpl implements SaaSquatchClient {
 
   private final ClientOptions clientOptions;
   private final String scheme;
+  @SuppressWarnings("FieldCanBeLocal")
   private final String clientId;
   private final CloseableHttpAsyncClient httpAsyncClient;
 
@@ -143,8 +144,10 @@ final class SaaSquatchClientImpl implements SaaSquatchClient {
   }
 
   private Flowable<SaaSquatchHttpResponse> _getUser(@Nonnull String accountId,
-      @Nonnull String userId, @Nullable String userJwt, @Nullable WidgetType widgetType,
-      @Nullable RequestOptions requestOptions, boolean widgetRequest) {
+      @Nonnull String userId, @Nullable String userJwt,
+      @SuppressWarnings("SameParameterValue") @Nullable WidgetType widgetType,
+      @Nullable RequestOptions requestOptions,
+      @SuppressWarnings("SameParameterValue") boolean widgetRequest) {
     final URIBuilder uriBuilder = baseUriBuilder(requestOptions);
     final List<String> pathSegments = baseTenantApiPathSegments(requestOptions);
     Collections.addAll(pathSegments, widgetRequest ? "widget" : "open", "account",
@@ -182,7 +185,7 @@ final class SaaSquatchClientImpl implements SaaSquatchClient {
         .build(), renderWidgetInput.getUserJwt(), requestOptions)
         .doOnNext(InternalUtils::throwSquatchExceptionForPotentialGraphQLError)
         .map(graphQLApiResponse -> {
-          final GraphQLResult graphQLResult = graphQLApiResponse.getData();
+          final GraphQLResult graphQLResult = Objects.requireNonNull(graphQLApiResponse.getData());
           final String templateString = (String) getNestedMapValue(graphQLResult.getData(),
               "renderWidget", "template");
           return new TextApiResponse(graphQLApiResponse.getHttpResponse(), templateString);
@@ -207,7 +210,7 @@ final class SaaSquatchClientImpl implements SaaSquatchClient {
         .build(), renderWidgetInput.getUserJwt(), requestOptions)
         .doOnNext(InternalUtils::throwSquatchExceptionForPotentialGraphQLError)
         .map(graphQLApiResponse -> {
-          final GraphQLResult graphQLResult = graphQLApiResponse.getData();
+          final GraphQLResult graphQLResult = Objects.requireNonNull(graphQLApiResponse.getData());
           @SuppressWarnings("unchecked") final Map<String, Object> widgetConfigValues =
               (Map<String, Object>) getNestedMapValue(graphQLResult.getData(), "renderWidget",
                   "widgetConfig", "values");
@@ -527,7 +530,8 @@ final class SaaSquatchClientImpl implements SaaSquatchClient {
   /**
    * Get the base url builder with protocol and app domain
    */
-  private URIBuilder baseUriBuilder(@Nullable RequestOptions requestOptions) {
+  private URIBuilder baseUriBuilder(
+      @SuppressWarnings("unused") @Nullable RequestOptions requestOptions) {
     return new URIBuilder().setScheme(scheme).setHost(clientOptions.getAppDomain());
   }
 
