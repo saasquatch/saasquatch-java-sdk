@@ -2,7 +2,6 @@ package com.saasquatch.sdk.input;
 
 import static com.saasquatch.sdk.internal.InternalUtils.urlEncode;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 final class ProgramWidgetType implements WidgetType {
 
