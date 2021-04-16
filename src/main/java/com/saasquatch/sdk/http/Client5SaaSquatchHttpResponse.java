@@ -1,17 +1,12 @@
 package com.saasquatch.sdk.http;
 
-import static com.saasquatch.sdk.internal.InternalUtils.unmodifiableList;
+import static com.saasquatch.sdk.internal.InternalUtils.collectHeaders;
 
 import com.saasquatch.sdk.annotations.Internal;
 import com.saasquatch.sdk.internal.InternalUtils;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 import org.apache.hc.client5.http.async.methods.SimpleHttpResponse;
-import org.apache.hc.core5.http.Header;
 
 @Internal
 public final class Client5SaaSquatchHttpResponse implements SaaSquatchHttpResponse {
@@ -45,31 +40,9 @@ public final class Client5SaaSquatchHttpResponse implements SaaSquatchHttpRespon
   public final Map<String, List<String>> getAllHeaders() {
     Map<String, List<String>> _allHeaders = allHeaders;
     if (_allHeaders == null) {
-      allHeaders = _allHeaders = _getAllHeaders();
+      allHeaders = _allHeaders = collectHeaders(response);
     }
     return _allHeaders;
-  }
-
-  private Map<String, List<String>> _getAllHeaders() {
-    final Map<String, List<String>> result = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
-    final Iterator<Header> headerIterator = response.headerIterator();
-    while (headerIterator.hasNext()) {
-      final Header header = headerIterator.next();
-      List<String> values = result.get(header.getName());
-      // For Android
-      //noinspection Java8MapApi
-      if (values == null) {
-        values = new ArrayList<>();
-        result.put(header.getName(), values);
-      }
-      values.add(header.getValue());
-    }
-    final Map<String, List<String>> resultCopy = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
-    for (Map.Entry<String, List<String>> e : result.entrySet()) {
-      resultCopy.put(e.getKey(), unmodifiableList(e.getValue()));
-    }
-    // DO NOT use InternalUtils.unmodifiableMap
-    return Collections.unmodifiableMap(resultCopy);
   }
 
 }

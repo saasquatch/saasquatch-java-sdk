@@ -25,4 +25,10 @@ final class ProgramWidgetType implements WidgetType {
     return t;
   }
 
+  @Nonnull
+  @Override
+  public String getProgramId() {
+    return programId;
+  }
+
 }

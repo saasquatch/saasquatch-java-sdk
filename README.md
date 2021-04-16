@@ -42,7 +42,7 @@ Add the dependency:
 <dependency>
   <groupId>com.github.saasquatch</groupId>
   <artifactId>saasquatch-java-sdk</artifactId>
-  <version>0.0.1</version>
+  <version>0.0.2</version>
 </dependency>
 ```
 
@@ -50,7 +50,7 @@ Add the dependency:
 
 ```gradle
 dependencies {
-    implementation 'com.github.saasquatch:saasquatch-java-sdk:0.0.1'
+    implementation 'com.github.saasquatch:saasquatch-java-sdk:0.0.2'
 }
 ```
 
@@ -90,7 +90,7 @@ SaaSquatchClient.create(ClientOptions.newBuilder()
      * if you are using this SDK on the server side. Use this with caution if you are
      * building an Android app.
      */
-    .setAuthMethod(AuthMethod.ofApiKey("yourApiKey"))
+    .setAuthMethod(AuthMethod.ofTenantApiKey("yourApiKey"))
     .setRequestTimeout(5, TimeUnit.SECONDS)
     // etc.
     .build());

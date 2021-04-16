@@ -3,6 +3,7 @@ package com.saasquatch.sdk.output;
 import static com.saasquatch.sdk.internal.InternalUtils.defaultIfNull;
 import static com.saasquatch.sdk.internal.json.GsonUtils.gson;
 
+import com.saasquatch.sdk.annotations.Internal;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -53,7 +54,11 @@ public final class ApiError {
   }
 
   @Nullable
-  public static ApiError fromBodyText(String bodyText) {
+  @Internal
+  public static ApiError fromBodyText(@Nullable String bodyText) {
+    if (bodyText == null) {
+      return null;
+    }
     /*
      * Doing this because in case of a catastrophic failure, we may not be able to get an actual
      * ApiError from SaaSquatch.
@@ -69,7 +74,7 @@ public final class ApiError {
      * actual ApiError.
      */
     if (jsonElement instanceof JsonObject) {
-      final JsonObject jsonObject = ((JsonObject) jsonElement);
+      final JsonObject jsonObject = (JsonObject) jsonElement;
       if (jsonObject.has("message") && jsonObject.has("statusCode")) {
         return gson.fromJson(jsonObject, ApiError.class);
       }
@@ -79,6 +84,7 @@ public final class ApiError {
   }
 
   @Nullable
+  @Internal
   static ApiError fromGraphQLResult(@Nonnull GraphQLResult graphQLResult) {
     final List<Object> errors = graphQLResult.getErrors();
     if (errors == null || errors.isEmpty()) {

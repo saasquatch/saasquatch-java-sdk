@@ -1,5 +1,6 @@
 package com.saasquatch.sdk;
 
+import static com.saasquatch.sdk.internal.InternalUtils.GZIP;
 import static com.saasquatch.sdk.internal.InternalUtils.defaultIfNull;
 import static com.saasquatch.sdk.internal.InternalUtils.getJwtPayload;
 import static com.saasquatch.sdk.internal.InternalUtils.getNestedMapValue;
@@ -13,19 +14,25 @@ import com.saasquatch.sdk.exceptions.SaaSquatchIOException;
 import com.saasquatch.sdk.exceptions.SaaSquatchUnhandledApiException;
 import com.saasquatch.sdk.http.Client5SaaSquatchHttpResponse;
 import com.saasquatch.sdk.http.SaaSquatchHttpResponse;
+import com.saasquatch.sdk.input.ApplyReferralCodeInput;
+import com.saasquatch.sdk.input.DeleteAccountInput;
+import com.saasquatch.sdk.input.DeleteUserInput;
 import com.saasquatch.sdk.input.GetUserLinkInput;
 import com.saasquatch.sdk.input.GraphQLInput;
+import com.saasquatch.sdk.input.PushWidgetAnalyticsEventInput;
 import com.saasquatch.sdk.input.RenderWidgetInput;
 import com.saasquatch.sdk.input.UserEventInput;
 import com.saasquatch.sdk.input.UserIdInput;
 import com.saasquatch.sdk.input.UserInput;
 import com.saasquatch.sdk.input.WidgetType;
 import com.saasquatch.sdk.input.WidgetUpsertInput;
+import com.saasquatch.sdk.internal.GraphQLQueries;
 import com.saasquatch.sdk.internal.InternalUtils;
 import com.saasquatch.sdk.output.ApiError;
 import com.saasquatch.sdk.output.GraphQLApiResponse;
 import com.saasquatch.sdk.output.GraphQLResult;
 import com.saasquatch.sdk.output.JsonObjectApiResponse;
+import com.saasquatch.sdk.output.StatusOnlyApiResponse;
 import com.saasquatch.sdk.output.TextApiResponse;
 import io.reactivex.rxjava3.core.Flowable;
 import java.io.IOException;
@@ -53,6 +60,7 @@ final class SaaSquatchClientImpl implements SaaSquatchClient {
 
   private final ClientOptions clientOptions;
   private final String scheme;
+  @SuppressWarnings("FieldCanBeLocal")
   private final String clientId;
   private final CloseableHttpAsyncClient httpAsyncClient;
 
@@ -102,8 +110,8 @@ final class SaaSquatchClientImpl implements SaaSquatchClient {
     return _graphQL(graphQLInput, null, requestOptions);
   }
 
-  private Publisher<GraphQLApiResponse> _graphQL(@Nonnull GraphQLInput graphQLInput, String userJwt,
-      @Nullable RequestOptions requestOptions) {
+  private Flowable<GraphQLApiResponse> _graphQL(@Nonnull GraphQLInput graphQLInput,
+      @Nullable String userJwt, @Nullable RequestOptions requestOptions) {
     Objects.requireNonNull(graphQLInput, "graphQLInput");
     final URIBuilder uriBuilder = baseUriBuilder(requestOptions);
     final List<String> pathSegments = baseTenantApiPathSegments(requestOptions);
@@ -136,8 +144,10 @@ final class SaaSquatchClientImpl implements SaaSquatchClient {
   }
 
   private Flowable<SaaSquatchHttpResponse> _getUser(@Nonnull String accountId,
-      @Nonnull String userId, @Nullable String userJwt, @Nullable WidgetType widgetType,
-      @Nullable RequestOptions requestOptions, boolean widgetRequest) {
+      @Nonnull String userId, @Nullable String userJwt,
+      @SuppressWarnings("SameParameterValue") @Nullable WidgetType widgetType,
+      @Nullable RequestOptions requestOptions,
+      @SuppressWarnings("SameParameterValue") boolean widgetRequest) {
     final URIBuilder uriBuilder = baseUriBuilder(requestOptions);
     final List<String> pathSegments = baseTenantApiPathSegments(requestOptions);
     Collections.addAll(pathSegments, widgetRequest ? "widget" : "open", "account",
@@ -158,25 +168,9 @@ final class SaaSquatchClientImpl implements SaaSquatchClient {
   }
 
   @Override
-  public Publisher<TextApiResponse> renderWidget(
-      @Nonnull RenderWidgetInput renderWidgetInput, @Nullable RequestOptions requestOptions) {
+  public Publisher<TextApiResponse> renderWidget(@Nonnull RenderWidgetInput renderWidgetInput,
+      @Nullable RequestOptions requestOptions) {
     Objects.requireNonNull(renderWidgetInput, "renderWidgetInput");
-    final String query = ""
-        + "query renderWidget(\n"
-        + "  $user: UserIdInput\n"
-        + "  $widgetType: WidgetType\n"
-        + "  $engagementMedium: UserEngagementMedium\n"
-        + "  $locale: RSLocale\n"
-        + ") {\n"
-        + "  renderWidget(\n"
-        + "    user: $user\n"
-        + "    widgetType: $widgetType\n"
-        + "    engagementMedium: $engagementMedium\n"
-        + "    locale: $locale\n"
-        + "  ) {\n"
-        + "    template\n"
-        + "  }\n"
-        + "}";
     final Map<String, Object> variables = new HashMap<>();
     variables.put("user", renderWidgetInput.getUser());
     final WidgetType widgetType = renderWidgetInput.getWidgetType();
@@ -185,13 +179,13 @@ final class SaaSquatchClientImpl implements SaaSquatchClient {
     }
     variables.put("engagementMedium", renderWidgetInput.getEngagementMedium());
     variables.put("locale", renderWidgetInput.getLocale());
-    return Flowable.fromPublisher(_graphQL(GraphQLInput.newBuilder()
-        .setQuery(query)
+    return _graphQL(GraphQLInput.newBuilder()
+        .setQuery(GraphQLQueries.RENDER_WIDGET)
         .setVariables(variables)
-        .build(), renderWidgetInput.getUserJwt(), requestOptions))
+        .build(), renderWidgetInput.getUserJwt(), requestOptions)
         .doOnNext(InternalUtils::throwSquatchExceptionForPotentialGraphQLError)
         .map(graphQLApiResponse -> {
-          final GraphQLResult graphQLResult = graphQLApiResponse.getData();
+          final GraphQLResult graphQLResult = Objects.requireNonNull(graphQLApiResponse.getData());
           final String templateString = (String) getNestedMapValue(graphQLResult.getData(),
               "renderWidget", "template");
           return new TextApiResponse(graphQLApiResponse.getHttpResponse(), templateString);
@@ -202,24 +196,6 @@ final class SaaSquatchClientImpl implements SaaSquatchClient {
   public Publisher<JsonObjectApiResponse> getWidgetConfigValues(
       @Nonnull RenderWidgetInput renderWidgetInput, @Nullable RequestOptions requestOptions) {
     Objects.requireNonNull(renderWidgetInput, "renderWidgetInput");
-    final String query = ""
-        + "query renderWidget(\n"
-        + "  $user: UserIdInput\n"
-        + "  $widgetType: WidgetType\n"
-        + "  $engagementMedium: UserEngagementMedium\n"
-        + "  $locale: RSLocale\n"
-        + ") {\n"
-        + "  renderWidget(\n"
-        + "    user: $user\n"
-        + "    widgetType: $widgetType\n"
-        + "    engagementMedium: $engagementMedium\n"
-        + "    locale: $locale\n"
-        + "  ) {\n"
-        + "    widgetConfig {\n"
-        + "      values\n"
-        + "    }\n"
-        + "  }\n"
-        + "}";
     final Map<String, Object> variables = new HashMap<>();
     variables.put("user", renderWidgetInput.getUser());
     final WidgetType widgetType = renderWidgetInput.getWidgetType();
@@ -228,13 +204,13 @@ final class SaaSquatchClientImpl implements SaaSquatchClient {
     }
     variables.put("engagementMedium", renderWidgetInput.getEngagementMedium());
     variables.put("locale", renderWidgetInput.getLocale());
-    return Flowable.fromPublisher(_graphQL(GraphQLInput.newBuilder()
-        .setQuery(query)
+    return _graphQL(GraphQLInput.newBuilder()
+        .setQuery(GraphQLQueries.GET_WIDGET_CONFIG_VALUES)
         .setVariables(variables)
-        .build(), renderWidgetInput.getUserJwt(), requestOptions))
+        .build(), renderWidgetInput.getUserJwt(), requestOptions)
         .doOnNext(InternalUtils::throwSquatchExceptionForPotentialGraphQLError)
         .map(graphQLApiResponse -> {
-          final GraphQLResult graphQLResult = graphQLApiResponse.getData();
+          final GraphQLResult graphQLResult = Objects.requireNonNull(graphQLApiResponse.getData());
           @SuppressWarnings("unchecked") final Map<String, Object> widgetConfigValues =
               (Map<String, Object>) getNestedMapValue(graphQLResult.getData(), "renderWidget",
                   "widgetConfig", "values");
@@ -357,20 +333,137 @@ final class SaaSquatchClientImpl implements SaaSquatchClient {
   }
 
   @Override
-  public Publisher<JsonObjectApiResponse> applyReferralCode(@Nonnull String accountId,
-      @Nonnull String userId, @Nonnull String referralCode,
+  public Publisher<JsonObjectApiResponse> applyReferralCode(
+      @Nonnull ApplyReferralCodeInput applyReferralCodeInput,
       @Nullable RequestOptions requestOptions) {
+    Objects.requireNonNull(applyReferralCodeInput, "applyReferralCodeInput");
     final URIBuilder uriBuilder = baseUriBuilder(requestOptions);
     final List<String> pathSegments = baseTenantApiPathSegments(requestOptions);
-    Collections.addAll(pathSegments, "open", "code", requireNotBlank(referralCode, "referralCode"),
-        "account", requireNotBlank(accountId, "accountId"), "user",
-        requireNotBlank(userId, "userId"));
+    Collections.addAll(pathSegments, "open", "code", applyReferralCodeInput.getReferralCode(),
+        "account", applyReferralCodeInput.getAccountId(), "user",
+        applyReferralCodeInput.getUserId());
     mutateUri(uriBuilder, pathSegments, requestOptions);
     final SimpleHttpRequest request = SimpleHttpRequests.post(uriBuilder.toString());
     mutateRequest(request, requestOptions);
-    setJsonStringBody(request, "{}");
+    setJsonPojoBody(request, Collections.emptyMap());
     return executeRequest(request).map(JsonObjectApiResponse::new);
   }
+
+  @Override
+  public Publisher<JsonObjectApiResponse> validateReferralCode(@Nonnull String referralCode,
+      @Nullable RequestOptions requestOptions) {
+    final URIBuilder uriBuilder = baseUriBuilder(requestOptions);
+    final List<String> pathSegments = baseTenantApiPathSegments(requestOptions);
+    Collections.addAll(pathSegments, "open", "code", requireNotBlank(referralCode, "referralCode"));
+    mutateUri(uriBuilder, pathSegments, requestOptions);
+    final SimpleHttpRequest request = SimpleHttpRequests.get(uriBuilder.toString());
+    mutateRequest(request, requestOptions);
+    return executeRequest(request).map(JsonObjectApiResponse::new);
+  }
+
+  @Override
+  public Publisher<StatusOnlyApiResponse> deleteUser(@Nonnull DeleteUserInput deleteUserInput,
+      @Nullable RequestOptions requestOptions) {
+    return _deleteUserOrAccount(deleteUserInput.getAccountId(), deleteUserInput.getUserId(),
+        deleteUserInput.isDoNotTrack(), requestOptions);
+  }
+
+  @Override
+  public Publisher<StatusOnlyApiResponse> deleteAccount(
+      @Nonnull DeleteAccountInput deleteAccountInput, @Nullable RequestOptions requestOptions) {
+    return _deleteUserOrAccount(deleteAccountInput.getAccountId(), null,
+        deleteAccountInput.isDoNotTrack(), requestOptions);
+  }
+
+  private Publisher<StatusOnlyApiResponse> _deleteUserOrAccount(@Nonnull String accountId,
+      @Nullable String userId, boolean doNotTrack, @Nullable RequestOptions requestOptions) {
+    final URIBuilder uriBuilder = baseUriBuilder(requestOptions);
+    final List<String> pathSegments = baseTenantApiPathSegments(requestOptions);
+    Collections.addAll(pathSegments, "open", "account", accountId);
+    if (userId != null) {
+      Collections.addAll(pathSegments, "user", userId);
+    }
+    mutateUri(uriBuilder, pathSegments, requestOptions);
+    if (doNotTrack) {
+      uriBuilder.setParameter("doNotTrack", Boolean.TRUE.toString());
+    }
+    final SimpleHttpRequest request = SimpleHttpRequests.delete(uriBuilder.toString());
+    mutateRequest(request, requestOptions);
+    return executeRequest(request).map(StatusOnlyApiResponse::new);
+  }
+
+  @Override
+  public Publisher<JsonObjectApiResponse> blockUser(@Nonnull String accountId,
+      @Nonnull String userId, @Nullable RequestOptions requestOptions) {
+    return _blockOrUnblockUser(accountId, userId, true, requestOptions);
+  }
+
+  @Override
+  public Publisher<JsonObjectApiResponse> unblockUser(@Nonnull String accountId,
+      @Nonnull String userId, @Nullable RequestOptions requestOptions) {
+    return _blockOrUnblockUser(accountId, userId, false, requestOptions);
+  }
+
+  private Publisher<JsonObjectApiResponse> _blockOrUnblockUser(@Nonnull String accountId,
+      @Nonnull String userId, boolean block, @Nullable RequestOptions requestOptions) {
+    final URIBuilder uriBuilder = baseUriBuilder(requestOptions);
+    final List<String> pathSegments = baseTenantApiPathSegments(requestOptions);
+    Collections.addAll(pathSegments, "account", requireNotBlank(accountId, "accountId"), "user",
+        requireNotBlank(userId, "userId"), block ? "block" : "unblock");
+    mutateUri(uriBuilder, pathSegments, requestOptions);
+    final SimpleHttpRequest request = SimpleHttpRequests.post(uriBuilder.toString());
+    mutateRequest(request, requestOptions);
+    return executeRequest(request).map(JsonObjectApiResponse::new);
+  }
+
+  @Override
+  public Publisher<StatusOnlyApiResponse> pushWidgetLoadedAnalyticsEvent(
+      @Nonnull PushWidgetAnalyticsEventInput pushWidgetAnalyticsEventInput,
+      @Nullable RequestOptions requestOptions) {
+    return _pushWidgetAnalyticsEvent("loaded", pushWidgetAnalyticsEventInput, requestOptions);
+  }
+
+  @Override
+  public Publisher<StatusOnlyApiResponse> pushWidgetSharedAnalyticsEvent(
+      @Nonnull PushWidgetAnalyticsEventInput pushWidgetAnalyticsEventInput,
+      @Nullable RequestOptions requestOptions) {
+    return _pushWidgetAnalyticsEvent("shared", pushWidgetAnalyticsEventInput, requestOptions);
+  }
+
+  private Publisher<StatusOnlyApiResponse> _pushWidgetAnalyticsEvent(@Nonnull String type,
+      @Nonnull PushWidgetAnalyticsEventInput pushWidgetAnalyticsEventInput,
+      @Nullable RequestOptions requestOptions) {
+    Objects.requireNonNull(pushWidgetAnalyticsEventInput, "pushWidgetAnalyticsEventInput");
+    final URIBuilder uriBuilder = baseUriBuilder(requestOptions);
+    final List<String> pathSegments = baseTenantAPathSegments(requestOptions);
+    Collections.addAll(pathSegments, "widgets", "analytics", type);
+    mutateUri(uriBuilder, pathSegments, requestOptions);
+    Objects.requireNonNull(pushWidgetAnalyticsEventInput.getUser(), "user");
+    uriBuilder.setParameter("externalUserId", pushWidgetAnalyticsEventInput.getUser().getId());
+    uriBuilder.setParameter("externalAccountId",
+        pushWidgetAnalyticsEventInput.getUser().getAccountId());
+    if (pushWidgetAnalyticsEventInput.getProgramId() != null) {
+      uriBuilder.setParameter("programId", pushWidgetAnalyticsEventInput.getProgramId());
+    }
+    if (pushWidgetAnalyticsEventInput.getEngagementMedium() != null) {
+      uriBuilder.setParameter("engagementMedium",
+          pushWidgetAnalyticsEventInput.getEngagementMedium());
+    }
+    if (pushWidgetAnalyticsEventInput.getShareMedium() != null) {
+      if (type.equals("loaded")) {
+        throw new IllegalArgumentException("shareMedium cannot be set for loaded event");
+      }
+      uriBuilder.setParameter("shareMedium", pushWidgetAnalyticsEventInput.getShareMedium());
+    }
+    final SimpleHttpRequest request = SimpleHttpRequests.post(uriBuilder.toString());
+    mutateRequest(request, requestOptions);
+    setJsonPojoBody(request, Collections.emptyMap());
+    return executeRequest(request).map(StatusOnlyApiResponse::new);
+  }
+
+  ////////////////////////////////////////////////////////////////////////////////
+  /////////////////////// Utility methods below this point ///////////////////////
+  ////////////////////////////////////////////////////////////////////////////////
 
   /**
    * All the common url mutations happen here
@@ -379,7 +472,7 @@ final class SaaSquatchClientImpl implements SaaSquatchClient {
       @Nullable RequestOptions requestOptions) {
     uriBuilder.setPathSegments(pathSegments);
     if (requestOptions != null) {
-      requestOptions.mutateUrl(uriBuilder);
+      requestOptions.mutateUri(uriBuilder);
     }
   }
 
@@ -406,7 +499,7 @@ final class SaaSquatchClientImpl implements SaaSquatchClient {
         .setConnectTimeout(connectTimeoutMillis, TimeUnit.MILLISECONDS)
         .build());
     if (contentCompressionEnabled) {
-      request.setHeader(HttpHeaders.ACCEPT_ENCODING, "gzip");
+      request.setHeader(HttpHeaders.ACCEPT_ENCODING, GZIP);
     }
   }
 
@@ -437,7 +530,8 @@ final class SaaSquatchClientImpl implements SaaSquatchClient {
   /**
    * Get the base url builder with protocol and app domain
    */
-  private URIBuilder baseUriBuilder(@Nullable RequestOptions requestOptions) {
+  private URIBuilder baseUriBuilder(
+      @SuppressWarnings("unused") @Nullable RequestOptions requestOptions) {
     return new URIBuilder().setScheme(scheme).setHost(clientOptions.getAppDomain());
   }
 

@@ -64,7 +64,7 @@ public class RequestOptionsTest {
     assertEquals("b", request.getFirstHeader("a").getValue());
     final URIBuilder uriBuilder = new URIBuilder("http://example.com");
     assertTrue(uriBuilder.getQueryParams().isEmpty());
-    requestOptions.mutateUrl(uriBuilder);
+    requestOptions.mutateUri(uriBuilder);
     assertEquals(1, uriBuilder.getQueryParams().size());
     assertEquals("c", uriBuilder.getQueryParams().get(0).getName());
     assertEquals("d", uriBuilder.getQueryParams().get(0).getValue());

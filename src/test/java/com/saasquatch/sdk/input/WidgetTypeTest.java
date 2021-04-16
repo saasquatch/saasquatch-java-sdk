@@ -2,6 +2,7 @@ package com.saasquatch.sdk.input;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -30,6 +31,16 @@ public class WidgetTypeTest {
       final String s = new String(bytes, UTF_8);
       assertSame(s, WidgetType.ofConstant(s).getWidgetType());
     }
+  }
+
+  @Test
+  public void testGetProgramId() {
+    assertNull(WidgetType.ofConstant("foo").getProgramId());
+    assertNull(WidgetType.ofConstant("p/test").getProgramId());
+    assertEquals("foo", WidgetType.ofConstant("p/foo/w/a").getProgramId());
+    assertEquals("$$$", WidgetType.ofConstant("p/%24%24%24/a").getProgramId());
+    assertNull(WidgetType.ofGlobalWidget("foo").getProgramId());
+    assertEquals("#$%", WidgetType.ofProgramWidget("#$%", "key").getProgramId());
   }
 
 }

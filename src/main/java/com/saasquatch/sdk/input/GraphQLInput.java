@@ -13,6 +13,7 @@ import com.saasquatch.sdk.SaaSquatchClient;
  *
  * @author sli
  * @see #newBuilder()
+ * @see #ofQuery(String) 
  * @see SaaSquatchClient#graphQL(GraphQLInput, com.saasquatch.sdk.RequestOptions)
  */
 public final class GraphQLInput {
@@ -40,7 +41,10 @@ public final class GraphQLInput {
     return variables;
   }
 
-  public static GraphQLInput ofQuery(String query) {
+  /**
+   * @return A {@link GraphQLInput} with just a query.
+   */
+  public static GraphQLInput ofQuery(@Nonnull String query) {
     return newBuilder().setQuery(query).build();
   }
 

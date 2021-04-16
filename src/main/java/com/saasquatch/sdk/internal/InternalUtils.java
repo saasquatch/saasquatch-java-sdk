@@ -23,9 +23,11 @@ import java.net.URLDecoder;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 import java.util.AbstractMap.SimpleImmutableEntry;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -33,11 +35,13 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.zip.GZIPInputStream;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.WillNotClose;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.net.URLCodec;
 import org.apache.hc.client5.http.async.methods.SimpleHttpRequest;
@@ -47,10 +51,12 @@ import org.apache.hc.core5.concurrent.FutureCallback;
 import org.apache.hc.core5.http.ContentType;
 import org.apache.hc.core5.http.Header;
 import org.apache.hc.core5.http.HttpHeaders;
+import org.apache.hc.core5.http.MessageHeaders;
 import org.reactivestreams.Publisher;
 
 public final class InternalUtils {
 
+  public static final String GZIP = "gzip";
   private static final int BUFFER_SIZE = 8192;
 
   /**
@@ -158,6 +164,32 @@ public final class InternalUtils {
   }
 
   /**
+   * Collect all the headers in the given {@link MessageHeaders} into an immutable {@link Map} where
+   * the values are also immutable.
+   */
+  public static Map<String, List<String>> collectHeaders(@Nonnull MessageHeaders messageHeaders) {
+    final Map<String, List<String>> result = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+    final Iterator<Header> headerIterator = messageHeaders.headerIterator();
+    while (headerIterator.hasNext()) {
+      final Header header = headerIterator.next();
+      List<String> values = result.get(header.getName());
+      // For Android
+      //noinspection Java8MapApi
+      if (values == null) {
+        values = new ArrayList<>();
+        result.put(header.getName(), values);
+      }
+      values.add(header.getValue());
+    }
+    final Map<String, List<String>> resultCopy = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+    for (Map.Entry<String, List<String>> e : result.entrySet()) {
+      resultCopy.put(e.getKey(), unmodifiableList(e.getValue()));
+    }
+    // DO NOT use InternalUtils.unmodifiableMap
+    return Collections.unmodifiableMap(resultCopy);
+  }
+
+  /**
    * Convenience method for {@link SimpleImmutableEntry}
    */
   public static <K, V> Map.Entry<K, V> entryOf(@Nullable K k, @Nullable V v) {
@@ -166,7 +198,7 @@ public final class InternalUtils {
 
   /**
    * Same as {@link Collections#unmodifiableList(List)}, but makes a defensive copy so modifying the
-   * original list doesn't modify the unmoodifiable list.
+   * original list doesn't modify the unmodifiable list.
    */
   public static <T> List<T> unmodifiableList(@Nonnull List<T> list) {
     switch (list.size()) {
@@ -177,8 +209,8 @@ public final class InternalUtils {
       default:
         break;
     }
-    @SuppressWarnings("unchecked")
-    final List<T> defensiveCopy = (List<T>) Arrays.asList(list.toArray());
+    @SuppressWarnings("unchecked") final List<T> defensiveCopy =
+        (List<T>) Arrays.asList(list.toArray());
     return Collections.unmodifiableList(defensiveCopy);
   }
 
@@ -265,7 +297,7 @@ public final class InternalUtils {
     return buf.toString();
   }
 
-  public static byte[] toByteArray(InputStream in) throws IOException {
+  public static byte[] toByteArray(@WillNotClose InputStream in) throws IOException {
     try (ByteArrayOutputStream baOut = new ByteArrayOutputStream()) {
       final byte[] buf = new byte[BUFFER_SIZE];
       int bytesRead;
@@ -284,7 +316,7 @@ public final class InternalUtils {
     final Header contentEncodingHeader = response.getFirstHeader(HttpHeaders.CONTENT_ENCODING);
     final String contentEncoding =
         contentEncodingHeader == null ? null : contentEncodingHeader.getValue();
-    if ("gzip".equalsIgnoreCase(contentEncoding)) {
+    if (GZIP.equalsIgnoreCase(contentEncoding)) {
       try (GZIPInputStream gzipIn = new GZIPInputStream(
           new ByteArrayInputStream(bodyBytes), BUFFER_SIZE)) {
         return toByteArray(gzipIn);
@@ -341,18 +373,18 @@ public final class InternalUtils {
    * Extract the payload as a JSON object. This method does NOT do a full JWT validation.
    */
   public static Map<String, Object> getJwtPayload(String jwt) {
-    final String[] split = jwt.split("\\.", 4);
-    if (split.length != 3) {
+    final String[] jwtParts = jwt.split("\\.", 4);
+    if (jwtParts.length != 3) {
       throw new IllegalArgumentException("Invalid JWT");
     }
-    final String payloadPart = split[1];
+    final String payloadPart = jwtParts[1];
     final byte[] payloadBytes = Base64.decodeBase64(payloadPart);
-    final JsonElement json = JsonParser.parseString(new String(payloadBytes, UTF_8));
-    if (!(json instanceof JsonObject)) {
+    final JsonElement jsonElement = JsonParser.parseString(new String(payloadBytes, UTF_8));
+    if (!(jsonElement instanceof JsonObject)) {
       throw new IllegalArgumentException("JWT payload is not a JSON object");
     }
     @SuppressWarnings("unchecked") final Map<String, Object> payloadMap =
-        gson.fromJson(new String(payloadBytes, UTF_8), Map.class);
+        gson.fromJson(jsonElement, Map.class);
     return payloadMap;
   }
 

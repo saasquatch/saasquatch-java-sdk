@@ -2,8 +2,12 @@ package com.saasquatch.sdk;
 
 import com.saasquatch.sdk.annotations.Beta;
 import com.saasquatch.sdk.auth.AuthMethod;
+import com.saasquatch.sdk.input.ApplyReferralCodeInput;
+import com.saasquatch.sdk.input.DeleteAccountInput;
+import com.saasquatch.sdk.input.DeleteUserInput;
 import com.saasquatch.sdk.input.GetUserLinkInput;
 import com.saasquatch.sdk.input.GraphQLInput;
+import com.saasquatch.sdk.input.PushWidgetAnalyticsEventInput;
 import com.saasquatch.sdk.input.RenderWidgetInput;
 import com.saasquatch.sdk.input.UserEventInput;
 import com.saasquatch.sdk.input.UserInput;
@@ -13,6 +17,7 @@ import com.saasquatch.sdk.models.UserEventResult;
 import com.saasquatch.sdk.models.WidgetUpsertResult;
 import com.saasquatch.sdk.output.GraphQLApiResponse;
 import com.saasquatch.sdk.output.JsonObjectApiResponse;
+import com.saasquatch.sdk.output.StatusOnlyApiResponse;
 import com.saasquatch.sdk.output.TextApiResponse;
 import java.io.Closeable;
 import java.util.Map;
@@ -73,8 +78,7 @@ public interface SaaSquatchClient extends Closeable {
   /**
    * Get a user.<br> By default, the result of the response can be unmarshalled to {@link
    * User}.<br>
-   * <a href="https://docs.saasquatch.com/api/methods/#open_get_user">Link to official
-   * docs</a>
+   * <a href="https://docs.saasquatch.com/api/methods/#open_get_user">Link to official docs</a>
    */
   Publisher<JsonObjectApiResponse> getUser(@Nonnull String accountId, @Nonnull String userId,
       @Nullable RequestOptions requestOptions);
@@ -89,8 +93,8 @@ public interface SaaSquatchClient extends Closeable {
   /**
    * Render a widget.<br> The response is the widget HTML.
    */
-  Publisher<TextApiResponse> renderWidget(
-      @Nonnull RenderWidgetInput renderWidgetInput, @Nullable RequestOptions requestOptions);
+  Publisher<TextApiResponse> renderWidget(@Nonnull RenderWidgetInput renderWidgetInput,
+      @Nullable RequestOptions requestOptions);
 
   /**
    * "Render" a widget by getting its widget config values. Note that this method does not work with
@@ -103,8 +107,7 @@ public interface SaaSquatchClient extends Closeable {
   /**
    * Create or update a user.<br> By default, the result of the response can be unmarshalled to
    * {@link User}.<br>
-   * <a href="https://docs.saasquatch.com/api/methods/#open_user_upsert">Link to official
-   * docs</a>
+   * <a href="https://docs.saasquatch.com/api/methods/#open_user_upsert">Link to official docs</a>
    */
   Publisher<JsonObjectApiResponse> userUpsert(@Nonnull UserInput userInput,
       @Nullable RequestOptions requestOptions);
@@ -112,8 +115,7 @@ public interface SaaSquatchClient extends Closeable {
   /**
    * Create or update a user.<br> By default, the result of the response can be unmarshalled to
    * {@link User}.<br>
-   * <a href="https://docs.saasquatch.com/api/methods/#open_user_upsert">Link to official
-   * docs</a>
+   * <a href="https://docs.saasquatch.com/api/methods/#open_user_upsert">Link to official docs</a>
    */
   Publisher<JsonObjectApiResponse> userUpsert(@Nonnull Map<String, Object> userInput,
       @Nullable RequestOptions requestOptions);
@@ -121,8 +123,7 @@ public interface SaaSquatchClient extends Closeable {
   /**
    * Create or update a user.<br> By default, the result of the response can be unmarshalled to
    * {@link User}.<br>
-   * <a href="https://docs.saasquatch.com/api/methods/#open_user_upsert">Link to official
-   * docs</a>
+   * <a href="https://docs.saasquatch.com/api/methods/#open_user_upsert">Link to official docs</a>
    */
   Publisher<JsonObjectApiResponse> userUpsertWithUserJwt(@Nonnull String userJwt,
       @Nullable RequestOptions requestOptions);
@@ -136,8 +137,8 @@ public interface SaaSquatchClient extends Closeable {
 
   /**
    * Get a Map of a user's share links<br>
-   * <a href="https://docs.saasquatch.com/api/methods/#lookup-a-users-share-urls">Link to
-   * official docs</a>
+   * <a href="https://docs.saasquatch.com/api/methods/#lookup-a-users-share-urls">Link to official
+   * docs</a>
    */
   Publisher<JsonObjectApiResponse> getUserShareLinks(@Nonnull GetUserLinkInput getUserLinkInput,
       @Nullable RequestOptions requestOptions);
@@ -145,8 +146,7 @@ public interface SaaSquatchClient extends Closeable {
   /**
    * Log a user event.<br> By default, the result of the response can be unmarshalled to {@link
    * UserEventResult}.<br>
-   * <a href="https://docs.saasquatch.com/api/methods/#trackEvent">Link to official
-   * docs</a>
+   * <a href="https://docs.saasquatch.com/api/methods/#trackEvent">Link to official docs</a>
    */
   Publisher<JsonObjectApiResponse> logUserEvent(@Nonnull UserEventInput userEventInput,
       @Nullable RequestOptions requestOptions);
@@ -154,20 +154,90 @@ public interface SaaSquatchClient extends Closeable {
   /**
    * Log a user event.<br> By default, the result of the response can be unmarshalled to {@link
    * UserEventResult}.<br>
-   * <a href="https://docs.saasquatch.com/api/methods/#trackEvent">Link to official
-   * docs</a>
+   * <a href="https://docs.saasquatch.com/api/methods/#trackEvent">Link to official docs</a>
    */
   Publisher<JsonObjectApiResponse> logUserEvent(@Nonnull Map<String, Object> userEventInput,
       @Nullable RequestOptions requestOptions);
 
   /**
    * Apply a referral code.<br>
-   * <a href="https://docs.saasquatch.com/api/methods/#open_apply_code">Link to official
+   * <a href="https://docs.saasquatch.com/api/methods/#open_apply_code">Link to official docs</a>
+   *
+   * @deprecated Use {@link #applyReferralCode(ApplyReferralCodeInput, RequestOptions)} instead.
+   * This beta method will be removed in a future release.
+   */
+  @Beta
+  @Deprecated
+  default Publisher<JsonObjectApiResponse> applyReferralCode(@Nonnull String accountId,
+      @Nonnull String userId, @Nonnull String referralCode,
+      @Nullable RequestOptions requestOptions) {
+    return applyReferralCode(
+        ApplyReferralCodeInput.newBuilder().setAccountId(accountId).setUserId(userId)
+            .setReferralCode(referralCode).build(),
+        requestOptions);
+  }
+
+  /**
+   * Apply a referral code.<br>
+   * <a href="https://docs.saasquatch.com/api/methods/#open_apply_code">Link to official docs</a>
+   */
+  @Beta
+  Publisher<JsonObjectApiResponse> applyReferralCode(
+      @Nonnull ApplyReferralCodeInput applyReferralCodeInput,
+      @Nullable RequestOptions requestOptions);
+
+  /**
+   * Validate and get the basic info of a referral code.<br>
+   * <a href="https://docs.saasquatch.com/api/methods/#open_validate_code">Link to official
    * docs</a>
    */
   @Beta
-  Publisher<JsonObjectApiResponse> applyReferralCode(@Nonnull String accountId,
-      @Nonnull String userId, @Nonnull String referralCode,
+  Publisher<JsonObjectApiResponse> validateReferralCode(@Nonnull String referralCode,
+      @Nullable RequestOptions requestOptions);
+
+  /**
+   * Delete a user.<br>
+   * <a href="https://docs.saasquatch.com/api/methods/#open_delete_user">Link to official docs</a>
+   */
+  Publisher<StatusOnlyApiResponse> deleteUser(@Nonnull DeleteUserInput deleteUserInput,
+      @Nullable RequestOptions requestOptions);
+
+  /**
+   * Delete an account.<br>
+   * <a href="https://docs.saasquatch.com/api/methods/#open_delete_account">Link to official
+   * docs</a>
+   */
+  Publisher<StatusOnlyApiResponse> deleteAccount(@Nonnull DeleteAccountInput deleteAccountInput,
+      @Nullable RequestOptions requestOptions);
+
+  /**
+   * Block a user.<br>
+   * <a href="https://docs.saasquatch.com/api/methods/#block_user">Link to official docs</a>
+   */
+  Publisher<JsonObjectApiResponse> blockUser(@Nonnull String accountId, @Nonnull String userId,
+      @Nullable RequestOptions requestOptions);
+
+  /**
+   * Unblock a user.<br>
+   * <a href="https://docs.saasquatch.com/api/methods/#unblock_user">Link to official docs</a>
+   */
+  Publisher<JsonObjectApiResponse> unblockUser(@Nonnull String accountId, @Nonnull String userId,
+      @Nullable RequestOptions requestOptions);
+
+  /**
+   * Push a widget loaded analytics event. Note that this method is not a regular public API and is
+   * only supposed to be used by widgets.
+   */
+  Publisher<StatusOnlyApiResponse> pushWidgetLoadedAnalyticsEvent(
+      @Nonnull PushWidgetAnalyticsEventInput pushWidgetAnalyticsEventInput,
+      @Nullable RequestOptions requestOptions);
+
+  /**
+   * Push a widget shared analytics event. Note that this method is not a regular public API and is
+   * only supposed to be used by widgets.
+   */
+  Publisher<StatusOnlyApiResponse> pushWidgetSharedAnalyticsEvent(
+      @Nonnull PushWidgetAnalyticsEventInput pushWidgetAnalyticsEventInput,
       @Nullable RequestOptions requestOptions);
 
 }
