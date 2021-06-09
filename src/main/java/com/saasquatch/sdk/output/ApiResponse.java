@@ -14,8 +14,6 @@ import javax.annotation.Nullable;
 @NoExternalImpl
 public abstract class ApiResponse<T> {
 
-  // Lazy init. Not part of the lazy init of data and error, since those depend on bodyText.
-  private String bodyText;
   private final SaaSquatchHttpResponse httpResponse;
   private final boolean hasDataOverride;
   private final T dataOverride;
