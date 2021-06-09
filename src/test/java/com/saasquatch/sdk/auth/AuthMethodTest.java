@@ -5,12 +5,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.apache.hc.client5.http.async.methods.SimpleHttpRequest;
-import org.apache.hc.client5.http.async.methods.SimpleHttpRequests;
+import org.apache.hc.client5.http.async.methods.SimpleRequestBuilder;
 import org.apache.hc.core5.http.HttpHeaders;
 import org.junit.jupiter.api.Test;
 
 public class AuthMethodTest {
 
+  @SuppressWarnings("ConstantConditions")
   @Test
   public void testValidation() {
     assertThrows(NullPointerException.class, () -> AuthMethod.ofTenantApiKey(null));
@@ -31,7 +32,7 @@ public class AuthMethodTest {
 
   @Test
   public void testImpl() {
-    final SimpleHttpRequest request = SimpleHttpRequests.get("http://example.com");
+    final SimpleHttpRequest request = SimpleRequestBuilder.get("http://example.com").build();
     {
       final AuthMethod basicAuth = AuthMethod.ofBasic("foo", "bar");
       basicAuth.mutateRequest(request);
