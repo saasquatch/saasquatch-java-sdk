@@ -45,7 +45,6 @@ import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import org.apache.hc.client5.http.async.methods.SimpleHttpRequest;
 import org.apache.hc.client5.http.async.methods.SimpleRequestBuilder;
 import org.apache.hc.client5.http.config.RequestConfig;
 import org.apache.hc.client5.http.impl.async.CloseableHttpAsyncClient;
@@ -123,7 +122,7 @@ final class SaaSquatchClientImpl implements SaaSquatchClient {
       AuthMethod.ofJwt(userJwt).mutateRequest(requestBuilder);
     }
     setJsonPojoBody(requestBuilder, graphQLInput);
-    return executeRequest(requestBuilder.build()).map(GraphQLApiResponse::new);
+    return executeRequest(requestBuilder).map(GraphQLApiResponse::new);
   }
 
   @Override
@@ -164,7 +163,7 @@ final class SaaSquatchClientImpl implements SaaSquatchClient {
     if (userJwt != null) {
       AuthMethod.ofJwt(userJwt).mutateRequest(requestBuilder);
     }
-    return executeRequest(requestBuilder.build());
+    return executeRequest(requestBuilder);
   }
 
   @Override
@@ -283,7 +282,7 @@ final class SaaSquatchClientImpl implements SaaSquatchClient {
       AuthMethod.ofJwt(userJwt).mutateRequest(requestBuilder);
     }
     setJsonPojoBody(requestBuilder, body);
-    return executeRequest(requestBuilder.build());
+    return executeRequest(requestBuilder);
   }
 
   @Override
@@ -302,7 +301,7 @@ final class SaaSquatchClientImpl implements SaaSquatchClient {
     }
     final SimpleRequestBuilder requestBuilder = SimpleRequestBuilder.get(uriBuilder.toString());
     mutateRequest(requestBuilder, requestOptions);
-    return executeRequest(requestBuilder.build()).map(JsonObjectApiResponse::new);
+    return executeRequest(requestBuilder).map(JsonObjectApiResponse::new);
   }
 
   @Override
@@ -329,7 +328,7 @@ final class SaaSquatchClientImpl implements SaaSquatchClient {
     final SimpleRequestBuilder requestBuilder = SimpleRequestBuilder.post(uriBuilder.toString());
     mutateRequest(requestBuilder, requestOptions);
     setJsonPojoBody(requestBuilder, body);
-    return executeRequest(requestBuilder.build()).map(JsonObjectApiResponse::new);
+    return executeRequest(requestBuilder).map(JsonObjectApiResponse::new);
   }
 
   @Override
@@ -346,7 +345,7 @@ final class SaaSquatchClientImpl implements SaaSquatchClient {
     final SimpleRequestBuilder requestBuilder = SimpleRequestBuilder.post(uriBuilder.toString());
     mutateRequest(requestBuilder, requestOptions);
     setJsonPojoBody(requestBuilder, Collections.emptyMap());
-    return executeRequest(requestBuilder.build()).map(JsonObjectApiResponse::new);
+    return executeRequest(requestBuilder).map(JsonObjectApiResponse::new);
   }
 
   @Override
@@ -358,7 +357,7 @@ final class SaaSquatchClientImpl implements SaaSquatchClient {
     mutateUri(uriBuilder, pathSegments, requestOptions);
     final SimpleRequestBuilder requestBuilder = SimpleRequestBuilder.get(uriBuilder.toString());
     mutateRequest(requestBuilder, requestOptions);
-    return executeRequest(requestBuilder.build()).map(JsonObjectApiResponse::new);
+    return executeRequest(requestBuilder).map(JsonObjectApiResponse::new);
   }
 
   @Override
@@ -389,7 +388,7 @@ final class SaaSquatchClientImpl implements SaaSquatchClient {
     }
     final SimpleRequestBuilder requestBuilder = SimpleRequestBuilder.delete(uriBuilder.toString());
     mutateRequest(requestBuilder, requestOptions);
-    return executeRequest(requestBuilder.build()).map(StatusOnlyApiResponse::new);
+    return executeRequest(requestBuilder).map(StatusOnlyApiResponse::new);
   }
 
   @Override
@@ -413,7 +412,7 @@ final class SaaSquatchClientImpl implements SaaSquatchClient {
     mutateUri(uriBuilder, pathSegments, requestOptions);
     final SimpleRequestBuilder requestBuilder = SimpleRequestBuilder.post(uriBuilder.toString());
     mutateRequest(requestBuilder, requestOptions);
-    return executeRequest(requestBuilder.build()).map(JsonObjectApiResponse::new);
+    return executeRequest(requestBuilder).map(JsonObjectApiResponse::new);
   }
 
   @Override
@@ -458,7 +457,7 @@ final class SaaSquatchClientImpl implements SaaSquatchClient {
     final SimpleRequestBuilder requestBuilder = SimpleRequestBuilder.post(uriBuilder.toString());
     mutateRequest(requestBuilder, requestOptions);
     setJsonPojoBody(requestBuilder, Collections.emptyMap());
-    return executeRequest(requestBuilder.build()).map(StatusOnlyApiResponse::new);
+    return executeRequest(requestBuilder).map(StatusOnlyApiResponse::new);
   }
 
   ////////////////////////////////////////////////////////////////////////////////
@@ -565,8 +564,9 @@ final class SaaSquatchClientImpl implements SaaSquatchClient {
     requestBuilder.setBody(jsonStr, ContentType.APPLICATION_JSON);
   }
 
-  private Flowable<SaaSquatchHttpResponse> executeRequest(@Nonnull SimpleHttpRequest request) {
-    return InternalUtils.executeRequest(httpAsyncClient, request)
+  private Flowable<SaaSquatchHttpResponse> executeRequest(
+      @Nonnull SimpleRequestBuilder requestBuilder) {
+    return InternalUtils.executeRequest(httpAsyncClient, requestBuilder.build())
         .onErrorResumeNext(t -> Flowable.error(new SaaSquatchIOException(t.getMessage(), t)))
         .<SaaSquatchHttpResponse>map(Client5SaaSquatchHttpResponse::new)
         .doOnNext(this::httpResponseToPossibleException);
