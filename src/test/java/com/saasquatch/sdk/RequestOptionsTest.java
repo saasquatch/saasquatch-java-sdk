@@ -8,7 +8,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.saasquatch.sdk.auth.AuthMethod;
 import java.util.concurrent.TimeUnit;
-import org.apache.hc.client5.http.async.methods.SimpleHttpRequest;
 import org.apache.hc.client5.http.async.methods.SimpleRequestBuilder;
 import org.apache.hc.core5.net.URIBuilder;
 import org.junit.jupiter.api.Test;
@@ -61,11 +60,11 @@ public class RequestOptionsTest {
   public void testRequestMutation() throws Exception {
     final RequestOptions requestOptions =
         RequestOptions.newBuilder().addHeader("a", "b").addQueryParam("c", "d").build();
-    final SimpleHttpRequest request =
-        SimpleRequestBuilder.get("http://app.referralsaasquatch.com").build();
-    assertNull(request.getFirstHeader("a"));
-    requestOptions.mutateRequest(request);
-    assertEquals("b", request.getFirstHeader("a").getValue());
+    final SimpleRequestBuilder requestBuilder =
+        SimpleRequestBuilder.get("http://app.referralsaasquatch.com");
+    assertNull(requestBuilder.getFirstHeader("a"));
+    requestOptions.mutateRequest(requestBuilder);
+    assertEquals("b", requestBuilder.getFirstHeader("a").getValue());
     final URIBuilder uriBuilder = new URIBuilder("http://example.com");
     assertTrue(uriBuilder.getQueryParams().isEmpty());
     requestOptions.mutateUri(uriBuilder);

@@ -46,7 +46,7 @@ import java.util.concurrent.TimeUnit;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.apache.hc.client5.http.async.methods.SimpleHttpRequest;
-import org.apache.hc.client5.http.async.methods.SimpleHttpRequests;
+import org.apache.hc.client5.http.async.methods.SimpleRequestBuilder;
 import org.apache.hc.client5.http.config.RequestConfig;
 import org.apache.hc.client5.http.impl.async.CloseableHttpAsyncClient;
 import org.apache.hc.client5.http.impl.async.HttpAsyncClients;
@@ -117,13 +117,13 @@ final class SaaSquatchClientImpl implements SaaSquatchClient {
     final List<String> pathSegments = baseTenantApiPathSegments(requestOptions);
     pathSegments.add("graphql");
     mutateUri(uriBuilder, pathSegments, requestOptions);
-    final SimpleHttpRequest request = SimpleHttpRequests.post(uriBuilder.toString());
-    mutateRequest(request, requestOptions);
+    final SimpleRequestBuilder requestBuilder = SimpleRequestBuilder.post(uriBuilder.toString());
+    mutateRequest(requestBuilder, requestOptions);
     if (userJwt != null) {
-      AuthMethod.ofJwt(userJwt).mutateRequest(request);
+      AuthMethod.ofJwt(userJwt).mutateRequest(requestBuilder);
     }
-    setJsonPojoBody(request, graphQLInput);
-    return executeRequest(request).map(GraphQLApiResponse::new);
+    setJsonPojoBody(requestBuilder, graphQLInput);
+    return executeRequest(requestBuilder.build()).map(GraphQLApiResponse::new);
   }
 
   @Override
@@ -159,12 +159,12 @@ final class SaaSquatchClientImpl implements SaaSquatchClient {
     if (widgetType != null) {
       uriBuilder.setParameter("widgetType", widgetType.getWidgetType());
     }
-    final SimpleHttpRequest request = SimpleHttpRequests.get(uriBuilder.toString());
-    mutateRequest(request, requestOptions);
+    final SimpleRequestBuilder requestBuilder = SimpleRequestBuilder.get(uriBuilder.toString());
+    mutateRequest(requestBuilder, requestOptions);
     if (userJwt != null) {
-      AuthMethod.ofJwt(userJwt).mutateRequest(request);
+      AuthMethod.ofJwt(userJwt).mutateRequest(requestBuilder);
     }
-    return executeRequest(request);
+    return executeRequest(requestBuilder.build());
   }
 
   @Override
@@ -277,13 +277,13 @@ final class SaaSquatchClientImpl implements SaaSquatchClient {
     if (engagementMedium != null) {
       uriBuilder.setParameter("engagementMedium", engagementMedium);
     }
-    final SimpleHttpRequest request = SimpleHttpRequests.put(uriBuilder.toString());
-    mutateRequest(request, requestOptions);
+    final SimpleRequestBuilder requestBuilder = SimpleRequestBuilder.put(uriBuilder.toString());
+    mutateRequest(requestBuilder, requestOptions);
     if (userJwt != null) {
-      AuthMethod.ofJwt(userJwt).mutateRequest(request);
+      AuthMethod.ofJwt(userJwt).mutateRequest(requestBuilder);
     }
-    setJsonPojoBody(request, body);
-    return executeRequest(request);
+    setJsonPojoBody(requestBuilder, body);
+    return executeRequest(requestBuilder.build());
   }
 
   @Override
@@ -300,9 +300,9 @@ final class SaaSquatchClientImpl implements SaaSquatchClient {
     if (getUserLinkInput.getEngagementMedium() != null) {
       uriBuilder.setParameter("engagementMedium", getUserLinkInput.getEngagementMedium());
     }
-    final SimpleHttpRequest request = SimpleHttpRequests.get(uriBuilder.toString());
-    mutateRequest(request, requestOptions);
-    return executeRequest(request).map(JsonObjectApiResponse::new);
+    final SimpleRequestBuilder requestBuilder = SimpleRequestBuilder.get(uriBuilder.toString());
+    mutateRequest(requestBuilder, requestOptions);
+    return executeRequest(requestBuilder.build()).map(JsonObjectApiResponse::new);
   }
 
   @Override
@@ -326,10 +326,10 @@ final class SaaSquatchClientImpl implements SaaSquatchClient {
     final List<String> pathSegments = baseTenantApiPathSegments(requestOptions);
     Collections.addAll(pathSegments, "open", "account", accountId, "user", userId, "events");
     mutateUri(uriBuilder, pathSegments, requestOptions);
-    final SimpleHttpRequest request = SimpleHttpRequests.post(uriBuilder.toString());
-    mutateRequest(request, requestOptions);
-    setJsonPojoBody(request, body);
-    return executeRequest(request).map(JsonObjectApiResponse::new);
+    final SimpleRequestBuilder requestBuilder = SimpleRequestBuilder.post(uriBuilder.toString());
+    mutateRequest(requestBuilder, requestOptions);
+    setJsonPojoBody(requestBuilder, body);
+    return executeRequest(requestBuilder.build()).map(JsonObjectApiResponse::new);
   }
 
   @Override
@@ -343,10 +343,10 @@ final class SaaSquatchClientImpl implements SaaSquatchClient {
         "account", applyReferralCodeInput.getAccountId(), "user",
         applyReferralCodeInput.getUserId());
     mutateUri(uriBuilder, pathSegments, requestOptions);
-    final SimpleHttpRequest request = SimpleHttpRequests.post(uriBuilder.toString());
-    mutateRequest(request, requestOptions);
-    setJsonPojoBody(request, Collections.emptyMap());
-    return executeRequest(request).map(JsonObjectApiResponse::new);
+    final SimpleRequestBuilder requestBuilder = SimpleRequestBuilder.post(uriBuilder.toString());
+    mutateRequest(requestBuilder, requestOptions);
+    setJsonPojoBody(requestBuilder, Collections.emptyMap());
+    return executeRequest(requestBuilder.build()).map(JsonObjectApiResponse::new);
   }
 
   @Override
@@ -356,9 +356,9 @@ final class SaaSquatchClientImpl implements SaaSquatchClient {
     final List<String> pathSegments = baseTenantApiPathSegments(requestOptions);
     Collections.addAll(pathSegments, "open", "code", requireNotBlank(referralCode, "referralCode"));
     mutateUri(uriBuilder, pathSegments, requestOptions);
-    final SimpleHttpRequest request = SimpleHttpRequests.get(uriBuilder.toString());
-    mutateRequest(request, requestOptions);
-    return executeRequest(request).map(JsonObjectApiResponse::new);
+    final SimpleRequestBuilder requestBuilder = SimpleRequestBuilder.get(uriBuilder.toString());
+    mutateRequest(requestBuilder, requestOptions);
+    return executeRequest(requestBuilder.build()).map(JsonObjectApiResponse::new);
   }
 
   @Override
@@ -387,9 +387,9 @@ final class SaaSquatchClientImpl implements SaaSquatchClient {
     if (doNotTrack) {
       uriBuilder.setParameter("doNotTrack", Boolean.TRUE.toString());
     }
-    final SimpleHttpRequest request = SimpleHttpRequests.delete(uriBuilder.toString());
-    mutateRequest(request, requestOptions);
-    return executeRequest(request).map(StatusOnlyApiResponse::new);
+    final SimpleRequestBuilder requestBuilder = SimpleRequestBuilder.delete(uriBuilder.toString());
+    mutateRequest(requestBuilder, requestOptions);
+    return executeRequest(requestBuilder.build()).map(StatusOnlyApiResponse::new);
   }
 
   @Override
@@ -411,9 +411,9 @@ final class SaaSquatchClientImpl implements SaaSquatchClient {
     Collections.addAll(pathSegments, "account", requireNotBlank(accountId, "accountId"), "user",
         requireNotBlank(userId, "userId"), block ? "block" : "unblock");
     mutateUri(uriBuilder, pathSegments, requestOptions);
-    final SimpleHttpRequest request = SimpleHttpRequests.post(uriBuilder.toString());
-    mutateRequest(request, requestOptions);
-    return executeRequest(request).map(JsonObjectApiResponse::new);
+    final SimpleRequestBuilder requestBuilder = SimpleRequestBuilder.post(uriBuilder.toString());
+    mutateRequest(requestBuilder, requestOptions);
+    return executeRequest(requestBuilder.build()).map(JsonObjectApiResponse::new);
   }
 
   @Override
@@ -455,10 +455,10 @@ final class SaaSquatchClientImpl implements SaaSquatchClient {
       }
       uriBuilder.setParameter("shareMedium", pushWidgetAnalyticsEventInput.getShareMedium());
     }
-    final SimpleHttpRequest request = SimpleHttpRequests.post(uriBuilder.toString());
-    mutateRequest(request, requestOptions);
-    setJsonPojoBody(request, Collections.emptyMap());
-    return executeRequest(request).map(StatusOnlyApiResponse::new);
+    final SimpleRequestBuilder requestBuilder = SimpleRequestBuilder.post(uriBuilder.toString());
+    mutateRequest(requestBuilder, requestOptions);
+    setJsonPojoBody(requestBuilder, Collections.emptyMap());
+    return executeRequest(requestBuilder.build()).map(StatusOnlyApiResponse::new);
   }
 
   ////////////////////////////////////////////////////////////////////////////////
@@ -479,12 +479,12 @@ final class SaaSquatchClientImpl implements SaaSquatchClient {
   /**
    * All the common request mutations happen here
    */
-  private void mutateRequest(@Nonnull SimpleHttpRequest request,
+  private void mutateRequest(@Nonnull SimpleRequestBuilder requestBuilder,
       @Nullable RequestOptions requestOptions) {
     if (requestOptions != null) {
-      requestOptions.mutateRequest(request);
+      requestOptions.mutateRequest(requestBuilder);
     }
-    getAuthMethod(requestOptions).mutateRequest(request);
+    getAuthMethod(requestOptions).mutateRequest(requestBuilder);
     final int requestTimeoutMillis = defaultIfNull(
         requestOptions == null ? null : requestOptions.getRequestTimeoutMillis(),
         clientOptions.getRequestTimeoutMillis());
@@ -494,12 +494,12 @@ final class SaaSquatchClientImpl implements SaaSquatchClient {
     final boolean contentCompressionEnabled = defaultIfNull(
         requestOptions == null ? null : requestOptions.getContentCompressionEnabled(),
         clientOptions.isContentCompressionEnabled());
-    request.setConfig(RequestConfig.custom()
+    requestBuilder.setRequestConfig(RequestConfig.custom()
         .setResponseTimeout(requestTimeoutMillis, TimeUnit.MILLISECONDS)
         .setConnectTimeout(connectTimeoutMillis, TimeUnit.MILLISECONDS)
         .build());
     if (contentCompressionEnabled) {
-      request.setHeader(HttpHeaders.ACCEPT_ENCODING, GZIP);
+      requestBuilder.setHeader(HttpHeaders.ACCEPT_ENCODING, GZIP);
     }
   }
 
@@ -557,12 +557,12 @@ final class SaaSquatchClientImpl implements SaaSquatchClient {
     return pathSegments;
   }
 
-  private void setJsonPojoBody(@Nonnull SimpleHttpRequest request, Object body) {
-    setJsonStringBody(request, gson.toJson(body));
+  private void setJsonPojoBody(@Nonnull SimpleRequestBuilder requestBuilder, Object body) {
+    setJsonStringBody(requestBuilder, gson.toJson(body));
   }
 
-  private void setJsonStringBody(@Nonnull SimpleHttpRequest request, String jsonStr) {
-    request.setBody(jsonStr, ContentType.APPLICATION_JSON);
+  private void setJsonStringBody(@Nonnull SimpleRequestBuilder requestBuilder, String jsonStr) {
+    requestBuilder.setBody(jsonStr, ContentType.APPLICATION_JSON);
   }
 
   private Flowable<SaaSquatchHttpResponse> executeRequest(@Nonnull SimpleHttpRequest request) {

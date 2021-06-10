@@ -13,7 +13,7 @@ import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import org.apache.hc.client5.http.async.methods.SimpleHttpRequest;
+import org.apache.hc.client5.http.async.methods.SimpleRequestBuilder;
 import org.apache.hc.core5.http.HttpHeaders;
 import org.apache.hc.core5.net.URIBuilder;
 import com.saasquatch.sdk.annotations.Beta;
@@ -89,9 +89,9 @@ public final class RequestOptions {
     }
   }
 
-  void mutateRequest(@Nonnull SimpleHttpRequest request) {
+  void mutateRequest(@Nonnull SimpleRequestBuilder requestBuilder) {
     for (final Map.Entry<String, String> e : headers) {
-      request.addHeader(e.getKey(), e.getValue());
+      requestBuilder.addHeader(e.getKey(), e.getValue());
     }
   }
 
