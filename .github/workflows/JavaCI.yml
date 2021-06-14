@@ -9,5 +9,7 @@ jobs:
         with:
           java-version: "8"
           distribution: adopt
-      - name: Run the Maven verify phase
-        run: mvn --batch-mode --update-snapshots verify
+      - name: Maven Package
+        run: mvn -B -U clean package -DskipTests
+      - name: Maven Verify
+        run: mvn -B -U verify
