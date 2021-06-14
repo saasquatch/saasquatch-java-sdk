@@ -1,7 +1,7 @@
 # SaaSquatch Java SDK
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![Build Status](https://travis-ci.org/saasquatch/saasquatch-java-sdk.svg?branch=master)](https://travis-ci.org/saasquatch/saasquatch-java-sdk)
+[![JavaCI](https://github.com/saasquatch/saasquatch-java-sdk/actions/workflows/JavaCI.yml/badge.svg?branch=master)](https://github.com/saasquatch/saasquatch-java-sdk/actions/workflows/JavaCI.yml)
 [![](https://jitpack.io/v/saasquatch/saasquatch-java-sdk.svg)](https://jitpack.io/#saasquatch/saasquatch-java-sdk)
 
 SaaSquatch SDK for Java
