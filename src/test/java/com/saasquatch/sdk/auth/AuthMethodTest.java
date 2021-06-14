@@ -4,13 +4,14 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import org.apache.hc.client5.http.async.methods.SimpleHttpRequest;
-import org.apache.hc.client5.http.async.methods.SimpleHttpRequests;
+
+import org.apache.hc.client5.http.async.methods.SimpleRequestBuilder;
 import org.apache.hc.core5.http.HttpHeaders;
 import org.junit.jupiter.api.Test;
 
 public class AuthMethodTest {
 
+  @SuppressWarnings("ConstantConditions")
   @Test
   public void testValidation() {
     assertThrows(NullPointerException.class, () -> AuthMethod.ofTenantApiKey(null));
@@ -31,22 +32,24 @@ public class AuthMethodTest {
 
   @Test
   public void testImpl() {
-    final SimpleHttpRequest request = SimpleHttpRequests.get("http://example.com");
+    final SimpleRequestBuilder requestBuilder = SimpleRequestBuilder.get("http://example.com");
     {
       final AuthMethod basicAuth = AuthMethod.ofBasic("foo", "bar");
-      basicAuth.mutateRequest(request);
+      basicAuth.mutateRequest(requestBuilder);
       assertEquals("Basic Zm9vOmJhcg==",
-          request.getFirstHeader(HttpHeaders.AUTHORIZATION).getValue());
+          requestBuilder.getFirstHeader(HttpHeaders.AUTHORIZATION).getValue());
     }
     {
       final AuthMethod bearerAuth = AuthMethod.ofBearer("foobar");
-      bearerAuth.mutateRequest(request);
-      assertEquals("Bearer foobar", request.getFirstHeader(HttpHeaders.AUTHORIZATION).getValue());
+      bearerAuth.mutateRequest(requestBuilder);
+      assertEquals("Bearer foobar",
+          requestBuilder.getFirstHeader(HttpHeaders.AUTHORIZATION).getValue());
     }
     {
       final AuthMethod bearerAuth = AuthMethod.ofJwt("foobar2");
-      bearerAuth.mutateRequest(request);
-      assertEquals("Bearer foobar2", request.getFirstHeader(HttpHeaders.AUTHORIZATION).getValue());
+      bearerAuth.mutateRequest(requestBuilder);
+      assertEquals("Bearer foobar2",
+          requestBuilder.getFirstHeader(HttpHeaders.AUTHORIZATION).getValue());
     }
   }
 

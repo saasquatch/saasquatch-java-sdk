@@ -38,13 +38,4 @@ public interface GraphQLQueries {
       + "  }\n"
       + "}";
 
-  String CREATE_USER_ANALYTICS_EVENT = ""
-      + "mutation createUserAnalyticsEvent(\n"
-      + "  $eventMeta: UserAnalyticsEvent!\n"
-      + ") {\n"
-      + "  createUserAnalyticsEvent(\n"
-      + "    eventMeta: $eventMeta\n"
-      + "  )\n"
-      + "}";
-
 }

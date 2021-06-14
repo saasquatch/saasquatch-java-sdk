@@ -1,6 +1,6 @@
 package com.saasquatch.sdk.auth;
 
-import org.apache.hc.client5.http.async.methods.SimpleHttpRequest;
+import org.apache.hc.client5.http.async.methods.SimpleRequestBuilder;
 import org.apache.hc.core5.http.HttpHeaders;
 
 final class BearerAuth implements AuthMethod {
@@ -12,8 +12,8 @@ final class BearerAuth implements AuthMethod {
   }
 
   @Override
-  public void mutateRequest(SimpleHttpRequest request) {
-    request.setHeader(HttpHeaders.AUTHORIZATION, "Bearer " + token);
+  public void mutateRequest(SimpleRequestBuilder requestBuilder) {
+    requestBuilder.setHeader(HttpHeaders.AUTHORIZATION, "Bearer " + token);
   }
 
 }

@@ -32,8 +32,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.PropertyPermission;
 import org.apache.hc.client5.http.async.methods.SimpleHttpRequest;
-import org.apache.hc.client5.http.async.methods.SimpleHttpRequests;
 import org.apache.hc.client5.http.async.methods.SimpleHttpResponse;
+import org.apache.hc.client5.http.async.methods.SimpleRequestBuilder;
 import org.apache.hc.client5.http.impl.async.CloseableHttpAsyncClient;
 import org.apache.hc.client5.http.impl.async.HttpAsyncClients;
 import org.junit.jupiter.api.Test;
@@ -76,19 +76,20 @@ public class InternalUtilsTest {
     assertEquals(new SimpleEntry<>(k, v), entryOf(k, v));
   }
 
+  @SuppressWarnings("ConstantConditions")
   @Test
   public void testRxExecuteRequestWorks() throws Exception {
     try (CloseableHttpAsyncClient httpAsyncClient = HttpAsyncClients.createDefault()) {
       httpAsyncClient.start();
       {
-        final SimpleHttpRequest request = SimpleHttpRequests.get("https://example.com");
+        final SimpleHttpRequest request = SimpleRequestBuilder.get("https://example.com").build();
         final SimpleHttpResponse response = Flowable
             .fromPublisher(InternalUtils.executeRequest(httpAsyncClient, request)).blockingSingle();
         assertEquals(200, response.getCode());
       }
       // Test Reactive Streams implementation agnostic
       {
-        final SimpleHttpRequest request = SimpleHttpRequests.get("https://example.com");
+        final SimpleHttpRequest request = SimpleRequestBuilder.get("https://example.com").build();
         final SimpleHttpResponse response =
             Mono.from(InternalUtils.executeRequest(httpAsyncClient, request)).block();
         assertEquals(200, response.getCode());
@@ -96,6 +97,7 @@ public class InternalUtilsTest {
     }
   }
 
+  @SuppressWarnings("ArraysAsListWithZeroOrOneArgument")
   @Test
   public void testUnmodifiableList() {
     {
@@ -139,6 +141,7 @@ public class InternalUtilsTest {
       assertSame(o1, defaultIfNull(o1, o2));
       assertSame(o1, defaultIfNull(o1, null));
       assertSame(o2, defaultIfNull(null, o2));
+      //noinspection ConstantConditions
       assertNull(defaultIfNull(null, null));
     }
   }
@@ -161,6 +164,7 @@ public class InternalUtilsTest {
 
   @Test
   public void testGetJwtPayload() {
+    //noinspection ConstantConditions
     assertThrows(NullPointerException.class, () -> getJwtPayload(null));
     assertThrows(IllegalArgumentException.class, () -> getJwtPayload("foo"));
     assertThrows(IllegalArgumentException.class, () -> getJwtPayload("a.b.c"));

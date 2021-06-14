@@ -7,7 +7,7 @@ import com.saasquatch.sdk.annotations.Internal;
 import com.saasquatch.sdk.annotations.NoExternalImpl;
 import java.util.Objects;
 import javax.annotation.Nonnull;
-import org.apache.hc.client5.http.async.methods.SimpleHttpRequest;
+import org.apache.hc.client5.http.async.methods.SimpleRequestBuilder;
 
 /**
  * Method to authenticate with SaaSquatch
@@ -18,7 +18,7 @@ import org.apache.hc.client5.http.async.methods.SimpleHttpRequest;
 public interface AuthMethod {
 
   @Internal
-  void mutateRequest(SimpleHttpRequest request);
+  void mutateRequest(SimpleRequestBuilder requestBuilder);
 
   /**
    * No auth

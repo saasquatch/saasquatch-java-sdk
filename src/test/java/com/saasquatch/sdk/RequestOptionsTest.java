@@ -8,13 +8,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.saasquatch.sdk.auth.AuthMethod;
 import java.util.concurrent.TimeUnit;
-import org.apache.hc.client5.http.async.methods.SimpleHttpRequest;
-import org.apache.hc.client5.http.async.methods.SimpleHttpRequests;
+import org.apache.hc.client5.http.async.methods.SimpleRequestBuilder;
 import org.apache.hc.core5.net.URIBuilder;
 import org.junit.jupiter.api.Test;
 
 public class RequestOptionsTest {
 
+  @SuppressWarnings("ConstantConditions")
   @Test
   public void testNullOrInvalid() {
     final RequestOptions.Builder builder = RequestOptions.newBuilder();
@@ -37,6 +37,7 @@ public class RequestOptionsTest {
     assertThrows(IllegalArgumentException.class, () -> builder.setTenantAlias("\r"));
   }
 
+  @SuppressWarnings("SpellCheckingInspection")
   @Test
   public void testBasic() {
     final RequestOptions requestOptions =
@@ -49,6 +50,7 @@ public class RequestOptionsTest {
     assertEquals(500, requestOptions.getConnectTimeoutMillis());
     assertEquals(5000, requestOptions.getRequestTimeoutMillis());
     assertEquals("aaaaaaaaaaaaaaaa", requestOptions.getTenantAlias());
+    assertNotNull(requestOptions.getContentCompressionEnabled());
     assertTrue(requestOptions.getContentCompressionEnabled());
     assertNull(RequestOptions.newBuilder().build().getConnectTimeoutMillis());
     assertNull(RequestOptions.newBuilder().build().getContentCompressionEnabled());
@@ -58,10 +60,11 @@ public class RequestOptionsTest {
   public void testRequestMutation() throws Exception {
     final RequestOptions requestOptions =
         RequestOptions.newBuilder().addHeader("a", "b").addQueryParam("c", "d").build();
-    final SimpleHttpRequest request = SimpleHttpRequests.get("http://app.referralsaasquatch.com");
-    assertNull(request.getFirstHeader("a"));
-    requestOptions.mutateRequest(request);
-    assertEquals("b", request.getFirstHeader("a").getValue());
+    final SimpleRequestBuilder requestBuilder =
+        SimpleRequestBuilder.get("http://app.referralsaasquatch.com");
+    assertNull(requestBuilder.getFirstHeader("a"));
+    requestOptions.mutateRequest(requestBuilder);
+    assertEquals("b", requestBuilder.getFirstHeader("a").getValue());
     final URIBuilder uriBuilder = new URIBuilder("http://example.com");
     assertTrue(uriBuilder.getQueryParams().isEmpty());
     requestOptions.mutateUri(uriBuilder);
