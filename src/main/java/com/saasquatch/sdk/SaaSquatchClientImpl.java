@@ -271,7 +271,7 @@ final class SaaSquatchClientImpl implements SaaSquatchClient {
     }
     mutateUri(uriBuilder, pathSegments, requestOptions);
     if (widgetType != null) {
-      uriBuilder.setParameter("widgetType", widgetType.toString());
+      uriBuilder.setParameter("widgetType", widgetType.getWidgetType());
     }
     if (engagementMedium != null) {
       uriBuilder.setParameter("engagementMedium", engagementMedium);
