@@ -188,7 +188,7 @@ public final class RequestOptions {
     }
 
     /**
-     * Convenience method for {@link #addQueryParam(String, String) where you can pass in multiple
+     * Convenience method for {@link #addQueryParam(String, String)} where you can pass in multiple
      * query parameters
      */
     @Beta
