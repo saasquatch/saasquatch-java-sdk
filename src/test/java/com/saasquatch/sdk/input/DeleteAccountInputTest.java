@@ -1,9 +1,9 @@
 package com.saasquatch.sdk.input;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
@@ -17,10 +17,9 @@ public class DeleteAccountInputTest {
 
   @Test
   public void testBasic() {
-    assertFalse(
-        DeleteAccountInput.newBuilder().setAccountId("a").build().isDoNotTrack());
-    assertTrue(DeleteAccountInput.newBuilder().setAccountId("a").setDoNotTrack(true).build()
-        .isDoNotTrack());
+    assertNull(DeleteAccountInput.newBuilder().setAccountId("a").build().getDoNotTrack());
+    assertEquals(true, DeleteAccountInput.newBuilder().setAccountId("a").setDoNotTrack(true).build()
+        .getDoNotTrack());
   }
 
 }

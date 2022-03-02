@@ -33,7 +33,7 @@ public final class DeleteAccountInput {
   @Beta
   @Deprecated
   public boolean isDoNotTrack() {
-    return doNotTrack == null ? false : doNotTrack;
+    return doNotTrack != null && doNotTrack;
   }
 
   @Beta

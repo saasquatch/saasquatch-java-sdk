@@ -42,7 +42,7 @@ public final class DeleteUserInput {
    */
   @Beta
   public boolean isDoNotTrack() {
-    return doNotTrack == null ? false : doNotTrack;
+    return doNotTrack != null && doNotTrack;
   }
 
   @Beta
