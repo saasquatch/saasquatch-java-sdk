@@ -4,6 +4,7 @@ import static com.saasquatch.sdk.internal.InternalUtils.requireNotBlank;
 
 import com.saasquatch.sdk.annotations.Beta;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * Input for deleting an account
@@ -14,9 +15,9 @@ import javax.annotation.Nonnull;
 public final class DeleteAccountInput {
 
   private final String accountId;
-  private final boolean doNotTrack;
+  private final Boolean doNotTrack;
 
-  private DeleteAccountInput(String accountId, boolean doNotTrack) {
+  private DeleteAccountInput(String accountId, Boolean doNotTrack) {
     this.accountId = accountId;
     this.doNotTrack = doNotTrack;
   }
@@ -26,8 +27,18 @@ public final class DeleteAccountInput {
     return accountId;
   }
 
+  /**
+   * @deprecated use {@link #getDoNotTrack()} instead
+   */
   @Beta
+  @Deprecated
   public boolean isDoNotTrack() {
+    return doNotTrack == null ? false : doNotTrack;
+  }
+
+  @Beta
+  @Nullable
+  public Boolean getDoNotTrack() {
     return doNotTrack;
   }
 
@@ -38,7 +49,7 @@ public final class DeleteAccountInput {
   public static final class Builder {
 
     private String accountId;
-    private boolean doNotTrack = false;
+    private Boolean doNotTrack;
 
     private Builder() {}
 

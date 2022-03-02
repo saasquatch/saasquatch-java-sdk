@@ -364,18 +364,19 @@ final class SaaSquatchClientImpl implements SaaSquatchClient {
   public Publisher<StatusOnlyApiResponse> deleteUser(@Nonnull DeleteUserInput deleteUserInput,
       @Nullable RequestOptions requestOptions) {
     return _deleteUserOrAccount(deleteUserInput.getAccountId(), deleteUserInput.getUserId(),
-        deleteUserInput.isDoNotTrack(), requestOptions);
+        deleteUserInput.getDoNotTrack(), deleteUserInput.getPreserveEmptyAccount(), requestOptions);
   }
 
   @Override
   public Publisher<StatusOnlyApiResponse> deleteAccount(
       @Nonnull DeleteAccountInput deleteAccountInput, @Nullable RequestOptions requestOptions) {
     return _deleteUserOrAccount(deleteAccountInput.getAccountId(), null,
-        deleteAccountInput.isDoNotTrack(), requestOptions);
+        deleteAccountInput.getDoNotTrack(), null, requestOptions);
   }
 
   private Publisher<StatusOnlyApiResponse> _deleteUserOrAccount(@Nonnull String accountId,
-      @Nullable String userId, boolean doNotTrack, @Nullable RequestOptions requestOptions) {
+      @Nullable String userId, @Nullable Boolean doNotTrack, @Nullable Boolean preserveEmptyAccount,
+      @Nullable RequestOptions requestOptions) {
     final URIBuilder uriBuilder = baseUriBuilder(requestOptions);
     final List<String> pathSegments = baseTenantApiPathSegments(requestOptions);
     Collections.addAll(pathSegments, "open", "account", accountId);
@@ -383,8 +384,11 @@ final class SaaSquatchClientImpl implements SaaSquatchClient {
       Collections.addAll(pathSegments, "user", userId);
     }
     mutateUri(uriBuilder, pathSegments, requestOptions);
-    if (doNotTrack) {
-      uriBuilder.setParameter("doNotTrack", Boolean.TRUE.toString());
+    if (doNotTrack != null) {
+      uriBuilder.setParameter("doNotTrack", doNotTrack.toString());
+    }
+    if (preserveEmptyAccount != null) {
+      uriBuilder.setParameter("preserveEmptyAccount", preserveEmptyAccount.toString());
     }
     final SimpleRequestBuilder requestBuilder = SimpleRequestBuilder.delete(uriBuilder.toString());
     mutateRequest(requestBuilder, requestOptions);
