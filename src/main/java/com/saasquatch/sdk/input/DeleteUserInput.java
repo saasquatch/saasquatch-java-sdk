@@ -41,6 +41,7 @@ public final class DeleteUserInput {
    * @deprecated use {@link #getDoNotTrack()} instead
    */
   @Beta
+  @Deprecated
   public boolean isDoNotTrack() {
     return doNotTrack != null && doNotTrack;
   }
