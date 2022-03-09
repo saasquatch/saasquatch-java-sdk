@@ -26,6 +26,10 @@ public class DeleteUserInputTest {
     assertEquals(true,
         DeleteUserInput.newBuilder().setAccountId("a").setUserId("a").setDoNotTrack(true).build()
             .getDoNotTrack());
+    assertEquals(true,
+        DeleteUserInput.newBuilder().setAccountId("a").setUserId("a").setPreserveEmptyAccount(true)
+            .build()
+            .getPreserveEmptyAccount());
   }
 
 }

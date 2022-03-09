@@ -86,7 +86,7 @@ public final class DeleteUserInput {
       return this;
     }
 
-    public Builder setPreserveEmptyAccount(Boolean preserveEmptyAccount) {
+    public Builder setPreserveEmptyAccount(boolean preserveEmptyAccount) {
       this.preserveEmptyAccount = preserveEmptyAccount;
       return this;
     }
