@@ -42,7 +42,7 @@ Add the dependency:
 <dependency>
   <groupId>com.github.saasquatch</groupId>
   <artifactId>saasquatch-java-sdk</artifactId>
-  <version>0.0.3</version>
+  <version>0.0.4</version>
 </dependency>
 ```
 
@@ -50,7 +50,7 @@ Add the dependency:
 
 ```gradle
 dependencies {
-    implementation 'com.github.saasquatch:saasquatch-java-sdk:0.0.3'
+    implementation 'com.github.saasquatch:saasquatch-java-sdk:0.0.4'
 }
 ```
 
