@@ -13,6 +13,7 @@
 - The `@Beta` methods `DeleteUserInput.isDoNotTrack` and `DeleteAccountInput.isDoNotTrack` have been
   deprecated in favour of `DeleteUserInput.getDoNotTrack` and `DeleteAccountInput.getDoNotTrack` and
   will be removed in a future release.
+- Internal dependency version bumps.
 
 ## [0.0.3] - 2021-06-14
 
