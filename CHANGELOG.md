@@ -2,6 +2,16 @@
 
 ## [Unreleased]
 
+## [0.0.5] - 2022-09-23
+
+### Added
+
+- The new `idempotencyKey` field in `UserEventInput`.
+
+### Changed
+
+- Internal dependency version bumps.
+
 ## [0.0.4] - 2022-03-10
 
 ### Added
@@ -36,7 +46,9 @@
 
 ## [0.0.1] - 2021-02-17
 
-[Unreleased]: https://github.com/saasquatch/saasquatch-java-sdk/compare/0.0.4...HEAD
+[Unreleased]: https://github.com/saasquatch/saasquatch-java-sdk/compare/0.0.5...HEAD
+
+[0.0.5]: https://github.com/saasquatch/saasquatch-java-sdk/compare/0.0.4...0.0.5
 
 [0.0.4]: https://github.com/saasquatch/saasquatch-java-sdk/compare/0.0.3...0.0.4
 
