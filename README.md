@@ -153,7 +153,7 @@ Unless explicitly stated otherwise all files in this repository are licensed und
 License boilerplate:
 
 ```
-Copyright 2019 ReferralSaaSquatch.com Inc.
+Copyright 2013 ReferralSaaSquatch.com, Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
