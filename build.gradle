@@ -18,7 +18,7 @@ repositories {
 dependencies {
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
     api 'org.apache.httpcomponents.client5:httpclient5:5.3.1'
-    api 'io.reactivex.rxjava3:rxjava:3.1.8'
+    implementation 'io.reactivex.rxjava3:rxjava:3.1.8'
     api 'com.google.code.gson:gson:2.10.1'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.1'
     testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.10.1'
