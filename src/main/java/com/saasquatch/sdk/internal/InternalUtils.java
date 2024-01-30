@@ -378,7 +378,8 @@ public final class InternalUtils {
       throw new IllegalArgumentException("Invalid JWT");
     }
     final String payloadPart = jwtParts[1];
-    final byte[] payloadBytes = Base64.decodeBase64(payloadPart);
+    // Do not use the overload that takes a String. It does not work on Android.
+    final byte[] payloadBytes = Base64.decodeBase64(payloadPart.getBytes(UTF_8));
     final JsonElement jsonElement = JsonParser.parseString(new String(payloadBytes, UTF_8));
     if (!(jsonElement instanceof JsonObject)) {
       throw new IllegalArgumentException("JWT payload is not a JSON object");
