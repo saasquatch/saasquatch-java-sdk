@@ -1,0 +1,37 @@
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+}
+
+group = 'com.saasquatch'
+version = '1.0-SNAPSHOT'
+
+tasks.compileJava.options.encoding = 'UTF-8'
+tasks.compileTestJava.options.encoding = 'UTF-8'
+tasks.javadoc.options.encoding = 'UTF-8'
+
+repositories {
+    mavenCentral()
+    maven { url = uri('https://jitpack.io') }
+}
+
+dependencies {
+    implementation 'com.google.code.findbugs:jsr305:3.0.2'
+    api 'org.apache.httpcomponents.client5:httpclient5:5.3.1'
+    api 'io.reactivex.rxjava3:rxjava:3.1.8'
+    api 'com.google.code.gson:gson:2.10.1'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.1'
+    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.10.1'
+    testImplementation 'com.google.guava:guava:33.0.0-jre'
+    testImplementation 'io.projectreactor:reactor-core:3.6.2'
+}
+
+tasks.test {
+    useJUnitPlatform()
+}
+
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(8))
+    }
+}
