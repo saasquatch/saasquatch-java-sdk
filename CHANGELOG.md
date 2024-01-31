@@ -2,6 +2,18 @@
 
 ## [Unreleased]
 
+## [0.1.0] - 2024-01-31
+
+### Fixed
+
+- Removed usage of `org.apache.commons.codec.binary.Base64.decodeBase64(byte[])`, which is
+  incompatible with Android.
+
+### Changed
+
+- Switched to Gradle.
+- Internal dependency version bumps.
+
 ## [0.0.5] - 2022-09-23
 
 ### Added
@@ -46,7 +58,9 @@
 
 ## [0.0.1] - 2021-02-17
 
-[Unreleased]: https://github.com/saasquatch/saasquatch-java-sdk/compare/0.0.5...HEAD
+[Unreleased]: https://github.com/saasquatch/saasquatch-java-sdk/compare/0.1.0...HEAD
+
+[0.1.0]: https://github.com/saasquatch/saasquatch-java-sdk/compare/0.0.5...0.1.0
 
 [0.0.5]: https://github.com/saasquatch/saasquatch-java-sdk/compare/0.0.4...0.0.5
 
