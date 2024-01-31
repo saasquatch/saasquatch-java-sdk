@@ -250,8 +250,8 @@ final class SaaSquatchClientImpl implements SaaSquatchClient {
   public Publisher<JsonObjectApiResponse> widgetUpsert(@Nonnull WidgetUpsertInput widgetUpsertInput,
       @Nullable RequestOptions requestOptions) {
     Objects.requireNonNull(widgetUpsertInput, "widgetUpsertInput");
-    return Flowable.fromPublisher(
-        _userUpsert(widgetUpsertInput.getAccountId(), widgetUpsertInput.getUserId(),
+    return Flowable.fromPublisher(_userUpsert(
+            widgetUpsertInput.getAccountId(), widgetUpsertInput.getUserId(),
             widgetUpsertInput.getUserInput(), widgetUpsertInput.getUserJwt(),
             widgetUpsertInput.getWidgetType(), widgetUpsertInput.getEngagementMedium(),
             requestOptions, true))
@@ -491,15 +491,11 @@ final class SaaSquatchClientImpl implements SaaSquatchClient {
     final int requestTimeoutMillis = defaultIfNull(
         requestOptions == null ? null : requestOptions.getRequestTimeoutMillis(),
         clientOptions.getRequestTimeoutMillis());
-    final int connectTimeoutMillis = defaultIfNull(
-        requestOptions == null ? null : requestOptions.getConnectTimeoutMillis(),
-        clientOptions.getConnectTimeoutMillis());
     final boolean contentCompressionEnabled = defaultIfNull(
         requestOptions == null ? null : requestOptions.getContentCompressionEnabled(),
         clientOptions.isContentCompressionEnabled());
     requestBuilder.setRequestConfig(RequestConfig.custom()
         .setResponseTimeout(requestTimeoutMillis, TimeUnit.MILLISECONDS)
-        .setConnectTimeout(connectTimeoutMillis, TimeUnit.MILLISECONDS)
         .build());
     if (contentCompressionEnabled) {
       requestBuilder.setHeader(HttpHeaders.ACCEPT_ENCODING, GZIP);

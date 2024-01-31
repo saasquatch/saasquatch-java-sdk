@@ -74,6 +74,7 @@ public final class RequestOptions {
   }
 
   @Nullable
+  @Deprecated
   Integer getConnectTimeoutMillis() {
     return connectTimeoutMillis;
   }
@@ -132,6 +133,10 @@ public final class RequestOptions {
       return this;
     }
 
+    /**
+     * @deprecated Use {@link #setRequestTimeout(long, TimeUnit)}. This method has no effect.
+     */
+    @Deprecated
     public Builder setConnectTimeout(long duration, @Nonnull TimeUnit timeUnit) {
       this.connectTimeoutMillis = ClientOptions.validateConnectTimeout(duration, timeUnit);
       return this;

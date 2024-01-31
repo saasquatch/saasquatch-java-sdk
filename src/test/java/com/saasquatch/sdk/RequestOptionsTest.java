@@ -43,16 +43,14 @@ public class RequestOptionsTest {
     final RequestOptions requestOptions =
         RequestOptions.newBuilder().setTenantAlias("aaaaaaaaaaaaaaaa")
             .setAuthMethod(AuthMethod.ofTenantApiKey("dfsajkglhrejlghdfslghsd"))
-            .setRequestTimeout(5, TimeUnit.SECONDS).setConnectTimeout(500, TimeUnit.MILLISECONDS)
+            .setRequestTimeout(5, TimeUnit.SECONDS)
             .addHeader("foo", "bar").addHeaders("a", "b", "c", "d").addQueryParam("foo", "bar")
             .addQueryParams("a", "b", "c", "d").setContentCompressionEnabled(true).build();
     assertNotNull(requestOptions.getAuthMethod());
-    assertEquals(500, requestOptions.getConnectTimeoutMillis());
     assertEquals(5000, requestOptions.getRequestTimeoutMillis());
     assertEquals("aaaaaaaaaaaaaaaa", requestOptions.getTenantAlias());
     assertNotNull(requestOptions.getContentCompressionEnabled());
     assertTrue(requestOptions.getContentCompressionEnabled());
-    assertNull(RequestOptions.newBuilder().build().getConnectTimeoutMillis());
     assertNull(RequestOptions.newBuilder().build().getContentCompressionEnabled());
   }
 
