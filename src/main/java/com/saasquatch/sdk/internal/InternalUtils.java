@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 import java.util.AbstractMap.SimpleImmutableEntry;
@@ -43,7 +44,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.WillNotClose;
 import net.iharder.Base64;
-import org.apache.commons.codec.net.URLCodec;
 import org.apache.hc.client5.http.async.methods.SimpleHttpRequest;
 import org.apache.hc.client5.http.async.methods.SimpleHttpResponse;
 import org.apache.hc.client5.http.impl.async.CloseableHttpAsyncClient;
@@ -244,7 +244,12 @@ public final class InternalUtils {
    * RFC3986 URL encode
    */
   public static String urlEncode(@Nonnull String s) {
-    return new String(URLCodec.encodeUrl(RFC_3986_SAFE_CHARS, s.getBytes(UTF_8)), UTF_8);
+    try {
+      return URLEncoder.encode(s, UTF_8.name())
+          .replace("+", "%20").replace("*", "%2A").replace("%7E", "~");
+    } catch (UnsupportedEncodingException e) {
+      throw new RuntimeException(e); // Won't happen
+    }
   }
 
   /**
