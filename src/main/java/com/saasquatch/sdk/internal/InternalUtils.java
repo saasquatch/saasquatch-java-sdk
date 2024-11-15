@@ -42,7 +42,7 @@ import java.util.zip.GZIPInputStream;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.WillNotClose;
-import org.apache.commons.codec.binary.Base64;
+import net.iharder.Base64;
 import org.apache.commons.codec.net.URLCodec;
 import org.apache.hc.client5.http.async.methods.SimpleHttpRequest;
 import org.apache.hc.client5.http.async.methods.SimpleHttpResponse;
@@ -379,7 +379,12 @@ public final class InternalUtils {
     }
     final String payloadPart = jwtParts[1];
     // Do not use the overload that takes a String. It does not work on Android.
-    final byte[] payloadBytes = Base64.decodeBase64(payloadPart.getBytes(UTF_8));
+    final byte[] payloadBytes;
+    try {
+      payloadBytes = Base64.decode(payloadPart, Base64.URL_SAFE);
+    } catch (IOException e) {
+      throw new IllegalArgumentException("Invalid JWT payload", e);
+    }
     final JsonElement jsonElement = JsonParser.parseString(new String(payloadBytes, UTF_8));
     if (!(jsonElement instanceof JsonObject)) {
       throw new IllegalArgumentException("JWT payload is not a JSON object");
