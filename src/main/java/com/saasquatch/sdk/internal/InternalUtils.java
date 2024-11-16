@@ -3,9 +3,7 @@ package com.saasquatch.sdk.internal;
 import static com.saasquatch.sdk.internal.json.GsonUtils.gson;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
 import com.saasquatch.sdk.exceptions.SaaSquatchApiException;
 import com.saasquatch.sdk.exceptions.SaaSquatchUnhandledApiException;
 import com.saasquatch.sdk.input.UserIdInput;
@@ -403,12 +401,13 @@ public final class InternalUtils {
     } catch (IOException e) {
       throw new IllegalArgumentException("Invalid JWT payload", e);
     }
-    final JsonElement jsonElement = JsonParser.parseString(new String(payloadBytes, UTF_8));
-    if (!(jsonElement instanceof JsonObject)) {
-      throw new IllegalArgumentException("JWT payload is not a JSON object");
+    final Map<String, Object> payloadMap;
+    try {
+      //noinspection unchecked
+      payloadMap = gson.fromJson(new String(payloadBytes, UTF_8), Map.class);
+    } catch (JsonSyntaxException e) {
+      throw new IllegalArgumentException("Invalid JWT payload", e);
     }
-    @SuppressWarnings("unchecked") final Map<String, Object> payloadMap =
-        gson.fromJson(jsonElement, Map.class);
     return payloadMap;
   }
 
