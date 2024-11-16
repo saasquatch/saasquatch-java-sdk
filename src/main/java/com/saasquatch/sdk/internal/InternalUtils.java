@@ -374,6 +374,19 @@ public final class InternalUtils {
     return result;
   }
 
+  public static String addBase64Padding(String base64) {
+    final int mod = base64.length() % 4;
+    if (mod == 0) {
+      return base64;
+    }
+    final int paddingNeeded = 4 - mod;
+    final StringBuilder base64Builder = new StringBuilder(base64);
+    for (int i = 0; i < paddingNeeded; i++) {
+      base64Builder.append('=');
+    }
+    return base64Builder.toString();
+  }
+
   /**
    * Extract the payload as a JSON object. This method does NOT do a full JWT validation.
    */
@@ -383,10 +396,10 @@ public final class InternalUtils {
       throw new IllegalArgumentException("Invalid JWT");
     }
     final String payloadPart = jwtParts[1];
-    // Do not use the overload that takes a String. It does not work on Android.
     final byte[] payloadBytes;
+    // This Base64 library expects the base64 string to have proper padding
     try {
-      payloadBytes = Base64.decode(payloadPart, Base64.URL_SAFE);
+      payloadBytes = Base64.decode(addBase64Padding(payloadPart), Base64.URL_SAFE);
     } catch (IOException e) {
       throw new IllegalArgumentException("Invalid JWT payload", e);
     }
