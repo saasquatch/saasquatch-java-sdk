@@ -1,5 +1,6 @@
 package com.saasquatch.sdk;
 
+import static com.saasquatch.sdk.internal.InternalUtils.addBase64Padding;
 import static com.saasquatch.sdk.internal.InternalUtils.defaultIfNull;
 import static com.saasquatch.sdk.internal.InternalUtils.entryOf;
 import static com.saasquatch.sdk.internal.InternalUtils.getJwtPayload;
@@ -160,6 +161,16 @@ public class InternalUtilsTest {
       final Object value = getNestedMapValue(m, "a", "b");
       assertEquals("{\"c\":true}", gson.toJson(value));
     }
+  }
+
+  @Test
+  public void testBase64Padding() {
+    assertEquals("", addBase64Padding(""));
+    assertEquals("a===", addBase64Padding("a"));
+    assertEquals("aa==", addBase64Padding("aa"));
+    assertEquals("aaa=", addBase64Padding("aaa"));
+    assertEquals("aaaa", addBase64Padding("aaaa"));
+    assertEquals("aaaaa===", addBase64Padding("aaaaa"));
   }
 
   @Test
