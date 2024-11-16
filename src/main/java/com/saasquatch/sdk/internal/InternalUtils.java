@@ -365,23 +365,20 @@ public final class InternalUtils {
       if (result == null) {
         return null;
       }
-      @SuppressWarnings("unchecked") final Map<String, Object> resultAsMap =
-          (Map<String, Object>) result;
-      result = resultAsMap.get(key);
+      //noinspection unchecked
+      result = ((Map<String, Object>) result).get(key);
     }
     return result;
   }
 
   public static String addBase64Padding(String base64) {
-    final int mod = base64.length() % 4;
-    if (mod == 0) {
-      return base64;
+    if (base64.length() % 4 == 0) {
+      return base64; // Avoid unnecessary copying with StringBuilder
     }
-    final int paddingNeeded = 4 - mod;
     final StringBuilder base64Builder = new StringBuilder(base64);
-    for (int i = 0; i < paddingNeeded; i++) {
+    do {
       base64Builder.append('=');
-    }
+    } while (base64Builder.length() % 4 != 0);
     return base64Builder.toString();
   }
 
@@ -401,14 +398,12 @@ public final class InternalUtils {
     } catch (IOException e) {
       throw new IllegalArgumentException("Invalid JWT payload", e);
     }
-    final Map<String, Object> payloadMap;
     try {
       //noinspection unchecked
-      payloadMap = gson.fromJson(new String(payloadBytes, UTF_8), Map.class);
+      return gson.fromJson(new String(payloadBytes, UTF_8), Map.class);
     } catch (JsonSyntaxException e) {
       throw new IllegalArgumentException("Invalid JWT payload", e);
     }
-    return payloadMap;
   }
 
   @Nonnull
