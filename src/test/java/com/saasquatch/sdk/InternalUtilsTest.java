@@ -185,6 +185,13 @@ public class InternalUtilsTest {
   }
 
   @Test
+  public void testGetJwtPayloadWithPadding() {
+    final Map<String, Object> map = assertDoesNotThrow(() -> getJwtPayload(
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IklSWThGZHI2aXVpVzU2NTI1NTVyclk2TG9hUFVKQzg0WjEifQ.eyJ1c2VyIjp7ImVtYWlsIjoiZm9vQGV4YW1wbGUuY29tIiwiZmlyc3ROYW1lIjoiRklSU1ROQU1FIiwiaWQiOiJhYWEiLCJhY2NvdW50SWQiOiJhYWEiLCJsYXN0TmFtZSI6ImFhYSJ9fQ.6XoB_nYJy2Vged-Dm9yuf2X9t8XqfqZDQziby0jIDeY"));
+    assertEquals("FIRSTNAME", getNestedMapValue(map, "user", "firstName"));
+  }
+
+  @Test
   public void testJwtToUserIdInput() {
     final UserIdInput userIdInput = getUserIdInputFromUserJwt(
         "a.eyJ1c2VyIjp7ImlkIjoiYiIsImFjY291bnRJZCI6ImEiLCJlbWFpbCI6ImFAZXhhbXBsZS5jb20ifX0.a");
