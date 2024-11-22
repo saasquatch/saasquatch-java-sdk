@@ -11,20 +11,27 @@ tasks.javadoc.options.encoding = 'UTF-8'
 
 repositories {
     mavenCentral()
-    maven { url = uri('https://jitpack.io') }
 }
 
 dependencies {
     api 'org.reactivestreams:reactive-streams:1.0.4'
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
-    implementation 'commons-codec:commons-codec:1.16.0'
-    implementation 'org.apache.httpcomponents.client5:httpclient5:5.3.1'
-    implementation 'io.reactivex.rxjava3:rxjava:3.1.8'
+    /*
+     * This is a lightweight Base64 implementation that works on both Android and the regular JRE.
+     * java.util.Base64 is not available on earlier versions of Android.
+     * android.util.Base64 does not work on regular JRE.
+     * Commons codec should be avoided because Android comes bundled with an early version.
+     * Apache client5 comes with a Base64 class but it's considered internal API.
+     */
+    implementation 'net.iharder:base64:2.3.9'
+    implementation 'org.apache.httpcomponents.client5:httpclient5:5.4.1'
+    implementation 'io.reactivex.rxjava3:rxjava:3.1.9'
+    // Version 2.11.0 requires Android API level 21
     implementation 'com.google.code.gson:gson:2.10.1'
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.1'
-    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.10.1'
-    testImplementation 'com.google.guava:guava:33.0.0-jre'
-    testImplementation 'io.projectreactor:reactor-core:3.6.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.11.3'
+    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.11.3'
+    testImplementation 'com.google.guava:guava:33.3.1-jre'
+    testImplementation 'io.projectreactor:reactor-core:3.7.0'
 }
 
 tasks.test {

@@ -30,7 +30,6 @@ public interface AuthMethod {
   /**
    * Basic authentication with username and password
    */
-  @Beta
   static AuthMethod ofBasic(@Nonnull String username, @Nonnull String password) {
     return new BasicAuth(Objects.requireNonNull(username, "username"),
         Objects.requireNonNull(password, "password"));

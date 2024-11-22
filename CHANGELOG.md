@@ -2,6 +2,16 @@
 
 ## [Unreleased]
 
+## [0.2.0] - 2024-11-22
+
+### Fixed
+
+- Fixed Base64 decoding on Android by replacing the Apache Commons Codec dependency.
+
+### Changed
+
+- Internal dependency version bumps.
+
 ## [0.1.0] - 2024-02-02
 
 ### Fixed
@@ -58,7 +68,9 @@
 
 ## [0.0.1] - 2021-02-17
 
-[Unreleased]: https://github.com/saasquatch/saasquatch-java-sdk/compare/0.1.0...HEAD
+[Unreleased]: https://github.com/saasquatch/saasquatch-java-sdk/compare/0.2.0...HEAD
+
+[0.2.0]: https://github.com/saasquatch/saasquatch-java-sdk/compare/0.1.0...0.2.0
 
 [0.1.0]: https://github.com/saasquatch/saasquatch-java-sdk/compare/0.0.5...0.1.0
 

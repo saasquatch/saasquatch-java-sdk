@@ -1,5 +1,6 @@
 package com.saasquatch.sdk;
 
+import static com.saasquatch.sdk.internal.InternalUtils.addBase64Padding;
 import static com.saasquatch.sdk.internal.InternalUtils.defaultIfNull;
 import static com.saasquatch.sdk.internal.InternalUtils.entryOf;
 import static com.saasquatch.sdk.internal.InternalUtils.getJwtPayload;
@@ -8,6 +9,7 @@ import static com.saasquatch.sdk.internal.InternalUtils.getUserIdInputFromUserJw
 import static com.saasquatch.sdk.internal.InternalUtils.isBlank;
 import static com.saasquatch.sdk.internal.InternalUtils.requireNotBlank;
 import static com.saasquatch.sdk.internal.InternalUtils.unmodifiableList;
+import static com.saasquatch.sdk.internal.InternalUtils.urlEncode;
 import static com.saasquatch.sdk.internal.json.GsonUtils.gson;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -112,6 +114,11 @@ public class InternalUtilsTest {
   }
 
   @Test
+  public void testUrlEncode() throws Exception {
+    assertEquals("foo%20%2B%2A~bar", urlEncode("foo +*~bar"));
+  }
+
+  @Test
   public void testRequireNotBlank() {
     assertThrows(NullPointerException.class, () -> requireNotBlank(null, ""));
     assertDoesNotThrow(() -> requireNotBlank("foo", null));
@@ -163,6 +170,16 @@ public class InternalUtilsTest {
   }
 
   @Test
+  public void testBase64Padding() {
+    assertEquals("", addBase64Padding(""));
+    assertEquals("a===", addBase64Padding("a"));
+    assertEquals("aa==", addBase64Padding("aa"));
+    assertEquals("aaa=", addBase64Padding("aaa"));
+    assertEquals("aaaa", addBase64Padding("aaaa"));
+    assertEquals("aaaaa===", addBase64Padding("aaaaa"));
+  }
+
+  @Test
   public void testGetJwtPayload() {
     //noinspection ConstantConditions
     assertThrows(NullPointerException.class, () -> getJwtPayload(null));
@@ -171,6 +188,13 @@ public class InternalUtilsTest {
     assertThrows(IllegalArgumentException.class, () -> getJwtPayload("a.e30.c.d"));
     assertThrows(IllegalArgumentException.class, () -> getJwtPayload("a.e30.c.d.e"));
     assertEquals(ImmutableMap.of(), getJwtPayload("a.e30.c"));
+  }
+
+  @Test
+  public void testGetJwtPayloadWithPadding() {
+    final Map<String, Object> map = assertDoesNotThrow(() -> getJwtPayload(
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IklSWThGZHI2aXVpVzU2NTI1NTVyclk2TG9hUFVKQzg0WjEifQ.eyJ1c2VyIjp7ImVtYWlsIjoiZm9vQGV4YW1wbGUuY29tIiwiZmlyc3ROYW1lIjoiRklSU1ROQU1FIiwiaWQiOiJhYWEiLCJhY2NvdW50SWQiOiJhYWEiLCJsYXN0TmFtZSI6ImFhYSJ9fQ.6XoB_nYJy2Vged-Dm9yuf2X9t8XqfqZDQziby0jIDeY"));
+    assertEquals("FIRSTNAME", getNestedMapValue(map, "user", "firstName"));
   }
 
   @Test
