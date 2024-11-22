@@ -9,6 +9,7 @@ import static com.saasquatch.sdk.internal.InternalUtils.getUserIdInputFromUserJw
 import static com.saasquatch.sdk.internal.InternalUtils.isBlank;
 import static com.saasquatch.sdk.internal.InternalUtils.requireNotBlank;
 import static com.saasquatch.sdk.internal.InternalUtils.unmodifiableList;
+import static com.saasquatch.sdk.internal.InternalUtils.urlEncode;
 import static com.saasquatch.sdk.internal.json.GsonUtils.gson;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -110,6 +111,11 @@ public class InternalUtilsTest {
     }
     assertSame(Collections.emptyList(), unmodifiableList(Arrays.asList()));
     assertEquals("SingletonList", unmodifiableList(Arrays.asList(1)).getClass().getSimpleName());
+  }
+
+  @Test
+  public void testUrlEncode() throws Exception {
+    assertEquals("foo%20%2B%2A~bar", urlEncode("foo +*~bar"));
   }
 
   @Test
